@@ -2914,8 +2914,6 @@
         }
     },
     
-    // Front panel LED 
-
     "PORT_LED":
     {
         "dev_info": { "device_type":"LED", "device_name":"PORT_LED"},
