@@ -97,20 +97,7 @@ pip3 show j2cli
 * Log out and log back in so that your group membership is re-evaluated
 * If you are using Linux kernel 5.3 or newer, then you must use Docker 20.10.10 or newer. This is because older Docker versions did not allow the `clone3` syscall, which is now used in Bookworm.
 
-
-
-
-
-Install Docker and configure your system to allow running the 'docker' command
-without 'sudo':
-I-Check for the docker version if installed before using docker --version
-pip3 II- Add current user to the docker group: sudo gpasswd -a ${USER}
-docker
-III- Log out and log back in so that your group membership is re-evaluated
-
-
-
-
+# Clone the repository with all the git submodules
 
 
 make init
