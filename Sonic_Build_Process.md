@@ -24,7 +24,7 @@ sudo apt update
 sudo apt install maven
 sudo apt install openjdk-11-jdk-headless
 ```
-Check for the version use
+* Check for the version use
 ```shell
 java --version
 mvn --version
