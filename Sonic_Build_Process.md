@@ -172,12 +172,21 @@ make target/sonic-aboot-broadcom.swi
 
 # Facing Issue During Build
 
-## Build sonic-broadcom.bin via make target/sonic-broadcom.bin command. But I get below error on building docker-gbsyncd-broncos:
+## 1) Build sonic-broadcom.bin via make target/sonic-broadcom.bin command. But I get below error on building docker-gbsyncd-broncos:
 
 ```shell
 Step 22/32 : COPY ["files/dsserve", "/usr/bin/"]
 COPY failed: file not found in build context or excluded by .dockerignore: stat files/dsserve: file does not exist
 ```
+
+### Solution
+
+I download dsserve from this [link](https://sonicstorage.blob.core.windows.net/public/20190307/dsserve) manually and add it to
+`sonic-buildimage/target/files/bullseye/`
+
+
+
+
 
 
 Add dsserve to /target/files/bullseye/dsserve
