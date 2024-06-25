@@ -114,6 +114,51 @@ To build SONiC installer image and docker images, run the following commands:
 sudo modprobe overlay
 ```
 
+* Enter the source directory
+```shell
+cd sonic-buildimage
+```
+
+* (Optional) Checkout a specific branch. By default, it uses master branch. For example, to checkout the branch 202405, use "git checkout 202405"
+```shell
+# We used a default branch "master"
+git checkout [branch_name]
+```
+
+* Execute make init once after cloning the repo, or after fetching remote repo with submodule updates
+```shell
+make init
+```
+
+* Execute make configure once to configure ASIC
+
+```shell
+make configure PLATFORM=[ASIC_VENDOR]
+```
+
+    The supported ASIC vendors are:
+
+    * PLATFORM=barefoot
+    * PLATFORM=broadcom
+    * PLATFORM=marvell
+    * PLATFORM=mellanox
+    * PLATFORM=cavium
+    * PLATFORM=centec
+    * PLATFORM=nephos
+    * PLATFORM=nvidia-bluefield
+    * PLATFORM=innovium
+    * PLATFORM=vs
+
+```shell
+# We have broadcome device so we are used the specific broadcom plateform
+make configure PLATFORM=broadcom
+```
+
+* Ensure the 'overlay' module is loaded on your development system
+```shell
+sudo modprobe overlay
+```
+
 
 make init
 
