@@ -93,9 +93,9 @@ pip3 show j2cli
 
 8. Install Docker using 
 * Install [Docker](https://docs.docker.com/engine/install/) and configure your system to allow running the 'docker' command without 'sudo':
-  * Add current user to the docker group: `sudo gpasswd -a ${USER} docker`
-  * Log out and log back in so that your group membership is re-evaluated
-  * If you are using Linux kernel 5.3 or newer, then you must use Docker 20.10.10 or newer. This is because older Docker versions did not allow the `clone3` syscall, which is now used in Bookworm.
+* Add current user to the docker group: `sudo gpasswd -a ${USER} docker`
+* Log out and log back in so that your group membership is re-evaluated
+* If you are using Linux kernel 5.3 or newer, then you must use Docker 20.10.10 or newer. This is because older Docker versions did not allow the `clone3` syscall, which is now used in Bookworm.
 
 
 
