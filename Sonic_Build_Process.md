@@ -99,6 +99,21 @@ pip3 show j2cli
 
 # Clone the repository with all the git submodules
 
+To clone the code repository recursively:
+
+```shell
+git clone --recurse-submodules https://github.com/sonic-net/sonic-buildimage.git
+```
+
+# Building the Image
+
+To build SONiC installer image and docker images, run the following commands:
+
+* Ensure the 'overlay' module is loaded on your development system
+```shell
+sudo modprobe overlay
+```
+
 
 make init
 
