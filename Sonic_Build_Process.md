@@ -203,9 +203,7 @@ sudo https_proxy=$https_proxy LANG=C chroot $FILESYSTEM_ROOT pip3 install 'docke
 sudo https_proxy=$https_proxy LANG=C chroot $FILESYSTEM_ROOT pip3 install 'requests<2.32.0'
 ```
 
-# Note:
-
-* During the build time do not use the package manager for any other task because may be it's cause the issue.
+#### Note: During the build time do not use the package manager for any other task because may be it's cause the issue.
 
 
 ## 3) In the bootlog we received PDDF_ERROR for LED status. `PDDF_ERROR: dev_operation: Invalid value for dev_ops STATUS_LED_COLOR`
@@ -215,7 +213,7 @@ ERROR :
 ```bash
 [   43.895169] PDDF_ERROR: dev_operation: Invalid value for dev_ops STATUS_LED_COLOR_BLUE_BLINK
 [   43.911763] PDDF_ERROR: dev_operation: Invalid value for dev_ops STATUS_LED_COLOR_GREEN_BLINK
-[   43.928367] PDDF_ERROR: dev_operation: Invalid value for dev_ops STATUS_LED_COLOR_AMBER_BLINK
+[   43.928367] PDDF_ERROR: dev_operation: Invali3) In the bootlog we received PDDF_ERROR for LED status. PDDF_ERROR: dev_operation: Invalid value for dev_ops STATUS_LED_COLORd value for dev_ops STATUS_LED_COLOR_AMBER_BLINK
 [   43.944995] PDDF_ERROR: dev_operation: Invalid value for dev_ops STATUS_LED_COLOR_BLUE
 [   43.960874] PDDF_ERROR: dev_operation: Invalid value for dev_ops STATUS_LED_COLOR_GREEN
 [   43.976833] PDDF_ERROR: dev_operation: Invalid value for dev_ops STATUS_LED_COLOR_AMBER
@@ -373,4 +371,4 @@ Setting reserved blocks count to 0
 
 Download the "pddf-device.json" from this [link](https://github.com/Khimji07/Sonic/blob/main/device/accton/x86_64-accton_as7326_56x-r0/pddf/pddf-device.json) and replace it to `sonic-buildimage/device/accton/x86_64-accton_as7326_56x-r0/pddf/pddf-device.json`
 
-# Note : I Enhanced the LED attributes name in this file.
+#### Note : I Enhanced the LED attributes name in this file.
