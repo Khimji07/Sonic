@@ -181,24 +181,29 @@ COPY failed: file not found in build context or excluded by .dockerignore: stat 
 
 ### Solution
 
-I download dsserve from this [link](https://sonicstorage.blob.core.windows.net/public/20190307/dsserve) manually and add it to
+I download dsserve from this [link](https://github.com/Khimji07/Sonic/blob/main/dsserve) manually and add it to
 `sonic-buildimage/target/files/bullseye/`
 
 
+## 2) Docker client failing to connect : requests.exceptions.InvalidURL: Not supported URL scheme http+docker
 
+* Running Docker inside chroot results in "requests.exceptions.InvalidURL: Not supported URL scheme http+docker" due to Docker client failing to connect to Docker daemon.
 
+`requests.exceptions.InvalidURL: Not supported URL scheme http+docker`
 
+### Solution
 
-Add dsserve to /target/files/bullseye/dsserve
+Add pip install requests package and pin version to <2.32.0 in build_debian.sh
 
-make target/sonic-broadcom.bin
+```bash
+# Find below Line in build_debian.sh
+sudo https_proxy=$https_proxy LANG=C chroot $FILESYSTEM_ROOT pip3 install 'docker==6.1.1'
+# Replace it with below line 
+sudo https_proxy=$https_proxy LANG=C chroot $FILESYSTEM_ROOT pip3 install 'requests<2.32.0'
+```
 
+# Note:
 
-if you recived error like "Http + Docker"
-
-    Find below Line in build_debian.sh
-    sudo https_proxy=$https_proxy LANG=C chroot $FILESYSTEM_ROOT pip3 install 'docker==6.1.1'
-    Replace it with below line 
-    sudo https_proxy=$https_proxy LANG=C chroot $FILESYSTEM_ROOT pip3 install 'requests<2.32.0'
+* During the build time do not use the package manager for any other task because may be it's cause the issue.
 
 
