@@ -184,6 +184,7 @@ COPY failed: file not found in build context or excluded by .dockerignore: stat 
 I download dsserve from this [link](https://github.com/Khimji07/Sonic/blob/main/dsserve) manually and add it to
 `sonic-buildimage/target/files/bullseye/`
 
+#### Note : When you build the image using bullseye so you encountered this error. 
 
 ## 2) Docker client failing to connect : requests.exceptions.InvalidURL: Not supported URL scheme http+docker
 
