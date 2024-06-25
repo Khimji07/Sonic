@@ -19,18 +19,16 @@
 # Dependencies/Prerequisites
 
 1. To install maven and jdk
-    sudo apt update
-
-    sudo apt install maven
-
-    sudo apt install openjdk-11-jdk-headless
-
-    Check for the version use
-
-    java --version
-    
-    mvn –version
-
+```shell
+sudo apt update
+sudo apt install maven
+sudo apt install openjdk-11-jdk-headless
+```
+Check for the version use
+```shell
+java --version
+mvn --version
+```
 
 
 
