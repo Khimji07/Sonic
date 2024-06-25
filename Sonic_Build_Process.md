@@ -154,11 +154,21 @@ make configure PLATFORM=[ASIC_VENDOR]
 make configure PLATFORM=broadcom
 ```
 
-* Ensure the 'overlay' module is loaded on your development system
-```shell
-sudo modprobe overlay
-```
+* The SONiC installer contains all docker images needed.
+* SONiC uses one image for all devices of a same ASIC vendor.
+* For Broadcom ASIC, we build ONIE and EOS image.
+* EOS image is used for Arista devices,
+* ONIE image is used for all other Broadcom ASIC based devices.
 
+```shell
+make configure PLATFORM=broadcom
+# build debian stretch required targets
+BLDENV=stretch make stretch
+# build ONIE image
+make target/sonic-broadcom.bin
+# build EOS image
+make target/sonic-aboot-broadcom.swi
+```
 
 make init
 
