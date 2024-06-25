@@ -170,7 +170,7 @@ make target/sonic-broadcom.bin
 make target/sonic-aboot-broadcom.swi
 ```
 
-# Facing Issue During Build
+# Faced Issue During Build Time
 
 ## 1) Build sonic-broadcom.bin via make target/sonic-broadcom.bin command. But I get below error on building docker-gbsyncd-broncos:
 
