@@ -172,7 +172,7 @@ make target/sonic-aboot-broadcom.swi
 
 # Faced Issue During Build Time
 
-## 1) Build sonic-broadcom.bin via make target/sonic-broadcom.bin command. But I get below error on building docker-gbsyncd-broncos:
+### 1) Build sonic-broadcom.bin via make target/sonic-broadcom.bin command. But I get below error on building docker-gbsyncd-broncos:
 
 ```shell
 Step 22/32 : COPY ["files/dsserve", "/usr/bin/"]
@@ -186,7 +186,7 @@ I download dsserve from this [link](https://github.com/Khimji07/Sonic/blob/main/
 
 #### Note : When you build the image using bullseye so you encountered this error. 
 
-## 2) Docker client failing to connect : requests.exceptions.InvalidURL: Not supported URL scheme http+docker
+### 2) Docker client failing to connect : requests.exceptions.InvalidURL: Not supported URL scheme http+docker
 
 * Running Docker inside chroot results in "requests.exceptions.InvalidURL: Not supported URL scheme http+docker" due to Docker client failing to connect to Docker daemon.
 
@@ -206,7 +206,7 @@ sudo https_proxy=$https_proxy LANG=C chroot $FILESYSTEM_ROOT pip3 install 'reque
 #### Note: During the build time do not use the package manager for any other task because may be it's cause the issue.
 
 
-## 3) In the bootlog we received PDDF_ERROR for LED status. `PDDF_ERROR: dev_operation: Invalid value for dev_ops STATUS_LED_COLOR`
+### 3) In the bootlog we received PDDF_ERROR for LED status. `PDDF_ERROR: dev_operation: Invalid value for dev_ops STATUS_LED_COLOR`
 
 ERROR : 
 
@@ -372,3 +372,27 @@ Setting reserved blocks count to 0
 Download the "pddf-device.json" from this [link](https://github.com/Khimji07/Sonic/blob/main/device/accton/x86_64-accton_as7326_56x-r0/pddf/pddf-device.json) and replace it to `sonic-buildimage/device/accton/x86_64-accton_as7326_56x-r0/pddf/pddf-device.json`
 
 #### Note : I Enhanced the LED attributes name in this file.
+
+### 4) In the bootlog we received determine_reboot_cause service failer. `[FAILED] Failed to start determine-…eboot cause determination service.`
+
+### Solution
+
+Open the determine-reboot-cause.service file which is available in `src/sonic-host-services/data/debian/sonic-host-services-data.determine-reboot-cause.service`
+
+Modify that's file as below 
+
+```bash
+[Unit]
+Description=Reboot cause determination service
+Requires=rc-local.service database.service
+After=rc-local.service database.service
+
+[Service]
+Type=simple
+#RemainAfterExit=yes
+ExecStart=/usr/local/bin/determine-reboot-cause
+
+[Install]
+WantedBy=multi-user.target
+
+```
