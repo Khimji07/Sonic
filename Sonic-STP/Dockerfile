@@ -10,6 +10,7 @@ RUN apt-get install -y python3
 RUN apt-get install -y libhiredis0.14 
 RUN apt-get install -y libnl-nf-3-200
 RUN apt-get install -y libnl-genl-3-200
+# libpython3.7 only support debian-buster
 RUN apt-get install -y libpython3.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
