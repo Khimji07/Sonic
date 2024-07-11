@@ -15,4 +15,15 @@
       <xi:include href="include/pipe.xml"/>
     </COMMAND>
   </VIEW>
+
+  <VIEW name="configure-view">
+    <COMMAND name="vlan" help="Select a VLAN interface">
+        <PARAM name="add" help="Add a VLAN" mode="subcommand">
+            <PARAM name="vlan-id" help="VLAN ID to add" ptype="UINT"/>
+        </PARAM>
+        <ACTION> python3 $SONIC_CLI_ROOT/sonic-cli-vlan.py put_sonic_vlan_sonic_vlan ${vlan-id} </ACTION>
+    </COMMAND>
+</VIEW>
+
+
 </CLISH_MODULE>
