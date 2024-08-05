@@ -212,13 +212,17 @@ Modify that's file as below
 ```bash
 [Unit]
 Description=Reboot cause determination service
-Requires=rc-local.service database.service
-After=rc-local.service database.service
+Requires=rc-local.service
+After=rc-local.service pmon.service
+StartLimitIntervalSec=1200
+StartLimitBurst=6
 
 [Service]
-Type=simple
-#RemainAfterExit=yes
+Type=notify
 ExecStart=/usr/local/bin/determine-reboot-cause
+Restart=on-failure
+RestartSec=10
+RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target
