@@ -1,0 +1,35 @@
+module sonic-system-gai {
+    namespace "http://github.com/Azure/sonic-system-gai";
+    prefix system-gai;
+    yang-version 1.1;
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONIC system gai";
+
+    revision 2023-12-25 {
+        description "Initial version.";
+    }
+
+
+    container sonic-system-gai {
+
+        container GAI_ATTRIBUTES {
+
+            container global {
+
+                leaf prefer_ipv4  {
+                    type boolean;
+                    default "false";
+                    description
+                        "DNS getaddrinfo preference to IPv4";
+                }
+            }
+        }
+    }
+}

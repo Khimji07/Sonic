@@ -1,0 +1,310 @@
+module sonic-poe {
+    namespace "http://github.com/Azure/sonic-poe";
+    prefix spoe;
+    yang-version 1.1;
+
+    import sonic-port {
+        prefix prt;
+    }
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONiC POE yang model";
+
+    revision 2021-05-10 {
+        description
+            "Initial revision.";
+    }
+
+    grouping poe-common-attributes {
+
+        leaf power_management_model {
+            type enumeration {
+                enum INVALID;
+                enum STATIC;
+                enum DYNAMIC;
+                enum CLASS;
+                enum STATIC_PRI;
+                enum DYNAMIC_PRI;
+                enum NONE;
+            }
+            description
+                "Power Management model";
+        }
+
+        leaf power_usage_threshold {
+            type uint8 {
+                range "1..99" {
+                    error-message "Invalid Power Usage Threshold value.";
+                    error-app-tag poe-invalid;
+                }
+            }
+            description
+                "Power usage threshold";
+        }
+
+        leaf auto_reset_mode {
+            type boolean;
+            description
+                "POE Auto reset mode";
+        }
+    }
+
+    container sonic-poe {
+
+        container POE {
+            list POE_LIST {
+                key "id";
+                sonic-ext:custom-validation ValidatePoeCapability;
+
+                leaf id {
+                    type enumeration {
+                        enum GLOBAL;
+                    }
+                    description
+                        "It's value is always GLOBAL";
+                }
+
+                uses poe-common-attributes;
+            }
+        }
+
+        container POE_CARD {
+            list POE_CARD_LIST {
+                key "id";
+                sonic-ext:custom-validation ValidatePoeCardHardware;
+
+                leaf id {
+                    type string {
+                        pattern "card([0-7])" {
+                            error-message "Invalid POE card Id.";
+                            error-app-tag poe-invalid;
+                        }
+                    }
+                    description
+                        "POE Card Id";
+                }
+
+                uses poe-common-attributes;
+            }
+        }
+
+        container POE_PORT {
+            list POE_PORT_LIST {
+                key "ifname";
+                sonic-ext:custom-validation ValidatePoePortCapability;
+
+                leaf ifname {
+                    type leafref {
+                        path "/prt:sonic-port/prt:PORT/prt:PORT_LIST/prt:ifname";
+                    }
+                    description
+                        "Reference of port on which POE to be configured.";
+                }
+
+                leaf admin_mode {
+                    type boolean;
+                    description
+                        "POE port level Admin mode";
+                }
+
+                leaf priority {
+                    type enumeration {
+                        enum INVALID;
+                        enum LOW;
+                        enum MEDIUM;
+                        enum HIGH;
+                        enum CRITICAL;
+                    }
+                    description
+                        "Port priority";
+                }
+
+                leaf detection_mode {
+                    type enumeration {
+                        enum INVALID;
+                        enum LEGACY;
+                        enum FOUR_PT_DOT3AF;
+                        enum FOUR_PT_DOT3AF_LEG;
+                        enum TWO_PT_DOT3AF;
+                        enum TWO_PT_DOT3AF_LEG;
+                        enum DOT3BT;
+                        enum DOT3BT_LEG;
+                        enum NONE;
+                    }
+                    description
+                        "Port level POE detection mode";
+                }
+
+                leaf powerup_mode {
+                    type enumeration {
+                        enum INVALID;
+                        enum IEEE_8023AF;       //dot3af
+                        enum HIGH_INRUSH;       //high-inrush
+                        enum PRE_8023AT;        //pre-dot3at
+                        enum IEEE_8023AT;       //dot3at
+                        enum PRE_8023BT;        //pre-dot3bt
+                        enum IEEE_8023BT_TYPE3; //dot3bt-type3
+                        enum IEEE_8023BT_TYPE4; //dot3bt-type4
+                        enum IEEE_8023BT;       //dot3bt
+                    }
+                    description
+                        "POE Port power up mode";
+                }
+
+                leaf power_limit_type {
+                    type enumeration {
+                        enum INVALID;
+                        enum CLASS_BASED;
+                        enum USER;
+                        enum NONE;
+                    }
+                    description
+                        "POE Port power limit type";
+                }
+
+                leaf power_limit {
+                    type uint32 {
+                        range "0..99900" {
+                            error-message "Invalid Power limit value.";
+                            error-app-tag poe-invalid;
+                        }
+                    }
+                    description
+                        "POE port power limit";
+                }
+
+                leaf high_power_mode {
+                    type boolean;
+                    description
+                        "POE port high power mode";
+                }
+
+                leaf four_pair_mode {
+                    type boolean;
+                    description
+                        "POE Port 4-pair mode. 'true' means supported
+                        and 'false' means otherwise";
+                }
+
+                leaf use_spare_pair {
+                    type boolean;
+                    description
+                        "POE Port spare pair power up. 'true' means enabled
+                        and 'false' means disabled";
+                }
+
+                leaf power_pairs {
+                    type enumeration {
+                        enum INVALID;
+                        enum SIGNAL;
+                        enum SPARE;
+                    }
+                    description
+                        "POE Port power pairs";
+                }
+
+                leaf disconnect_type {
+                    type enumeration {
+                        enum NONE;
+                        enum AC;
+                        enum DC;
+                    }
+                    description
+                        "POE port disconnect type";
+                }
+
+                leaf power_classification_mode {
+                    type enumeration {
+                        enum INVALID;
+                        enum NORMAL;
+                        enum BYPASS;
+                    }
+                    description
+                        "POE port power classification";
+                }
+            }
+        }
+
+        container POE_PORT_COUNTERS {
+            sonic-ext:db-name "STATE_DB";
+
+            list POE_PORT_COUNTERS_LIST {
+                key "ifname";
+                sonic-ext:custom-validation ValidatePoePortCapability;
+
+                leaf ifname {
+                    type leafref {
+                        path "/prt:sonic-port/prt:PORT/prt:PORT_LIST/prt:ifname";
+                    }
+                    description
+                        "Reference of port on which POE counters are being queried.";
+                }
+
+                leaf overload {
+                    type uint32;
+                    description "This counter is incremented when the pd connected to the pse port had tried
+                                 to draw more power than permissible by the hardware.";
+                }
+
+                leaf short {
+                    type uint32;
+                    description "This counter is incremented when the pse port has detected a short circuit
+                                 condition.";
+                 }
+
+                 leaf power_denied {
+                     type uint32;
+                     description "This counter is incremented when the pse port has been denied power
+                                  because of shortage of power or due to administrative action.";
+                 }
+
+                 leaf absent {
+                     type uint32;
+                     description "This counter is incremented when the pse port has detected and absence
+                                  of main power supply.";
+                 }
+
+                 leaf invalid_signature {
+                     type uint32;
+                     description "This counter is incremented when the PSE state diagram
+                                  enters the state SIGNATURE_INVALID.";
+                 }
+             }
+        }
+
+        container POE_PORT_MISC {
+            sonic-ext:db-name "STATE_DB";
+
+            list POE_PORT_MISC_LIST {
+                key "ifname";
+                sonic-ext:custom-validation ValidatePoePortCapability;
+
+                leaf ifname {
+                    type leafref {
+                        path "/prt:sonic-port/prt:PORT/prt:PORT_LIST/prt:ifname";
+                    }
+                    description
+                        "Reference of port on which POE status information is being queried.";
+                }
+
+                leaf temperature {
+                    type decimal64 {
+                        fraction-digits 8;
+                    }
+                    description "The temperature measured at this port of the PoE Controller. It is
+                                 measured in degree celcius.";
+                 }
+             }
+        }
+    }
+}

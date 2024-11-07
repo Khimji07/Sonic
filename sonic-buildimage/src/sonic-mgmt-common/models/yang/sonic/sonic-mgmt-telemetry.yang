@@ -1,0 +1,101 @@
+module sonic-mgmt-telemetry {
+    namespace "http://github.com/Azure/sonic-mgmt-telemetry";
+    prefix sclauth;
+    yang-version 1.1;
+
+    import sonic-pki {
+        prefix spki;
+    }
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONiC Management of Telemetry Services";
+
+    revision 2023-01-10 {
+        description
+            "Add validations";
+    }
+    revision 2021-12-01 {
+        description
+            "Initial revision.";
+    }
+
+    container sonic-mgmt-telemetry {
+        container TELEMETRY {
+           list TELEMETRY_LIST {
+               key "id";
+               leaf id {
+                    type enumeration {
+                        enum gnmi;
+                    }
+
+               }
+               leaf port {
+                   when "current()/../id = 'gnmi'";
+                   type uint16;
+                   description
+                    "The port that the telemetry server listens on";
+               }
+               leaf log_level {
+                   when "current()/../id = 'gnmi'";
+                   type uint8;
+                   description
+                    "Log level of telemetry server";
+               }
+               leaf jwt_refresh {
+                   when "current()/../id = 'gnmi'";
+                   type uint32;
+                   description
+                    "Seconds before JWT expiry the token can be refreshed.";
+               }
+               leaf jwt_valid {
+                   when "current()/../id = 'gnmi'";
+                   type uint32;
+                   description
+                    "Seconds that JWT token is valid for.";
+               }
+               leaf client_auth {
+                   when "current()/../id = 'gnmi'";
+                   type string {
+                       pattern "((password|cert|jwt|none),?)*" {
+                           error-message "Invalid GNMI client_auth pattern";
+                           error-app-tag client-auth-invalid;
+                       }
+                   }
+                   sonic-ext:custom-validation ValidateClientAuth;
+               }
+               leaf security_profile {
+                   type leafref {
+                        path "/spki:sonic-pki/spki:SECURITY_PROFILES/spki:SECURITY_PROFILES_LIST/spki:profile-name";
+                   }
+                   sonic-ext:custom-validation ValidateSecurityProfile;
+               }
+               leaf api_timeout {
+                 when "current()/../id = 'gnmi'";
+                  type uint32;
+                  units "seconds";
+                  description
+                    "Server side rpc timeout hint, in seconds, for all
+                    gNMI and gNOI rpcs. Value 0 disables this timeout.
+                    When not configured, server will assume a default
+                    value based on the system capability.
+
+                    On timeout, server will abort processing the request
+                    and respond with DEADLINE_EXCEEDED status. Not all
+                    handlers may honor this timeout. Hence some rpcs may
+                    take longer to complete depending on underlying
+                    handler implementation.";
+               }
+           }
+        }
+    }
+}

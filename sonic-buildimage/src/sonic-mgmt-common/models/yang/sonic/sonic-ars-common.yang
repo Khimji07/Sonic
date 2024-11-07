@@ -1,0 +1,101 @@
+module sonic-ars-common {
+  namespace "http://github.com/Azure/sonic-ars-common";
+  prefix sbc;
+  yang-version 1.1;
+
+  import ietf-yang-types {
+    prefix "ietf-yang";
+  }
+
+  organization
+      "SONiC";
+
+  contact
+      "SONiC";
+
+  description
+      "SONIC ARS common YANG attributes";
+
+  revision 2023-11-27 {
+      description
+          "Initial revision.";
+  }
+
+  typedef ars-algo-type {
+    type enumeration {
+      enum EWMA {
+        description "Exponential weighted moving average";
+      }
+    }
+    description
+      "ARS alorithm type definitions";
+  }
+
+  typedef ars-bind-info {
+    type enumeration {
+      enum SWITCH {
+        description "switch type for bind";
+      }
+    }
+  }
+
+  typedef ars-port-load-factor {
+    type enumeration {
+      enum 0 {
+        description "Port load factor calculated internally";
+      }      
+      enum 1 {
+        description "Port load factor for port speed 10G";
+      }
+      enum 2.5 {
+        description "Port load factor for port speed 25G";
+      }
+      enum 4 {
+        description "Port load factor for port speed 40G";
+      }
+      enum 5 {
+        description "Port load factor for port speed 50G";
+      }
+      enum 10 {
+        description "Port load factor for port speed 100G";
+      }
+      enum 20 {
+        description "Port load factor for port speed 200G";
+      }
+      enum 40 {
+        description "Port load factor for port speed 400G";
+      }
+      enum 80 {
+        description "Port load factor for port speed 800G";
+      }      
+    }
+    default 0;
+    description
+      "ARS port load factor is the portspeed divided by value 10.";
+  }
+
+  typedef ars-nhg-mode-types {
+    type enumeration {
+      enum ARS_MODE_FLOWLET_QUALITY {
+        description "Per flow-let quality based path (re)assignment";
+      }
+      enum ARS_MODE_FLOWLET_RANDOM {
+        description "Per flow-let random path (re)assignment";
+      }
+      enum ARS_MODE_PER_PACKET_RANDOM {
+        description "Per packet random path (re)assignment";
+      }
+      enum ARS_MODE_PER_PACKET_QUALITY {
+        description "Per packet quality based path (re)assignment";
+      }
+      enum ARS_MODE_FIXED {
+        description "Fixed path assignment";
+      }
+    }
+    default ARS_MODE_FLOWLET_QUALITY;
+    description
+      "ARS NHG mode types.";
+  }
+    
+}
+

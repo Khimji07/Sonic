@@ -1,0 +1,31 @@
+module sonic-platform-annot {
+
+    yang-version "1.1";
+
+    namespace "http://openconfig.net/yang/annotation/spfm-annot";
+    prefix "spfm-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import sonic-platform { prefix spfm; }
+
+    deviation /spfm:sonic-platform/spfm:PSU_INFO {
+        deviate add {
+            sonic-ext:db-name "STATE_DB";
+        }
+    }
+    deviation /spfm:sonic-platform/spfm:FAN_INFO {
+        deviate add {
+            sonic-ext:db-name "STATE_DB";
+        }
+    }
+    deviation /spfm:sonic-platform/spfm:TEMPERATURE_INFO {
+        deviate add {
+            sonic-ext:db-name "STATE_DB";
+        }
+    }
+    deviation /spfm:sonic-platform/spfm:I2CERROR_STATS {
+        deviate add {
+            sonic-ext:db-name "STATE_DB";
+        }
+    }
+}

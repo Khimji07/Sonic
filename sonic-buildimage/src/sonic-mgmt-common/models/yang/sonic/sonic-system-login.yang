@@ -1,0 +1,143 @@
+module sonic-system-login {
+    namespace "http://github.com/Azure/sonic-system-login";
+    prefix system-login;
+    yang-version 1.1;
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONIC system login";
+
+    revision 2023-12-15 {
+        description "Add login attribute - login_session_timeout.";
+    }
+
+    revision 2023-08-17 {
+        description "Initial version.";
+    }
+
+
+    container sonic-system-login {
+
+        container LOGIN_ATTRIBUTES {
+
+            list LOGIN_ATTRIBUTES_LIST {
+
+                key "global_key";
+
+                leaf global_key {
+                    type enumeration {
+                        enum global;
+                    }
+                    description
+                        "System login global key";
+                }
+
+                leaf login_console_exempt {
+                    type boolean;
+                    default "false";
+                    description
+                        "Exempt console logins from account lockout";
+                }
+
+                leaf login_lockout_period {
+                    type uint16{
+                        range "0..43200" {
+                            error-message "Login lockout period must be in range [0-43200]";
+                            error-app-tag login-lockout-period-invalid;
+                        }
+                    }
+                    units minutes;
+                    default "0";
+                    description
+                        "Account lockout period in minutes";
+                }
+
+                leaf login_max_retry_limit {
+                    type uint8{
+                        range "0..16" {
+                            error-message "Login maximum retry limit must be in range [0-16]";
+                            error-app-tag login-max-retry-limit-invalid;
+                        }
+                    }
+                    default "3";
+                    description
+                        "The number of maximum password retries";
+                }
+
+                leaf login_session_timeout {
+                    type uint16 {
+                        range "0..3600" {
+                            error-message "Login session timeout period must be in range [0-3600]";
+                            error-app-tag login-session-timeout-period-invalid;
+                        }
+                    }
+                    default "600";
+                    units "seconds";
+                    description
+                        "Exec Session Timeout value in seconds";
+                }
+
+                leaf min_upper_case {
+                    type uint8 {
+                        range "0..31" {
+                            error-message "Login password upper case characters limit must be in range [0-31]";
+                            error-app-tag password-upper-case-limit-invalid;
+                        }
+                    }
+                    description
+                        "The minimum number of upper case characters required in the password";
+                }
+
+                leaf min_lower_case {
+                    type uint8{
+                        range "0..31" {
+                            error-message "Login password lower case characters limit must be in range [0-31]";
+                            error-app-tag password-lower-case-limit-invalid;
+                        }
+                    }
+                    description
+                        "The minimum number of lower case characters required in the password";
+                }
+
+                leaf min_numerals {
+                    type uint8{
+                        range "0..31" {
+                            error-message "Login password numeric characters limit must be in range [0-31]";
+                            error-app-tag password-numerals-limit-invalid;
+                        }
+                    }
+                    description
+                        "The minimum number of numerics required in the password";
+                }
+
+                leaf min_special_char {
+                    type uint8{
+                        range "0..31" {
+                            error-message "Login password special characters limit must be in range [0-31]";
+                            error-app-tag password-special-characters-limit-invalid;
+                        }
+                    }
+                    description
+                        "The minimum number of special characters required in the password";
+                }
+
+                leaf min_length {
+                    type uint8{
+                        range "6..32" {
+                            error-message "Login password minimum length must be in range [6-32]";
+                            error-app-tag password-minimum-length-invalid;
+                        }
+                    }
+                    default "8";
+                    description
+                        "The minimum number of characters required in a password";
+                }
+            }
+        }
+    }
+}

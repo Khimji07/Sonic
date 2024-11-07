@@ -1,0 +1,107 @@
+module sonic-network-policy {
+    namespace "http://github.com/Azure/sonic-network-policy";
+    prefix sonic-network-policy;
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONiC Network policy yang model";
+
+    revision 2021-05-03 {
+        description
+            "Initial revision.";
+    }
+
+    container sonic-network-policy {
+        container NETWORK_POLICY_PROFILE {
+            list NETWORK_POLICY_PROFILE_LIST {
+                key "number";
+
+                leaf number {
+                    type uint16;
+                    description
+                        "Network policy number";
+                }
+            }
+        }
+        
+        container NETWORK_POLICY_APP {
+            list NETWORK_POLICY_APP_LIST {
+                key "number type";
+
+                leaf number {
+                    type leafref {
+                        path "../../../NETWORK_POLICY_PROFILE/NETWORK_POLICY_PROFILE_LIST/number";
+                    }
+                    description
+                        "Network policy number";
+                }
+
+                leaf type {
+                    type string;
+                    description
+                        "Application type";
+                }
+
+                leaf vlan {
+                    must "not((current()=0) and (current()/../tagged = 'false'))" {
+                        error-message "Cannot configure dot1p in untagged mode";
+                        error-app-tag network-policy-config;
+                    }
+
+                    type uint16 {
+                        range "0..4094" {
+                            error-message "Vlan ID out of range";
+                            error-app-tag vlanid-invalid;
+                        }
+                    }
+                    description
+                        "Voice VLAN ID";
+                }
+
+                leaf tagged {
+                    must "not((current()='false') and (current()/../vlan = 0))" {
+                        error-message "Cannot configure untagged in dot1p mode";
+                        error-app-tag network-policy-config;
+                    }
+
+                    must "(current()='true') or not(current()/../priority)" {
+                        error-message "Cannot configure untagged mode when priority set";
+                        error-app-tag network-policy-config;
+                    }
+
+                    type boolean;
+                    description
+                        "Indicates end device to send tagged/untagged voice traffic";
+                }
+
+                leaf priority {
+                    must "current()/../tagged='true' or not(current()/../tagged)" {
+                        error-message "Cannot configure priority in untagged mode";
+                        error-app-tag network-policy-config;
+                    }
+
+                    type uint8 {
+                        range 0..7;
+                    }
+                    description
+                        "Layer 2 priority class of service (CoS) for the configured VLAN";
+                }
+
+                leaf dscp {
+                    type uint8 {
+                        range "0..63" {
+                            error-message "DSCP value out of range";
+                        }
+                    }
+                    description
+                        "DSCP value for the configured VLAN";
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,114 @@
+module sonic-pki {
+    namespace "http://github.com/Azure/sonic-pki";
+    prefix sonic-pki;
+    yang-version 1.1;
+
+	import sonic-extension {
+		prefix sonic-ext;
+	}
+
+    import sonic-vrf {
+        prefix svrf;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONIC PKI YANG";
+
+    revision 2024-01-30 {
+        description
+            "Add vrf-name attribute";
+    }
+    revision 2023-01-10 {
+        description
+            "Add validations";
+    }
+    revision 2022-09-30 {
+        description
+            "Initial revision.";
+    }
+       
+    container sonic-pki {
+        container SECURITY_PROFILES {
+            list SECURITY_PROFILES_LIST {
+                key "profile-name";
+
+                leaf "profile-name" {
+                     type string;
+                     description
+                        "Unique name for the security profile";
+                }
+                leaf "certificate-name" {
+                    type string;
+                    description
+                        "Certificate file name";
+                    sonic-ext:custom-validation ValidateHostCert;
+                }
+                leaf "trust-store" {
+                    type "leafref" {
+                        path "/sonic-pki:sonic-pki/TRUST_STORES/TRUST_STORES_LIST/name";
+                    }
+                    description
+                        "Trust Store Name";
+                    sonic-ext:custom-validation ValidateTrustStore;
+                }
+                leaf "revocation-check" {
+                    type boolean;
+                    description
+                        "Require service strictly require revocation checking";
+                }
+                leaf "peer-name-check" {
+                    type boolean;
+                    description
+                        "Require service to verfiy peer host name matches certificate";
+                }
+                leaf "key-usage-check" {
+                    type boolean;
+                    description
+                        "Require certificate is being used as specified in certificate";
+                }
+                leaf-list "cdp-list" {
+                    type string;
+                    description
+                        "A list of CDP's provided in addition to those specified in the certificate";
+                    sonic-ext:custom-validation ValidateCDPList;
+                }
+                leaf-list "ocsp-responder-list" {
+                    type string;
+                    description
+                        "A list of OCSP responders provided in addition to those specified in the certificate";
+                    sonic-ext:custom-validation ValidateOCSPList;
+                }
+                leaf "vrf-name" {
+                    type string {
+                        pattern "mgmt";
+                    }
+                    description
+                        "mgmt VRF for outbound connections to OCSP responders and/or CDPs";
+                }
+            }
+        }
+        container TRUST_STORES {
+            list TRUST_STORES_LIST {
+                key "name";
+                leaf "name" {
+                    type string;
+                    description
+                        "Unique name for the trust store";
+                }
+                leaf-list ca-name{
+                    type string;
+                    description
+                        "List of CA certificates to be added to the trust store";
+                    min-elements 1;
+                    sonic-ext:custom-validation ValidateCACert;
+                }
+            }
+        }
+    }
+}

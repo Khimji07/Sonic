@@ -1,0 +1,324 @@
+module sonic-das {
+    namespace "http://github.com/Azure/sonic-das";
+    prefix das;
+    yang-version 1.1;
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    import ietf-yang-types {
+        prefix yang;
+    }
+
+    import ietf-inet-types {
+        prefix inet;
+    }
+
+    import sonic-vrf {
+        prefix vrf;
+    }
+
+    import sonic-mgmt-vrf {
+        prefix m-vrf;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "This module defines configuration and operational state data
+         for Dynamic Authorization Server.";
+
+    revision 2022-05-27 {
+        description
+            "Initial revision.";
+
+    }
+
+    container sonic-das {
+       description
+          "Dynamic Authorization Server top level container.";
+
+       container DAS_GLOBAL_CONFIG_TABLE {
+          description
+             "Dynamic Authorization Server global table container";
+
+          list DAS_GLOBAL_CONFIG_TABLE_LIST {
+               key "global";
+
+               leaf global {
+                   type enumeration {
+                       enum GLOBAL;
+                   }
+                   description
+                      "Configure Dynamic Authorization Server global table container key leaf.";
+               }
+
+               leaf das_admin_mode {
+                   type boolean;
+                   description
+                         "Indicates whether DAS mode is enabled in the system.";
+               }
+
+               leaf das_port {
+                   type uint16 {
+                       range 1025..65535 {
+                            error-message "DAS port must be in range of 1025-65535.";
+                            error-app-tag das-port-invalid;
+                       }
+                   }
+                   description
+                      "UDP Port number used by the DAS.";
+               }
+
+               leaf das_auth_type {
+                   sonic-ext:custom-validation ValidateDasAuthType;
+                   type enumeration {
+                       enum all {
+                           description
+                              "Indicates all COA client authentication types.";
+                       }
+                       enum any {
+                           description
+                              "Indicates any COA client authentication types.";
+                       }
+                       enum session-key {
+                           description
+                              "Indicates session-key as COA client authentication types.";
+                       }
+                   }
+                   description
+                     "Type of authorization that the device must use for RADIUS Clients.
+                      The clients must match the configured attributes for authorization.";
+               }
+
+               leaf global_server_key {
+                   type string {
+                       length "1..65";
+                       pattern "[^ #,]*" {
+                           error-message 'DAS shared secret (Valid chars are ASCII printable except SPACE, "#", and ",")';
+                       }
+                   }
+                   description
+                      'DAS global shared secret (Valid chars are ASCII printable except SPACE, "#", and ",")';
+                }
+
+                leaf ignore_bounce_port {
+                    type boolean;
+                    description
+                       "Indicates whether bounce-host-port attribute is ignored when received as part of CoA message.";
+                }
+
+                leaf ignore_disable_port {
+                    type boolean;
+                    description
+                       "Indicates whether disable-host-port attribute is ignored when received as part of CoA message.";
+                }
+
+                leaf ignore_session_key {
+                    sonic-ext:custom-validation ValidateIgnoreSessionKey;
+                    type boolean;
+                    description
+                       "Indicates whether session key is ignored while processing the DAC request.";
+                }
+
+                leaf ignore_server_key {
+                    type boolean;
+                    description
+                       "Indicates whether server key is ignored while processing the DAC request.";
+                }
+
+                leaf das_vrf_name {
+                    type union {
+                        type enumeration{
+                            enum mgmt;
+                        }
+                        type leafref {
+                            path "/vrf:sonic-vrf/vrf:VRF/vrf:VRF_LIST/vrf:vrf_name";
+                       }
+                    }
+                    must "(current() != 'mgmt') or (/m-vrf:sonic-mgmt-vrf/m-vrf:MGMT_VRF_CONFIG/m-vrf:MGMT_VRF_CONFIG_LIST[m-vrf:vrf_global_name='vrf_global']/m-vrf:mgmtVrfEnabled = 'true')" {
+                        error-message "Management VRF not configured";
+                        error-app-tag mgmt-vrf-not-enabled;
+                    }
+                    description
+                            "DAS VRF";
+                }
+
+                leaf das_request_timeout {
+                    type uint8 {
+                        range 1..30 {
+                             error-message "DAS request timeout must be in range of 1-30.";
+                             error-app-tag das-request-timeout-invalid;
+                        }
+                    }
+                    description
+                       "Time interval after which the request received by the DAS from the DAC will be timed out if there is no response received to the DAS by the registered applications before that interval.";
+                 }
+             }
+         }
+
+         container DAS_CLIENT_CONFIG_TABLE {
+          description
+             "Container for Dynamic Authorization Server clients config.";
+
+          list DAS_CLIENT_CONFIG_TABLE_LIST {
+               max-elements 8;
+               key "clientaddress";
+
+               leaf clientaddress {
+                    type inet:host;
+                    sonic-ext:custom-validation ValidateDACConfig;
+                    description
+                        "Ipv4 or Ipv6 or DNS address of the client.";
+               }
+
+               leaf server_key {
+                   type string {
+                       length "1..65";
+                       pattern "[^ #,]*" {
+                           error-message 'Shared secret (Valid chars are ASCII printable except SPACE, "#", and ",")';
+                       }
+                   }
+                   description
+                      "Per client secret key in encrypted format using PEKI.";
+               }
+          }
+         }
+
+       container DAS_CLIENT_COUNTER_TABLE {
+            sonic-ext:db-name "COUNTERS_DB";
+            sonic-ext:key-delim ":";
+            config false;
+
+            list DAS_CLIENT_COUNTER_TABLE_LIST {
+                key "clientaddr";
+
+                leaf clientaddr {
+                    type inet:host;
+                    description
+                        "Ipv4 or Ipv6 or DNS address of the client.";
+                }
+
+                leaf num_coa_requests_received {
+                    type uint32;
+                    description
+                        "Number of coa requests received.";
+                }
+
+                leaf num_coa_ack_responses_sent {
+                    type uint32;
+                    description
+                        "Number of coa ack responses sent.";
+                }
+
+                leaf num_coa_nak_responses_sent {
+                    type uint32;
+                    description
+                        "Number of coa nak responses sent.";
+                }
+
+                leaf num_coa_requests_ignored {
+                    type uint32;
+                    description
+                        "Number of coa requests ignored.";
+                }
+
+                leaf num_coa_missing_unsupported_attributes_requests {
+                    type uint32;
+                    description
+                        "Number of coa missing or unsupported attributes requests.";
+                }
+
+                leaf num_coa_session_context_not_found_requests {
+                    type uint32;
+                    description
+                        "Number of coa session context not found requests.";
+                }
+
+                leaf num_coa_invalid_attribute_value_requests {
+                    type uint32;
+                    description
+                        "Number of coa invalid attribute value requests.";
+                }
+
+                leaf num_coa_administratively_prohibited_requests {
+                    type uint32;
+                    description
+                        "Number of coa administratively prohibited requests.";
+                }
+             }
+        }
+
+        container DAS_GLOBAL_COUNTER_TABLE {
+           sonic-ext:db-name "COUNTERS_DB";
+           sonic-ext:key-delim ":";
+           config false;
+
+           list DAS_GLOBAL_COUNTER_TABLE_LIST {
+                key "global";
+
+                leaf global {
+                    type enumeration {
+                        enum GLOBAL;
+                    }
+                    description
+                       "Configure Dynamic Authorization Server global table container key leaf.";
+                }
+
+                leaf num_coa_requests_received {
+                    type uint32;
+                    description
+                        "Number of coa requests received.";
+                }
+
+                leaf num_coa_ack_responses_sent {
+                    type uint32;
+                    description
+                        "Number of coa ack responses sent.";
+                }
+
+                leaf num_coa_nak_responses_sent {
+                    type uint32;
+                    description
+                        "Number of coa nak responses sent.";
+                }
+
+                leaf num_coa_requests_ignored {
+                    type uint32;
+                    description
+                        "Number of coa requests ignored.";
+                }
+
+                leaf num_coa_missing_unsupported_attributes_requests {
+                    type uint32;
+                    description
+                        "Number of coa missing or unsupported attributes requests.";
+                }
+
+                leaf num_coa_session_context_not_found_requests {
+                    type uint32;
+                    description
+                        "Number of coa session context not found requests.";
+                }
+
+                leaf num_coa_invalid_attribute_value_requests {
+                    type uint32;
+                    description
+                        "Number of coa invalid attribute value requests.";
+                }
+
+                leaf num_coa_administratively_prohibited_requests {
+                    type uint32;
+                    description
+                        "Number of coa administratively prohibited requests.";
+                }
+           }
+        }
+
+    }
+}

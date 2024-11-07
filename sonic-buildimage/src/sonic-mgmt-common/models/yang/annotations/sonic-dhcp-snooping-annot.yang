@@ -1,0 +1,46 @@
+module sonic-dhcp-snooping-annot {
+
+    yang-version "1.1";
+
+    namespace "http://openconfig.net/yang/annotation/dhcp-snooping-annot";
+    prefix "dhcp-snooping-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import sonic-dhcp-snooping { prefix snoop; }
+
+    deviation /snoop:sonic-dhcp-snooping/snoop:DHCP_SNOOPING_BINDING/snoop:DHCP_SNOOPING_BINDING_LIST {
+        deviate add {
+            sonic-ext:db-name "APPL_DB";
+        }
+    }
+
+    deviation /snoop:sonic-dhcp-snooping/snoop:DHCP_SNOOPING_STATISTICS_DETAIL/snoop:DHCP_SNOOPING_STATISTICS_DETAIL_LIST {
+        deviate add {
+            sonic-ext:db-name "APPL_DB";
+        }
+    }
+
+    deviation /snoop:sonic-dhcp-snooping/snoop:DHCP_SNOOPING_STATISTICS/snoop:DHCP_SNOOPING_STATISTICS_LIST {
+        deviate add {
+            sonic-ext:db-name "APPL_DB";
+        }
+    }
+
+    deviation /snoop:sonic-dhcp-snooping/snoop:DHCP_SNOOPING_STATIC_BINDING/snoop:DHCP_SNOOPING_STATIC_BINDING_LIST/snoop:mac {
+        deviate add {
+            sonic-ext:value-transformer "dhcp_snooping_mac_xfmr";
+        }
+    }
+
+    deviation /snoop:sonic-dhcp-snooping/snoop:DHCP_SNOOPING_STATIC_BINDING/snoop:DHCP_SNOOPING_STATIC_BINDING_LIST/snoop:interface {
+        deviate add {
+            sonic-ext:value-transformer "dhcp_snooping_iface_xfmr";
+        }
+    }
+
+    deviation /snoop:sonic-dhcp-snooping/snoop:DHCP_SNOOPING_STATIC_BINDING/snoop:DHCP_SNOOPING_STATIC_BINDING_LIST/snoop:ip {
+        deviate add {
+            sonic-ext:value-transformer "dhcp_snooping_ip_xfmr";
+        }
+    }
+}

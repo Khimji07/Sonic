@@ -1,0 +1,100 @@
+module sonic-usb {
+    namespace "http://github.com/Azure/sonic-usb";
+    prefix susb;
+    yang-version 1.1;
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONiC POE yang model";
+
+    revision 2022-03-30 {
+        description
+            "Initial revision.";
+    }
+
+    container sonic-usb {
+
+        container USB {
+            list USB_LIST {
+                key "id";
+
+                leaf id {
+                    type enumeration {
+                        enum GLOBAL;
+                    }
+                    description
+                        "It's value is always GLOBAL";
+                }
+
+                leaf enable {
+                    type boolean;
+                    description
+                        "Enable or Disable the usb detection and auto mount feature";
+                    default false;
+                }
+            }
+        }
+
+        container USB_DEVICE {
+            sonic-ext:db-name "STATE_DB";
+
+            list USB_DEVICE_LIST {
+                key "device-name";
+
+                leaf device-name {
+                  type string;
+                  description
+                    "The block device associated with the attached usb storage
+                     media device.";
+                }
+
+                leaf manufacturer {
+                  type string;
+                  description "Name of the manufacturer of the usb storage device.";
+                }
+
+                leaf model-name {
+                  type string;
+                  description "Manufacturer assigned identifier string to the usb storage device.";
+                }
+             }
+        }
+
+        container USB_PARTS {
+            sonic-ext:db-name "STATE_DB";
+
+            list USB_PARTS_LIST {
+                key "device-name";
+
+                leaf device-name {
+                  type string;
+                  description
+                    "The block device associated with the attached usb storage
+                     media device partition.";
+                }
+
+                leaf filesystem {
+                  type string;
+                  description "Indicates the filesystem type using which the device partition has been
+                               formatted with. If the device partition is not unformatted or if its
+                               filesystem type can't be read, it is set a blank string.";
+                }
+
+                leaf mount-point {
+                  type string;
+                  description "Indicates the directory where the device partition has been mounted at.
+                               If not mounted, it is set to a blank string.";
+                }
+             }
+        }
+    }
+}
