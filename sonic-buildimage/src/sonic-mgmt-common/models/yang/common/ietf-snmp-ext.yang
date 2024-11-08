@@ -1,0 +1,321 @@
+module ietf-snmp-ext {
+
+  yang-version 1;
+
+  namespace "urn:ietf:params:xml:ns:yang:ietf-snmp-ext";
+
+  prefix snmp-ext;
+
+  import ietf-snmp {prefix snmp; }
+
+  // meta
+  organization "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module excludes specific capabilities from the standard
+     IETF SNMP model that are not supported by the SONiC platform.
+
+     Copyright (c) 2020 IETF Trust and the persons identified as
+     authors of the code.  All rights reserved.
+
+     Redistribution and use in source and binary forms, with or
+     without modification, is permitted pursuant to, and subject to
+     the license terms contained in, the Simplified BSD License set
+     forth in Section 4.c of the IETF Trust's Legal Provisions
+     Relating to IETF Documents
+     (https://trustee.ietf.org/license-info).
+
+     This version of this YANG module is part of RFC XXXX
+     (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
+     for full legal notices.";
+
+  revision "2020-07-22" {
+    description
+      "Extend model with contact, location, trap-enable. Add 
+       source interface for both agent address and notification 
+       target. Exclude unsupported items.";
+    reference "0.2";
+  }
+
+  revision "2020-06-11" {
+    description
+      "Initial revision.";
+    reference "0.1";
+  }
+
+  deviation /snmp:snmp/snmp:community/snmp:context {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:community/snmp:engine-id {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:community/snmp:name {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:community/snmp:target-tag {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:engine/snmp:enabled {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:engine/snmp:enable-authen-traps {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:engine/snmp:listen/snmp:transport/snmp:dtls {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:engine/snmp:listen/snmp:transport/snmp:ssh {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:engine/snmp:listen/snmp:transport/snmp:tls {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:engine/snmp:version/snmp:v1 {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:notify-filter-profile {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:proxy {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:target-params/snmp:notify-filter-profile {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:target-params/snmp:params/snmp:tsm {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:target-params/snmp:params/snmp:v1 {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:target/snmp:mms {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:target/snmp:transport/snmp:dtls {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:target/snmp:transport/snmp:ssh {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:target/snmp:transport/snmp:tls {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:target/snmp:transport/snmp:udp/snmp:udp/snmp:prefix-length {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:tlstm {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:tsm {
+    deviate not-supported;
+  }
+
+  deviation /snmp:snmp/snmp:usm/snmp:remote {
+    deviate not-supported;
+  }
+
+  grouping interface-trap-list {
+    description
+      "Grouping Configuration data to enable/disable trap per interface.";
+    list interface-trap {
+      key "ifname";
+      description
+        "Configuration data to enable/disable trap per interface.";
+
+      leaf ifname {
+        type string {
+          length "1..64";
+        }
+        description
+          "Interface on which traps needs to be enabled.";
+      }
+
+      leaf trap-status {
+        type boolean;
+        description
+          "Enables or disables traps on the interface.";
+      }
+	}
+  }
+
+  grouping snmp-traps {
+    description
+      "Grouping Configuration data to enable/disable trap per interface.";
+    leaf authentication-failure-trap {
+        type boolean;
+        description
+          "enable/disable SNMP authentication failure trap. This is valid only if 'trap-enable' is false
+		  or not configured.";
+    }
+    leaf link-down-trap {
+        type boolean;
+        description
+          "enable/disable link-down trap. This is valid only if 'trap-enable' is false
+		  or not configured.";
+    }
+    leaf link-up-trap {
+        type boolean;
+        description
+          "enable/disable link-up trap. This is valid only if 'trap-enable' is false
+		  or not configured.";
+    }
+    leaf config-change-trap {
+        type boolean;
+        description
+          "enable/disable configuration change trap. This is valid only if 'trap-enable' is false
+		  or not configured.";
+    }
+    leaf ospf-traps {
+        type boolean;
+        description
+          "enable/disable OSPF module traps. This is valid only if 'trap-enable' is false
+		  or not configured.";
+    }
+    leaf bgp-traps {
+        type boolean;
+        description
+          "enable/disable BGP module traps. This is valid only if 'trap-enable' is false
+		  or not configured.";
+    }
+  }
+
+  augment /snmp:snmp {
+    description
+      "Augment ietf-snmp SNMP system-related objects.";
+
+    container system {
+      description
+        "Top-level container for SNMP system-related configuration
+         objects.";
+   
+      leaf contact {
+        type string {
+          length "1..255";
+        }
+        description
+          "String that describes the system contact information.";
+      }
+   
+      leaf location {
+        type string {
+          length "1..255";
+        }
+        description
+          "String that describes the system location information.";
+      }
+   
+      leaf trap-enable {
+        type boolean;
+        description
+          "enable/disable SNMP traps. If this is true, other invidual traps enable/disable configuration are ignored.";
+      }
+      container notifications {
+        description
+          "container for enable/disable snmp notifications";
+        uses snmp-traps;
+      }
+    }
+  }
+
+  augment /snmp:snmp/snmp:engine {
+    description
+      "enable/disable snmp traps per interface";
+	uses interface-trap-list;
+  }
+
+  augment /snmp:snmp/snmp:engine/snmp:listen/snmp:transport/snmp:udp/snmp:udp {
+    description
+      "The IPv4 or IPv6 address information on which the engine 
+       listens.";
+
+    leaf interface  {
+      type string {
+        length "1..64";
+      }
+      description
+        "The source interface from which SNMP responses are sent";
+    }
+  }
+
+  augment /snmp:snmp/snmp:target/snmp:transport/snmp:udp/snmp:udp {
+    description
+      "VRF to be used";
+
+    leaf vrf-name{
+      type string {
+        length "1..64";
+      }
+      description
+        "VRF to be used while sending out snmp traps";
+    }
+  }
+  augment /snmp:snmp/snmp:target {
+    description
+      "source inreface to be used";
+
+    leaf source-interface {
+      type string {
+        length "1..64";
+      }
+      description
+        "Source interface ip to be used as source ip for sending snmp traps";
+    }
+  }
+
+  deviation /snmp:snmp/snmp:usm/snmp:local/snmp:user/snmp:auth/snmp:protocol/snmp:sha/snmp:sha/snmp:key {
+      deviate replace {
+          type string;
+      }
+  }
+
+  deviation /snmp:snmp/snmp:usm/snmp:local/snmp:user/snmp:auth/snmp:protocol/snmp:md5/snmp:md5/snmp:key {
+      deviate replace {
+          type string;
+      }
+  }
+  deviation /snmp:snmp/snmp:usm/snmp:local/snmp:user/snmp:priv/snmp:protocol/snmp:aes/snmp:aes/snmp:key {
+      deviate replace {
+          type string;
+      }
+  }
+
+  deviation /snmp:snmp/snmp:usm/snmp:local/snmp:user/snmp:priv/snmp:protocol/snmp:des/snmp:des/snmp:key {
+      deviate replace {
+          type string;
+      }
+  }
+
+  augment /snmp:snmp/snmp:usm/snmp:local/snmp:user {
+    description
+      "tells if security-name is encrypted or plain";
+    leaf encrypted {
+      type boolean;
+      default false;
+      description "Indicates whether the security-name string is encrypted or not.";
+    }
+  }
+}

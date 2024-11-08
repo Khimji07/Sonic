@@ -1,0 +1,127 @@
+module openconfig-vxlan-annot {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/annotation/oc-vxlan-annot";
+    prefix "oc-vxlan-annot";
+
+    import openconfig-vxlan { prefix oc-vxlan; }
+    import sonic-extensions {prefix sonic-ext; }
+ 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-vni-peer-infos/oc-vxlan:vxlan-vni-peer-info {
+	    deviate add {
+	    	sonic-ext:table-name "VXLAN_REMOTE_VNI_TABLE";
+      	sonic-ext:key-transformer "vxlan_vni_state_peer_info_key_xfmr";	    	
+	    	sonic-ext:db-name "APPL_DB";
+	    }    
+    }
+ 
+    deviation /oc-vxlan:vxlan {
+	    deviate add {
+                sonic-ext:user-role-priv "write:netadmin";
+	    }    
+    }
+ 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-vni-peer-infos/oc-vxlan:vxlan-vni-peer-info/oc-vxlan:state/oc-vxlan:vni-id {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_vni_id_xfmr";	    
+	    }    
+    }
+ 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-vni-peer-infos/oc-vxlan:vxlan-vni-peer-info/oc-vxlan:state/oc-vxlan:source-ip {
+    	deviate add {
+				sonic-ext:field-transformer "vxlan_state_source_ip_xfmr";	    
+			}
+		}    
+ 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-vni-peer-infos/oc-vxlan:vxlan-vni-peer-info/oc-vxlan:state/oc-vxlan:peer-ip {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_peer_ip_xfmr";	    
+	    }    
+    }
+ 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-vni-peer-infos/oc-vxlan:vxlan-vni-peer-info/oc-vxlan:state/oc-vxlan:tunnel-type {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_peer_tunnel_type_xfmr";	    
+	    }    
+    }
+ 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-vni-peer-infos/oc-vxlan:vxlan-vni-peer-info/oc-vxlan:state/oc-vxlan:out-vni-id {
+	    deviate add {
+				sonic-ext:field-name "vni";	    
+	    }    
+    }
+
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info {
+	    deviate add {
+				sonic-ext:table-name "VXLAN_TUNNEL_TABLE";
+				sonic-ext:key-transformer "vxlan_state_tunnel_info_key_xfmr";
+				sonic-ext:db-name "STATE_DB";
+	    }
+    }
+
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:peer-ip {
+	    deviate add {
+				sonic-ext:field-name "dst_ip";	    
+	    }    
+    }
+ 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:source-ip {
+	    deviate add {
+				sonic-ext:field-name "src_ip";	    
+	    }    
+    }
+ 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:status {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_tunnel_info_tunnel_status_xfmr";
+	    }
+		}    
+ 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:type {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_tunnel_info_tunnel_type_xfmr";	    
+	    }    
+    } 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:statistics/oc-vxlan:in-octets {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_tunnel_stats_in_octets_xfmr";	    
+	    }    
+    } 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:statistics/oc-vxlan:out-octets {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_tunnel_stats_out_octets_xfmr";	    
+	    }    
+    } 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:statistics/oc-vxlan:in-pkts {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_tunnel_stats_in_pkts_xfmr";	    
+	    }    
+    } 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:statistics/oc-vxlan:out-pkts {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_tunnel_stats_out_pkts_xfmr";	    
+	    }    
+    } 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:statistics/oc-vxlan:in-octets-per-second {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_tunnel_stats_in_octets_per_second_xfmr";	    
+	    }    
+    } 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:statistics/oc-vxlan:out-octets-per-second {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_tunnel_stats_out_octets_per_second_xfmr";	    
+	    }    
+    } 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:statistics/oc-vxlan:in-pkts-per-second {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_tunnel_stats_in_pkts_per_second_xfmr";	    
+	    }    
+    } 
+    deviation /oc-vxlan:vxlan/oc-vxlan:vxlan-tunnel-infos/oc-vxlan:vxlan-tunnel-info/oc-vxlan:state/oc-vxlan:statistics/oc-vxlan:out-pkts-per-second {
+	    deviate add {
+				sonic-ext:field-transformer "vxlan_state_tunnel_stats_out_pkts_per_second_xfmr";	    
+	    }    
+    } 
+}
+

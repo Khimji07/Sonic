@@ -1,0 +1,182 @@
+module openconfig-hostapd-annot {
+
+    yang-version "1.1";
+
+    namespace "http://openconfig.net/yang/annotation/oc-hostapd-annot";
+    prefix "oc-hostapd-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import openconfig-hostapd { prefix oc-hostapd; }
+
+    // meta
+    organization
+       "SONiC";
+
+    contact
+       "SONiC";
+
+    description
+       "SONIC PAC";
+
+    revision "2021-07-12" {
+    description
+      "Initial public revision";
+    reference "0.1.0";
+    }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-global-config {
+		deviate add {
+			sonic-ext:subtree-transformer "hostapd_global_config_xfmr";
+			sonic-ext:user-role-priv "write:secadmin";
+		}
+    	}
+        /*
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-port-oper-stats {
+     		 deviate add {
+        		sonic-ext:db-name "STATE_DB";
+      		 }
+    	}
+
+    	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-port-oper-stats/oc-hostapd:interface {
+      	   deviate add {
+           sonic-ext:table-name "HOSTAPD_OPER_PORT_TABLE";
+           sonic-ext:key-delim "|";
+           }
+    	}
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-port-oper-stats/oc-hostapd:interface/oc-hostapd:state/oc-hostapd:protocol-version {
+      	   deviate add {
+               sonic-ext:field-name "protocol_version";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-port-oper-stats/oc-hostapd:interface/oc-hostapd:state/oc-hostapd:quiet-period {
+      	   deviate add {
+               sonic-ext:field-name "quiet_period";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-port-oper-stats/oc-hostapd:interface/oc-hostapd:state/oc-hostapd:tx-period {
+      	   deviate add {
+               sonic-ext:field-name "tx_period";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-port-oper-stats/oc-hostapd:interface/oc-hostapd:state/oc-hostapd:server-timeout {
+      	   deviate add {
+               sonic-ext:field-name "server_timeout";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-port-oper-stats/oc-hostapd:interface/oc-hostapd:state/oc-hostapd:max-reqs {
+      	   deviate add {
+               sonic-ext:field-name "max_reqs";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-port-oper-stats/oc-hostapd:interface/oc-hostapd:state/oc-hostapd:max-req-ids {
+      	   deviate add {
+               sonic-ext:field-name "max_req_ids";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-client-oper-info {
+                 deviate add {
+                        sonic-ext:db-name "STATE_DB";
+                 }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-client-oper-info/oc-hostapd:entry {
+           deviate add {
+           sonic-ext:table-name "HOSTAPD_CLIENT_OPER_TABLE";
+	   sonic-ext:key-transformer "hostapd_client_oper_info_key_xfmr";
+           sonic-ext:key-delim "|";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-client-oper-info/oc-hostapd:entry/oc-hostapd:state/oc-hostapd:user-name {
+           deviate add {
+               sonic-ext:field-name "user_name";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats {
+                 deviate add {
+                        sonic-ext:db-name "COUNTERS_DB";
+                 }
+        }
+
+        deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr {
+           deviate add {
+           sonic-ext:table-name "HOST_APD_STATS_TABLE";
+           sonic-ext:key-delim ":";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-eapol-frames-rx {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthEapolFramesRx";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-eapol-frames-tx {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthEapolFramesTx";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-eapol-start-frames-rx {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthEapolStartFramesRx";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-eapol-logoff-frames-rx {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthEapolLogoffFramesRx";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-eapol-resp-id-frames-rx {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthEapolRespIdFramesRx";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-eapol-resp-frames-rx {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthEapolRespFramesRx";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-eapol-req-frames-tx {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthEapolReqFramesTx";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-eapol-req-id-frames-tx {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthEapolReqIdFramesTx";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-invalid-eapol-frames-rx {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthInvalidEapolFramesRx";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-eap-length-error-frames-rx {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthEapLengthErrorFramesRx";
+           }
+        }
+
+	deviation /oc-hostapd:hostapd/oc-hostapd:hostapd-protocal-stats/oc-hostapd:mac-addr/oc-hostapd:state/oc-hostapd:dot1x-auth-last-eapol-frame-version {
+           deviate add {
+               sonic-ext:field-name "dot1xAuthLastEapolFrameVersion";
+           }
+        }
+        */
+}

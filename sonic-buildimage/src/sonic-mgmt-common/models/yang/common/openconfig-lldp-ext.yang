@@ -1,0 +1,1108 @@
+module openconfig-lldp-ext {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/lldp/extension";
+
+  prefix "oc-lldp-ext";
+
+  import openconfig-lldp { prefix oc-lldp; }
+  import openconfig-extensions { prefix oc-ext; }
+  import ietf-yang-types { prefix yang; }
+  import openconfig-lldp-types { prefix oc-lldp-types; }
+  import openconfig-inet-types { prefix oc-inet; }
+  import openconfig-network-policy-ext { prefix oc-nwp-ext; }
+  import openconfig-vlan-types { prefix oc-vlan-types; }
+
+  // meta
+  organization "OpenConfig working group";
+
+  contact 
+		  "OpenConfig working group 
+		   www.openconfig.net";
+
+  description "This model describes the LLDP extensions";
+
+  oc-ext:openconfig-version "0.1.1";
+
+  revision 2024-01-02 {
+      description
+        "1. Added VLAN_NAME, LINK_AGGREGATION, MAX_FRAME_SIZE to oc-lldp-types";
+      reference "0.1.1";
+  }
+
+  revision "2020-06-01" {
+      description "Initial revision";
+      reference "0.1.0";
+  }
+
+  identity MDI_POWER {
+      base oc-lldp-types:LLDP_TLV;
+      description
+          "Advertise and discover the MDI power support capabilities of the sending IEEE 802.3 LAN station";
+          reference "IEEE Std 802.1AB";
+  }
+
+  identity MED_NETWORK_POLICY {
+      base oc-lldp-types:LLDP_TLV;
+      description
+          "Advertise specific ports VLAN type, VLAN identifier (VID), and both the 
+          Layer 2 and Layer 3 priorities associated with a specific set of application types";
+          reference "ANSI/TIA-1057";
+  }
+
+  identity MED_EXT_MDI_POWER {
+      base oc-lldp-types:LLDP_TLV;
+      description
+          "Advertise IEEE 802.3af power related information";
+          reference "ANSI/TIA-1057";
+  }
+
+  identity PORT_VLAN_ID {
+      base oc-lldp-types:LLDP_TLV;
+      description
+          "Advertise PORT_VLAN_ID information";
+  }
+
+  identity VLAN_NAME {
+	  base oc-lldp-types:LLDP_TLV;
+	  description
+		  "Advertise VLAN_NAME information";
+  }
+
+  identity LINK_AGGREGATION {
+	  base oc-lldp-types:LLDP_TLV;
+	  description
+		  "Advertise LINK_AGGREGATION information";
+  }
+
+  identity MAX_FRAME_SIZE {
+	  base oc-lldp-types:LLDP_TLV;
+	  description
+		  "Advertise MAX_FRAME_SIZE information";
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:config/oc-lldp:chassis-id{
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:chassis-id{
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:config/oc-lldp:chassis-id-type{
+      deviate not-supported;
+  }
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:chassis-id-type{
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:counters/oc-lldp:frame-in {
+      deviate not-supported;
+  }
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:counters/oc-lldp:frame-out {
+      deviate not-supported;
+  }
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:counters/oc-lldp:frame-error-in {
+      deviate not-supported;
+  }
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:counters/oc-lldp:frame-discard {
+      deviate not-supported;
+  }
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:counters/oc-lldp:tlv-discard {
+      deviate not-supported;
+  }
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:counters/oc-lldp:tlv-unknown {
+      deviate not-supported;
+  }
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:counters/oc-lldp:tlv-accepted {
+      deviate not-supported;
+  }
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:counters/oc-lldp:entries-aged-out {
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:neighbors/oc-lldp:neighbor/oc-lldp:state/oc-lldp:age {
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:neighbors/oc-lldp:neighbor/oc-lldp:state/oc-lldp:last-update {
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:neighbors/oc-lldp:neighbor/oc-lldp:state/oc-lldp:management-address-type {
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:state/oc-lldp:counters {
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:state/oc-lldp:counters/oc-lldp:frame-error-in {
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:state/oc-lldp:counters/oc-lldp:tlv-discard {
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:state/oc-lldp:counters/oc-lldp:last-clear {
+      deviate not-supported;
+  }
+
+  deviation /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:state/oc-lldp:counters/oc-lldp:frame-error-out {
+      deviate not-supported;
+  }
+
+  typedef lldp-ext-mode-type {
+	  type enumeration {
+		enum RECEIVE {
+			description "Configure LLDP in Receive only mode";
+		}
+		enum TRANSMIT {
+			description "Configure LLDP in Transmit only mode";
+		}
+	  }
+
+      description "Enumeration for LLDP operation Mode";
+  }
+
+  grouping lldp-ext-mode-config {
+      description "LLDP operation Mode";
+
+	  leaf mode {
+		type lldp-ext-mode-type;
+		description
+			"RX/TX mode for LLDP frames";
+	  }
+  }
+
+  grouping lldp-ext-config {
+      description "Configuration data for global LLDP parameters";
+
+	  leaf multiplier {
+		type uint8 {
+			range "1..10";
+		}
+		description
+			"This multiplier value is used to determine the timeout
+			interval (i.e. hello-timer x multiplier value) after
+			which LLDP neighbor entry is deleted.";
+	  }
+	  
+	  uses lldp-ext-mode-config;
+  }
+
+  grouping lldp-ext-interface-config {
+      description "Configuration data for LLDP on each interface";
+
+      leaf management-address-ipv4 {
+          type oc-inet:ipv4-address;
+
+          description
+              "IPv4 management address that will be used to advertise by LLDP on an interface";
+      }
+
+      leaf management-address-ipv6 {
+          type oc-inet:ipv6-address;
+
+          description
+              "IPv6 management address that will be used to advertise by LLDP on an interface";
+      }
+
+      leaf network-policy {
+          type leafref {
+              path "/oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:number";
+          }
+          description
+              "Reference to the Network policy profile number";
+      }
+
+      leaf-list suppress-tlv-advertisement {
+          type identityref {
+              base oc-lldp-types:LLDP_TLV;
+          }
+          description
+              "Indicates whether the local system should suppress the
+              advertisement of particular TLVs with the LLDP PDUs that it
+              transmits. Where a TLV type is specified within this list, it
+              should not be included in any LLDP PDU transmitted by the
+              local agent.";
+      }
+
+      leaf-list allowed-vlans {
+	  type union {
+	      type oc-vlan-types:vlan-id;
+	      type oc-vlan-types:vlan-range;
+	  }
+	  description
+	      "Specify VLANs, or ranges thereof, for which the interface will
+	      send vlan-name TLV. Ranges are specified in the form
+	      x..y, where x<y - ranges are assumed to be inclusive (such
+	      that the VLAN range is x <= range <= y.";
+      }
+
+      leaf vlan-name-tlv-count {
+          type uint16 {
+              range 1..128;
+          }
+          default 10;
+
+          description
+              "Maximum number of Vlan-name TLVs that can be transmitted";
+      }
+
+	  uses lldp-ext-mode-config;
+  }
+
+  augment /oc-lldp:lldp/oc-lldp:config {
+      description "Adds extensions to Global Configuration"; 
+
+	  uses lldp-ext-config;
+  }
+
+  augment /oc-lldp:lldp/oc-lldp:state {
+      description "Adds extensions to Global State"; 
+
+	  uses lldp-ext-config;
+  }
+
+  augment /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:config {
+      description "Adds extensions to Interface Configuration"; 
+
+	  uses lldp-ext-interface-config;
+  }
+
+  augment /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:state {
+      description "Adds extensions to Interface State"; 
+
+	  uses lldp-ext-interface-config;
+  }
+
+  augment /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:state/oc-lldp:counters {
+      description "Adds extensions to Interface Counters"; 
+
+      leaf ageout {
+          type yang:counter64;
+          description
+              "Indicates number of times neighbor aged out";
+      }
+  }
+
+  identity LLDP_MED_CAPABILITY {
+    description
+        "Base identity for standard LLDP-MED capabilities";
+    reference
+        "Table 10 - LLDP-MED Capability Values, ANSI/TIA-105";
+  }
+
+  identity NETWORK_POLICY {
+    base LLDP_MED_CAPABILITY;
+    description
+        "Network Policy; bit position 1";
+  }
+
+  identity LOCATION_ID {
+    base LLDP_MED_CAPABILITY;
+    description
+        "Location Identification; bit position 2";
+  }
+
+  identity EXT_MDI_POWER_PSE {
+    base LLDP_MED_CAPABILITY;
+    description
+        "Extended Power via MDI - PSE; bit position 3";
+  }
+
+  identity EXT_MDI_POWER_PD {
+    base LLDP_MED_CAPABILITY;
+    description
+        "Extended Power via MDI - PD; bit position 4";
+  }
+  
+  identity INVENTORY {
+    base LLDP_MED_CAPABILITY;
+    description
+        "Inventory; bit position 5";
+  }
+
+  // typedef statements
+  typedef device-class-type {
+      type enumeration {
+          enum NOT_DEFINED {
+              value 0;
+              description "Type Not Defined";
+          }
+          enum ENDPOINT_CLASS1 {
+              value 1;
+              description "Endpoint Class I";
+          }
+          enum ENDPOINT_CLASS2 {
+              value 2;
+              description "Endpoint Class II";
+          }
+          enum ENDPOINT_CLASS3 {
+              value 3;
+              description "Endpoint Class III";
+          }
+          enum NETWORK_CONNECTIVITY {
+              value 4;
+              description "Network Connectivity";
+          }
+      }
+      
+      description
+          "Type definition with enumerations describing the LLDP-MED Device Type";
+      reference
+           "ANSI/TIA-105";
+  }
+
+  typedef device-type {
+      type enumeration {
+          enum PSE {
+              description "Power Sourcing Entity";
+          }
+          enum PD {
+              description "Power Device";
+          }
+      }
+      description
+          "Types of Power-via-MDI Device Type";
+  }
+
+  typedef pd-source-type {
+      type enumeration {
+          enum UNKNOWN {
+              description "Unknown power source";
+          }
+          enum PSE {
+              description "PSE";
+          }
+          enum LOCAL {
+              description "Local power source";
+          }
+          enum LOCAL_AND_PSE {
+              description "Local and PSE";
+          }
+      }
+      description
+          "Power source value used by PD";
+  }
+
+  typedef pse-source-type {
+      type enumeration {
+          enum UNKNOWN {
+              description "Unknown power source";
+          }
+          enum PRIMARY {
+              description "Primary power source";
+          }
+          enum BACKUP {
+              description "Backup power source";
+          }
+      }
+      description
+          "Power source value used by PSE";
+  }
+
+  typedef power-priority-type {
+      type enumeration {
+          enum UNKNOWN {
+              description "Unknown power priority";
+          }
+          enum CRITICAL {
+              description "Critical power priority";
+          }
+          enum HIGH {
+              description "High power priority";
+          }
+          enum LOW {
+              description "Low power priority";
+          }
+      }
+      description
+          "Power priority value used by PD/PSE";
+  }
+
+  typedef power-pair-type {
+      type enumeration {
+          enum SIGNAL {
+              description "PSE Pinout Alternative A";
+          }
+          enum SPARE {
+              description "PSE Pinout Alternative B";
+          }
+      }
+      description
+          "Types of power pair";
+  }
+
+  typedef power-class-type {
+      type enumeration {
+          enum CLASS0 {
+              description "Power classification type 0";
+          }
+          enum CLASS1 {
+              description "Power classification type 1";
+          }
+          enum CLASS2 {
+              description "Power classification type 2";
+          }
+          enum CLASS3 {
+              description "Power classification type 3";
+          }
+          enum CLASS4 {
+              description "Power classification type 4";
+          }
+      }
+      description
+          "Types of power classification";
+  }
+
+  typedef power-type {
+      type enumeration {
+          enum TYPE1 {
+              description "Power Type 1";
+          }
+          enum TYPE2 {
+              description "Power Type 2";
+          }
+      }
+      description
+          "Types of Power Device";
+  }
+
+  typedef pd-power-status-type {
+      type enumeration {
+          enum UNKNOWN {
+              description "Unknown";
+          }
+          enum 4_PAIR_DUAL_SIG_PD {
+              description "4-pair powered dual-signature PD";
+          }
+          enum 2_PAIR_DUAL_SIG_PD {
+              description "2-pair powered dual-signature PD";
+          }
+          enum SINGLE_SIG_PD {
+              description "single-signature PD";
+          }
+      }
+      description
+          "Powering status of the remote PD";
+  }
+
+  typedef power-pairs-ext-type {
+      type enumeration {
+          enum UNKNOWN {
+              description "Unknown";
+          }
+          enum ALTERNATE_A {
+              description "Alternative A";
+          }
+          enum ALTERNATE_B {
+              description "Alternative B";
+          }
+          enum BOTH {
+              description "Both Alternatives";
+          }
+      }
+      description
+          "Power pairs extension";
+  }
+
+  typedef power-class-ext-mode-type {
+      type enumeration {
+          enum UNKNOWN {
+              description "Unknown";
+          }
+          enum SINGLE_SIG {
+              description "Single-signature PD";
+          }
+          enum CLASS1 {
+              description "Class 1";
+          }
+          enum CLASS2 {
+              description "Class 2";
+          }
+          enum CLASS3 {
+              description "Class 3";
+          }
+          enum CLASS4 {
+              description "Class 4";
+          }
+          enum CLASS5 {
+              description "Class 5";
+          }
+      }
+      description
+          "Power class extension mode type";
+  }
+
+  typedef power-class-ext-type {
+      type enumeration {
+          enum UNKNOWN {
+              description "Unknown";
+          }
+          enum DUAL_SIG {
+              description "Dual-signature PD";
+          }
+          enum CLASS1 {
+              description "Class 1";
+          }
+          enum CLASS2 {
+              description "Class 2";
+          }
+          enum CLASS3 {
+              description "Class 3";
+          }
+          enum CLASS4 {
+              description "Class 4";
+          }
+          enum CLASS5 {
+              description "Class 5";
+          }
+          enum CLASS6 {
+              description "Class 6";
+          }
+          enum CLASS7 {
+              description "Class 7";
+          }
+          enum CLASS8 {
+              description "Class 8";
+          }
+      }
+      description
+          "Power class extension type";
+  }
+
+  typedef power-type-ext-type {
+      type enumeration {
+          enum UNKNOWN {
+              description "Unknown";
+          }
+          enum TYPE4_DUAL_SIG_PD {
+              description "Type 4 dual-signature PD";
+          }
+          enum TYPE4_SINGLE_SIG_PD {
+              description "Type 4 single-signature PD";
+          }
+          enum TYPE3_DUAL_SIG_PD {
+              description "Type 3 dual-signature PD";
+          }
+          enum TYPE3_SINGLE_SIG_PD {
+              description "Type 3 single-signature PD";
+          }
+          enum TYPE4_PSE {
+              description "Type 4 PSE";
+          }
+          enum TYPE3_PSE {
+              description "Type 3 PSE";
+          }
+      }
+      description
+          "Power Type extension";
+  }
+
+  grouping lldp-mdi-power-state {
+    description
+        "Operational state data for power via MDI parameters";
+
+    leaf device-type {
+        type device-type;
+        description
+            "Defines the type of Power-via-MDI (Power over Ethernet) advertised by the device";
+    }
+
+    leaf power-supported {
+        type boolean;
+        description
+            "Defines MDI power support";
+    }
+
+    leaf power-enabled {
+        type boolean;
+        description
+            "Defines MDI power admin enabled";
+    }
+
+    leaf pair-control {
+        type boolean;
+        description
+            "Defines that the device has the capability
+            to control the power pairs";
+    }
+
+    leaf power-pair {
+        type power-pair-type;
+        description
+            "Defines the type of power pairs in use";
+    }
+
+    leaf power-class {
+        type power-class-type;
+        description
+            "Defines the PD provided information that 
+            allows a PSE to classify their power requirements.";
+    }
+
+    leaf power-type {
+        type power-type;
+        description
+            "Defines the PD Power Type.";
+    }
+
+    leaf pd-power-source {
+        when "../device-type = 'PD'" {
+            description
+                "Applies when Power-type advertised by the device is PD";
+        }
+
+        type pd-source-type;
+        description
+            "Defines the type of Power Source advertised";
+    }
+
+    leaf pse-power-source {
+        when "../device-type = 'PSE'" {
+            description
+                "Applies when Power-type advertised by the device is PSE";
+        }
+
+        type pse-source-type;
+        description
+            "Defines the type of Power Source advertised ";
+    }
+      
+    leaf power-priority {
+        type power-priority-type;
+        description
+           "Defines the Power priority of PD/PSE";
+    }
+
+    leaf requested-power {
+        type uint16;
+        description
+            "Defines the PD requested power value";
+    }
+
+    leaf allocated-power {
+        type uint16;
+        description
+            "Defines the PSE allocated power value";
+    }
+
+    leaf tlv-type {
+        type string;
+        description
+            "AT/BT Tlv type";
+    }
+
+    leaf requested-power-a {
+        type uint16;
+        description
+            "Defines the PD requested power value for mode A";
+    }
+
+    leaf requested-power-b {
+        type uint16;
+        description
+            "Defines the PD requested power value for mode B";
+    }
+
+    leaf allocated-power-a {
+        type uint16;
+        description
+            "Defines the PSE allocated power value Alternative A";
+    }
+
+    leaf allocated-power-b {
+        type uint16;
+        description
+            "Defines the PSE allocated power value Alternative B";
+    }
+
+    leaf pd-power-status {
+        type pd-power-status-type;
+        description
+            "PD powered status";
+    }
+
+    leaf pse-power-pairs-ext {
+        type power-pairs-ext-type;
+        description
+            "PSE power pairs ext";
+    }
+
+    leaf power-class-ext-a {
+        type power-class-ext-mode-type;
+        description
+            "Dual-signature power Class ext Mode A";
+    }
+
+    leaf power-class-ext-b {
+        type power-class-ext-mode-type;
+        description
+            "Dual-signature power Class ext Mode B";
+    }
+
+    leaf power-class-ext {
+        type power-class-ext-type;
+        description
+            "Power Class extension";
+    }
+
+    leaf power-type-ext {
+        type power-type-ext-type;
+        description
+            "Power Class extension";
+    }
+
+    leaf pd-load {
+        type boolean;
+        description
+            "PD Load";
+    }
+  }
+
+  grouping lldp-med-capabilities-state {
+    description
+      "Operational state data for LLDP-MED capabilities";
+
+    leaf name {
+      type identityref {
+        base LLDP_MED_CAPABILITY;
+      }
+      description
+        "Name of the MED capability advertised by the neighbor.
+        Capabilities are represented in a bitmap and are
+        defined in ANSI/TIA-1057.";
+    }
+
+    leaf enabled {
+      type boolean;
+      description
+        "Indicates whether the corresponding MED capability is
+        enabled on the neighbor.";
+      reference
+        "ANSI/TIA-1057";
+    }
+  }
+
+  grouping lldp-med-extended-mdi-power-state {
+    description
+        "Operational state data for MED extended power via MDI";
+
+    leaf device-type {
+        type device-type;
+        description
+            "Defines the type of Power-via-MDI 
+            (Power over Ethernet) advertised by the device";
+    }
+
+    leaf pd-power-source {
+        when "../device-type = 'PD'" {
+            description
+                "Applies when Power-type advertised by the device is PD";
+        }
+
+        type pd-source-type;
+        description
+            "Defines the type of Power Source advertised";
+    }
+
+    leaf pse-power-source {
+        when "../device-type = 'PSE'" {
+            description
+                "Applies when Power-type advertised by the device is PSE";
+        }
+
+        type pse-source-type;
+        description
+            "Defines the type of Power Source advertised ";
+    }
+      
+    leaf power-priority {
+        type power-priority-type;
+        description
+            "Defines the Power priority of PD/PSE";
+    }
+
+    leaf power-value {
+        type uint16;
+        description
+            "Defines the Power value of PD/PSE";
+    }
+  }
+
+  grouping lldp-med-inventory-state {
+    description
+        "Grouping for MED inventory parameters";
+    
+    leaf hardware-revision {
+        type string;
+        description
+            "Hardware revision of the endpoint";
+    }
+
+    leaf firmware-revision {
+        type string;
+        description
+            "Firmware revision of the endpoint";
+    }
+            	        
+    leaf software-revision {
+        type string;
+        description
+            "Software revision of the endpoint";
+    }
+            
+    leaf serial-number {
+        type string;
+        description
+            "Serial number of the endpoint";
+    }
+
+    leaf manufacturer {
+        type string;
+        description
+            "Manufacturer name of the endpoint";
+    }
+
+    leaf model {
+        type string;
+        description
+            "Model name of the endpoint";
+    }
+
+    leaf asset-id {
+        type string;
+        description
+            "Asset identifier of the endpoint";
+    }
+  }
+
+  grouping lldp-med-state {
+    description
+        "Operational state data for LLDP-MED TLVs";
+
+    leaf device-class {
+        type device-class-type;
+        description
+            "Indicates whether the sender is a Network Connectivity Device or Endpoint Device";
+    }
+
+    container extended-mdi-power {
+        description "Operational state data for MED extended power parameters";
+
+        uses lldp-med-extended-mdi-power-state;
+    }
+
+    container inventory {
+        description "Operational state data for MED inventory parameters";
+
+        uses lldp-med-inventory-state;
+    }
+
+
+  }
+
+  grouping lldp-mdi-power-top {
+    description
+        "Grouping for power via MDI parameters";
+
+    container mdi-power {
+        description
+            "Container for LLDP Power via MDI TLVs";
+
+        container state {
+            config false;
+            description
+                "Operational state container";
+            uses lldp-mdi-power-state;
+        }
+    }
+  }
+
+  grouping lldp-med-top {
+    description
+        "Grouping for LLDP-MED TLVs";
+
+    container med {
+        description
+            "Container for LLDP-MED TLVs";
+
+        container state {
+            config false;
+            description
+                "Operational state container";
+            uses lldp-med-state;
+        }
+
+    container network-policies {
+        description
+            "Enclosing container for list of LLDP-MED network policy capabilities";
+
+        list network-policy {
+            key "type";
+            description
+                "List of LLDP-MED network policy application advertised by the
+                neighbor";
+
+            leaf type {
+                type leafref {
+                    path "../state/type";
+                }
+                
+                description
+                    "Reference to application list key";
+            }
+
+            container state {
+                description
+                    "Operational state data for LLDP-MED network policy";
+
+                uses oc-nwp-ext:application-config;
+            }
+        }
+    }
+
+    container capabilities {
+        description
+            "Enclosing container for list of LLDP-MED capabilities";
+
+        list capability {
+            key "name";
+            description
+                "List of LLDP-MED capabilities advertised by the
+                neighbor";
+
+            leaf name {
+                type leafref {
+                    path "../state/name";
+            }
+
+            description
+                "Reference to capabilities list key";
+            }
+
+            container state {
+                description
+                    "Operational state data for LLDP-MED capabilities";
+
+                uses lldp-med-capabilities-state;
+            }
+        }
+    }
+    }
+  }
+
+  grouping lldp-custom-tlv-vlan-name-state {
+    description
+      "Operational state data for vlan-name custom TLVs";
+
+    leaf type {
+      type int32;
+      description
+        "The integer value identifying the type of information
+        contained in the value field.";
+    }
+
+    leaf oui {
+      type string;
+      description
+        "The organizationally unique identifier field shall contain
+        the organization's OUI as defined in Clause 9 of IEEE Std
+        802. The high-order octet is 0 and the low-order 3 octets
+        are the SMI Network Management Private Enterprise Code of
+        the Vendor in network byte order, as defined in the
+        'Assigned Numbers' RFC [RFC3232].";
+    }
+
+    leaf oui-subtype {
+      type string;
+      description
+        "The organizationally defined subtype field shall contain a
+        unique subtype value assigned by the defining organization.";
+    }
+
+    leaf vlan-id {
+      type oc-vlan-types:vlan-id;
+      description
+        "VLAN ID contained in the VLAN Name TLV.";
+    }
+
+    leaf value {
+      type string;
+      description
+        "VLAN Name contained in the VLAN Name TLV.";
+    }
+  }
+
+  grouping lldp-custom-tlvs-vlan-name-top {
+    description
+      "Top-level grouping for vlan-name TLVs.";
+
+    container custom-tlvs-vlan-name {
+      config false;
+      description
+        "Enclosing container for the list of instances(with the
+        same OUI and sub-type) of vlan-name TLV from a neighbor";
+
+      list vlan-name-tlv {
+        key "type oui oui-subtype vlan-id";
+        description
+          "List of vlan-name TLVs from a neighbor";
+
+        leaf type {
+          type leafref {
+            path "../state/type";
+          }
+          description
+            "Reference to type list key";
+        }
+
+        leaf oui {
+          type leafref {
+            path "../state/oui";
+          }
+          description
+            "Reference to oui list key";
+        }
+
+        leaf oui-subtype {
+          type leafref {
+            path "../state/oui-subtype";
+          }
+          description
+            "Reference to oui-subtype list key";
+        }
+
+        leaf vlan-id {
+          type leafref {
+            path "../state/vlan-id";
+          }
+          description
+            "Reference to vlan-id list key";
+        }
+
+        container state {
+          config false;
+          description
+            "Operational state data ";
+
+          uses lldp-custom-tlv-vlan-name-state;
+        }
+      }
+    }
+  }
+
+  augment /oc-lldp:lldp/oc-lldp:interfaces/oc-lldp:interface/oc-lldp:neighbors/oc-lldp:neighbor {
+      description "LLDP neighbor extension";
+
+      uses lldp-custom-tlvs-vlan-name-top;
+      uses lldp-mdi-power-top;
+      uses lldp-med-top;
+  }
+
+}

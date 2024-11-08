@@ -1,0 +1,179 @@
+module openconfig-session-rpc {
+
+  yang-version "1.1";
+
+  namespace "http://openconfig.net/yang/config-session/rpc";
+  prefix "oc-sess-rpc";
+
+  import openconfig-extensions {
+    prefix "oc-ext";
+  }
+  import openconfig-types {
+    prefix "oc-types";
+  }
+
+  organization "SONiC";
+
+  contact "SONiC";
+
+  description
+    "This module defines the custom RPCs for managing config sessions.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision 2022-08-19 {
+    description
+      "Initial version.";
+    reference "0.1.0";
+  }
+
+  typedef cs-state {
+    description
+      "Indicates config session status";
+    type enumeration {
+      enum ACTIVE {
+        description
+          "Indicates config session is active. This means a CLI terminal
+          is currently in config session mode. Only that terminal will
+          be allowed to perform changes to this config session.";
+      }
+      enum INACTIVE {
+        description
+          "Indicates config session is not active.";
+      }
+    }
+  }
+
+  grouping config-session-info {
+    leaf token {
+      type string;
+      description
+        "Unique id of the config session.";
+    }
+    leaf name {
+      type string;
+      description
+        "User assigned name of the config session. Will be an empty
+        value for unnamed session.";
+    }
+    leaf state {
+      type cs-state;
+      description
+        "Current status of the config session.";
+    }
+    leaf username {
+      type string;
+      description
+        "User who created this config session.";
+    }
+    container terminal {
+      description
+        "Contains details about the CLI terminal on which this config
+        session is active. This node will not be present if the session
+        is not active on any terminal.";
+      leaf pid {
+        type int32;
+        description
+          "CLI terminal pid.";
+      }
+      leaf alive {
+        type boolean;
+        description
+          "Indicates whether server can locate the CLI terminal process
+          referred by '../pid'";
+      }
+    }
+    container timestamps {
+      description
+        "Contains timestamps for various session events. All timestamp
+        values are expressed as number of nanosecods elapsed since the
+        unix epoch (Jan 1, 1970 00:00:00 UTC).";
+      leaf created {
+        type oc-types:timeticks64;
+        description
+          "Config session creation timestamp";
+      }
+      leaf last-resumed {
+        type oc-types:timeticks64;
+        description
+          "Latest tiemstamp at which a CLI terminal resumed this config
+          session. This value will not be present if the session was
+          never resumed till now.";
+      }
+      leaf last-exited {
+        type oc-types:timeticks64;
+        description
+          "Latest tiemstamp at which a CLI terminal exited this config
+          session. This value will not be present if the session was
+          never exited till now.";
+      }
+      leaf last-updated {
+        type oc-types:timeticks64;
+        description
+          "Timestamp of the last activity on this config session. It
+          includes session state changes and successful config read or
+          write operations.";
+      }
+    }
+    leaf transaction-size {
+      type uint32;
+      description
+        "Indicates the number of databasae operations queued in this
+        session. It is not the number of CLI commands. A CLI command may
+        result in multiple database operations.";
+    }
+  }
+
+  rpc get-config-session {
+    description
+      "Query config session information by its name. Unnamed session's
+      details are returned when name is not specified, or is empty. All
+      session details are returned when name is '*'.";
+    input {
+      leaf name {
+        type string;
+        description
+          "Config session name to query. Empty string matches the
+          unnamed session. '*' matches all sessions.";
+      }
+    }
+    output {
+      list config-session {
+        description
+          "Config session details";
+        key token;
+        uses config-session-info;
+      }
+    }
+  }
+
+  rpc kill-config-session {
+    description
+      "Force kill a config session by its name. Unnamed session is
+      killed if name is not specified or is empty.
+
+      All config changes held by the target session are discarded. This
+      operation is similar to the session abort, but any client with
+      admin privileges can perform this operation (without entering the
+      session through a CLI terminal).
+
+      Returns an error if the target config session is not found or
+      could not be killed.";
+    input {
+      leaf name {
+        type string;
+        description
+          "Config session name to be killed. Empty string matches the
+          unnamed config session.";
+      }
+      leaf force {
+        type boolean;
+        description
+          "Force kill a session even if it is in active state. If not
+          specified or false, rpc returns an error if the session is
+          active";
+      }
+    }
+  }
+
+}

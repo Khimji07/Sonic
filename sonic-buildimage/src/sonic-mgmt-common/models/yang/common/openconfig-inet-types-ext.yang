@@ -1,0 +1,62 @@
+module openconfig-inet-types-ext {
+  yang-version "1";
+
+  namespace "http://openconfig.net/yang/types/inet/extension";
+
+  prefix "oc-inet-ext";
+
+  // import statements
+  import openconfig-extensions { prefix oc-ext; }
+
+  organization 
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module defines extensions for the openconfig-inet-types module.";
+
+  oc-ext:openconfig-version "0.1.0";
+  
+  revision "2023-07-07" {
+    description
+      "Initial version";
+    reference "0.1.0";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:regexp-posix;
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  typedef ipv6-address-ext {
+      type string {
+        pattern "(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|"          +
+                "([0-9a-fA-F]{1,4}:){1,7}:|"                        +
+                "([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|"        +
+                "([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|" +
+                "([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|" +
+                "([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|" +
+                "([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|" +
+                "[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|"      +
+                ":((:[0-9a-fA-F]{1,4}){1,7}|:)"                     +
+                "|::ffff:((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))" {
+                 error-message "Invalid IPv6 address";
+        }
+        oc-ext:posix-pattern "^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|" +
+                "([0-9a-fA-F]{1,4}:){1,7}:|"                        +
+                "([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|"        +
+                "([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|" +
+                "([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|" +
+                "([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|" +
+                "([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|" +
+                "[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|"      +
+                ":((:[0-9a-fA-F]{1,4}){1,7}|:)"                     +
+                "|::ffff:((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)" +
+                ")$";
+      }
+      description "An extended IPv6 address that includes the IPv4-mapped format.";
+  }
+
+}

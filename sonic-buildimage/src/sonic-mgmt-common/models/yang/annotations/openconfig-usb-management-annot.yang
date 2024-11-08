@@ -1,0 +1,107 @@
+module openconfig-usb-management-annot {
+
+    yang-version "1.1";
+
+    namespace "http://openconfig.net/yang/usb-management-annot";
+    prefix "oc-usb-mgmt-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import openconfig-usb-management { prefix oc-usb-mgmt; }
+
+    // meta
+    organization
+       "SONiC";
+
+    contact
+       "SONiC";
+
+    description
+       "SONIC usb attached storage device management";
+
+    revision 2022-03-30 {
+       description
+          "Initial revision.";
+    }
+
+    deviation /oc-usb-mgmt:usb-storage-devices-mount {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_oc_usb_mount";
+        }
+    }
+    deviation /oc-usb-mgmt:usb-storage-devices-unmount {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_oc_usb_umount";
+        }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:config {
+      deviate add {
+        sonic-ext:table-name "USB";
+        sonic-ext:key-transformer "usb_global_key_xfmr";
+      }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:config/oc-usb-mgmt:enable {
+      deviate add {
+        sonic-ext:field-name "enable";
+      }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:state {
+        deviate add {
+            sonic-ext:subtree-transformer "usb_global_status_xfmr";
+            }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:usb-storage-devices/oc-usb-mgmt:usb-storage-device {
+      deviate add {
+      sonic-ext:table-name "USB_DEVICE";
+      sonic-ext:key-transformer "usb_device_table_key_xfmr";
+      sonic-ext:db-name "STATE_DB";
+      }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:usb-storage-devices/oc-usb-mgmt:usb-storage-device/oc-usb-mgmt:state/oc-usb-mgmt:device-name {
+      deviate add {
+        sonic-ext:field-transformer "usb_dev_name_xfmr";
+      }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:usb-storage-devices/oc-usb-mgmt:usb-storage-device/oc-usb-mgmt:state/oc-usb-mgmt:model-name {
+      deviate add {
+        sonic-ext:field-name "model_name";
+      }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:usb-storage-devices/oc-usb-mgmt:usb-storage-device/oc-usb-mgmt:state/oc-usb-mgmt:manufacturer {
+      deviate add {
+        sonic-ext:field-name "manufacturer";
+      }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:usb-storage-device-partitions/oc-usb-mgmt:usb-storage-device-partition {
+      deviate add {
+      sonic-ext:table-name "USB_PARTS";
+      sonic-ext:key-transformer "usb_device_table_key_xfmr";
+      sonic-ext:db-name "STATE_DB";
+      }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:usb-storage-device-partitions/oc-usb-mgmt:usb-storage-device-partition/oc-usb-mgmt:state/oc-usb-mgmt:device-name {
+      deviate add {
+        sonic-ext:field-transformer "usb_dev_name_xfmr";
+      }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:usb-storage-device-partitions/oc-usb-mgmt:usb-storage-device-partition/oc-usb-mgmt:state/oc-usb-mgmt:filesystem {
+      deviate add {
+        sonic-ext:field-name "filesystem";
+      }
+    }
+
+    deviation /oc-usb-mgmt:usb-management/oc-usb-mgmt:usb-storage-device-partitions/oc-usb-mgmt:usb-storage-device-partition/oc-usb-mgmt:state/oc-usb-mgmt:mount-point {
+      deviate add {
+        sonic-ext:field-name "mount_point";
+      }
+    }
+}

@@ -1,0 +1,91 @@
+module openconfig-primary-encryption-key-rpc {
+
+  yang-version "1.1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/primary-encryption-key-rpc/extension";
+
+  prefix "oc-pek-rpc";
+
+  // import some basic types
+  import openconfig-types { prefix oc-types; }
+  import openconfig-extensions { prefix oc-ext; }
+  import ietf-yang-types { prefix yang; }
+
+  // meta
+  organization "SONiC";
+
+  contact "SONIC";
+
+  description
+  "This module defines RPC for primary-encryption key configuration.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2021-10-08" {
+    description
+    "Initial draft revision.";
+    reference "0.1.0";
+  }
+
+  rpc update-primary-encryption-key {
+    description 
+      "RPC for updating primary-encryption Key. Input is current and new primary-encryption keys.";
+
+    input {
+      leaf current-primary-encryption-key {
+        type string {
+          length "1..65";
+          pattern "[^ #,]*" {
+            error-message 'Invalid primary-encryption Key (Valid chars are ASCII printable except SPACE, "#", and ",")';
+          }
+        }
+        description
+          "The old passphrase that was provided by the user while updating the primary-encryption key passphrase. This passphrase will be validated by the infra before a primary-encryption key is updated.";
+      }
+      leaf new-primary-encryption-key {
+        type string {
+          length "1..65";
+          pattern "[^ #,]*" {
+            error-message 'Invalid primary-encryption Key (Valid chars are ASCII printable except SPACE, "#", and ",")';
+          }
+        }
+        description 
+          "The new passphrase to which the user wants to move to. Key is updated once the old key is validated and all protocol passwords are re-encrypted with the new key.";
+      }
+      leaf override {
+          type boolean;
+          description
+            "Reset primary-encryption Key to factory default.";
+      }
+    }
+
+    output {
+      leaf status {
+        type enumeration {
+          enum PRIMARY_ENCRYPTION_KEY_SUCCESS {
+            description "primary-encryption key update was successful.";
+          }
+          enum PRIMARY_ENCRYPTION_KEY_UPDATE_FAILED {
+            description "primary-encryption key update failed.";
+          }
+          enum PRIMARY_ENCRYPTION_KEY_INVALID{
+            description "primary-encryption key provided is invalid.";
+          }
+          enum PRIMARY_ENCRYPTION_KEY_UPDATE_IN_PROGRESS {
+            description "An update of primary-encryption key is already in progress.";
+          }
+        }
+        description
+          "Status message indicates output of primary-encryption key update operation.";
+      }
+
+      leaf status-detail {
+        type string;
+          description
+            "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+}

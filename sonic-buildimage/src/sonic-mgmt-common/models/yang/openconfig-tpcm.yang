@@ -1,0 +1,288 @@
+module openconfig-tpcm {
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/system/tpcm/extension";
+
+    prefix "oc-tpcm";
+
+  import openconfig-extensions { prefix oc-ext; }
+
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module contains a collection of YANG definitions for TPCM component";
+
+  revision "2020-06-01" {
+    description
+      "Initial draft revision.";
+     reference "0.1.0";
+  }
+
+
+  oc-ext:openconfig-version "0.1.0";
+
+  grouping tpcm-install-state {
+      description
+          "tpcm install configuration data";
+      leaf docker-name{
+        type string;
+        description
+          "docker name for the TPC image to be installed";
+      }
+      leaf image-source{
+        type string;
+        description
+          "image download source: url, image, pull, file, scp, sftp";
+      }
+      leaf image-name{
+        type string;
+        description
+          "image name for the TPC container to be installed";
+      }
+      leaf remote-server {
+        type string;
+        description
+          "the remote server name for scp and sftp";
+      }
+      leaf username{
+        type string;
+        description
+          "the remote server login username";
+      }
+      leaf password{
+        type string;
+        description
+          "the remote server login password";
+      }
+      leaf args {
+        type string;
+        description
+          "additional startup args to the container";
+      }
+      leaf cargs {
+        type string;
+        description
+          "CMD to the container";
+      }
+      leaf vrf-name{
+        type string;
+        description
+          "Specify the vrf";
+      }
+      leaf start-after-system-ready{
+        type string;
+        description
+          "Flag to indicate whether the TPC service should start after System ready or NOT";
+      }
+  }
+
+  grouping tpcm-upgrade-state{
+      description
+          "tpcm upgrade operation parameters";
+     leaf docker-name{
+        type string;
+        description
+          "docker name for the TPC image to be upgraded";
+      }
+      leaf image-source{
+        type string;
+        description
+          "image download source: url, image, pull, file, scp, sftp";
+      }
+      leaf image-name{
+        type string;
+        description
+          "image name for the TPC container to be upgraded";
+      }
+      leaf remote-server {
+        type string;
+        description
+          "the remote server name for scp and sftp";
+      }
+      leaf username{
+        type string;
+        description
+          "the remote server login username";
+      }
+      leaf password{
+        type string;
+        description
+          "the remote server login password";
+      }
+      leaf skip-data-migration {
+        type string;
+        description
+          "skip the TPC data migration: yes or no";
+      }
+      leaf args {
+        type string;
+        description
+          "additional startup args to the container";
+      }
+      leaf cargs {
+        type string;
+        description
+          "CMD to the container";
+      }
+  }
+
+  grouping tpcm-uninstall-state{
+      description
+          "tpcm uninstall operation parameters";
+
+      leaf clean-data {
+        type string;
+        description
+          "Delete the TPC data: yes or no";
+      }
+      leaf docker-name{
+        type string;
+        description
+          "docker name for the TPC image to be uninstalled";
+      }
+
+  }
+
+  grouping tpcm-show-state{
+      description
+          "Show the TPC image from SONiC system";
+
+      leaf docker-name{
+        type string;
+        description
+          "docker name for the TPC image to be displayed";
+      }
+
+  }
+
+  grouping tpcm-list-state{
+      description
+          "List all the TPC dockers";
+
+      leaf vrf-name{
+        type string;
+        description
+          "Specify the vrf";
+      }
+
+  }
+
+  grouping tpcm-update-state{
+      description
+          "Update the TPC image from SONiC system";
+
+      leaf disk-limit{
+        type string;
+        description
+          "overall TPC disk limit to be updated";
+      }
+      leaf docker-name{
+        type string;
+        description
+          "docker name for the TPC image to be updated";
+      }
+      leaf vrf-name{
+        type string;
+        description
+          "Specify the vrf";
+      }
+      leaf mem-limit{
+        type string;
+        description
+          "Specify the memory limit";
+      }
+      leaf start-after-system-ready{
+        type string;
+        description
+          "Should the TPC start after system ready";
+      }
+
+  }
+
+  grouping tpcm-status-state {
+      description
+          "tpcm operation status";
+
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf-list status-detail {
+            type string;
+            description "The detailed status of the operation execution request.";
+      }
+
+  }
+
+
+  rpc tpcm-install {
+    description
+      "Install the TPC image into SONiC system";
+    input {
+      uses oc-tpcm:tpcm-install-state;
+    }
+    output {
+      uses oc-tpcm:tpcm-status-state;
+    }
+  }
+
+  rpc tpcm-uninstall{
+    description
+      "Uninstall the TPC image from SONiC system";
+    input {
+      uses oc-tpcm:tpcm-uninstall-state;
+    }
+    output {
+      uses oc-tpcm:tpcm-status-state;
+   }
+  }
+
+  rpc tpcm-upgrade{
+    description
+      "Upgrade the existing TPC container";
+    input {
+      uses oc-tpcm:tpcm-upgrade-state;
+    }
+    output {
+      uses oc-tpcm:tpcm-status-state;
+   }
+  }
+  
+  rpc tpcm-show{
+    description
+      "Show the existing TPC container";
+    input {
+      uses oc-tpcm:tpcm-show-state;
+    }
+    output {
+      uses oc-tpcm:tpcm-status-state;
+   }
+  }
+ 
+  rpc tpcm-list{
+    description
+      "List all the TPC containers";
+    input {
+      uses oc-tpcm:tpcm-list-state;
+    }
+    output {
+      uses oc-tpcm:tpcm-status-state;
+   }
+  }
+ 
+  rpc tpcm-update{
+    description
+      "Update the TPC container";
+    input {
+      uses oc-tpcm:tpcm-update-state;
+    }
+    output {
+      uses oc-tpcm:tpcm-status-state;
+   }
+  }
+}

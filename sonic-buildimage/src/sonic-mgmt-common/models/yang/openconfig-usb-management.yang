@@ -1,0 +1,192 @@
+module openconfig-usb-management {
+
+  yang-version "1.1";
+
+  namespace "http://openconfig.net/yang/usb-management/extension";
+
+  prefix "oc-usb-mgmt";
+
+  import openconfig-extensions { prefix oc-ext; }
+
+  organization "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module contains a collection of YANG definitions for managing
+    USB attached storage devices.";
+
+  revision "2022-03-28" {
+    description
+      "Initial public revision";
+    reference "0.1.0";
+  }
+ 
+
+  oc-ext:openconfig-version "0.1.0";
+
+  // grouping statements
+
+  grouping usb-management-top {
+    description
+      "Top level grouping for attributes for usb-management";
+
+    container usb-management {
+      description
+        "Parameters related to usb global configuration and status";
+
+      container config {
+        description
+          "Configuration parameters of the usb detection feature";
+
+        uses usb-management-config;
+      }
+
+      container state {
+        config false;
+        description
+          "State parameters of the usb detection feature";
+
+        uses usb-management-config;
+      }
+
+      container usb-storage-devices {
+        config false;
+        description
+          "List of attached usb storage devices";
+        list usb-storage-device {
+          key "device-name";
+          description
+            "List of attached usb storage devices";
+
+          leaf device-name {
+            type leafref {
+              path "../state/device-name";
+            }
+            description
+              "The block device associated with the attached usb storage
+               media device.";
+          }
+
+          container state {
+            description
+              "USB storage device state information.";
+
+            leaf device-name {
+               type string;
+                description
+                  "The block device associated with the attached usb storage
+                   media device.";
+            }
+
+            leaf manufacturer {
+                type string;
+                description "Name of the manufacturer of the usb storage device.";
+            }
+
+            leaf model-name {
+                type string;
+                description "Manufacturer assigned identifier string to the usb storage device.";
+            }
+          }
+        }
+      }
+
+      container usb-storage-device-partitions {
+        config false;
+        description
+          "List of usb storage device partitions";
+        list usb-storage-device-partition {
+          key "device-name";
+          description
+            "List of attached usb storage device partitions that can be mounted";
+
+          leaf device-name {
+            type leafref {
+              path "../state/device-name";
+            }
+            description
+              "The block device associated with the attached usb storage
+               media device partition.";
+          }
+
+          container state {
+            description
+              "USB storage device partition information.";
+
+            leaf device-name {
+               type string;
+                description
+                  "The block device associated with the attached usb storage
+                   media device partition.";
+            }
+
+            leaf filesystem {
+                type string;
+                description "Indicates the filesystem type using which the device partition has been
+                             formatted with. If the device partition is not unformatted or if its
+                             filesystem type can't be read, it is set a blank string.";
+            }
+
+            leaf mount-point {
+                type string;
+                description "Indicates the directory where the device partition has been mounted at.
+                             If not mounted, it is set to a blank string.";
+            }
+          }
+        }
+      } 
+    }
+  }
+
+  grouping usb-management-config {
+    description
+      "Configuration parameters of the usb detection feature";
+
+    leaf enable {
+      type boolean;
+      description
+        "Enable or Disable the usb detection and auto mount feature";
+    }
+  }
+
+  uses usb-management-top;
+
+  // rpc statements
+
+  rpc usb-storage-devices-mount {
+    description
+      "This RPC is used to mount all usb storage device partitions of attached usb devices which are
+       formatted with a supported filesystem type.";
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc usb-storage-devices-unmount {
+    description
+      "This RPC is used to safely eject all attached usb storage devices.";
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+}

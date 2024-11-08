@@ -1,0 +1,59 @@
+module openconfig-mac-dampening-rpc {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/macdamp-rpc/extension";
+
+  prefix "oc-mac-damp-rpc"; 
+
+  import openconfig-extensions { prefix oc-ext; }
+  
+  // meta
+  organization
+    "OCP SONiC Subproject";
+
+  contact
+    "OCP SONiC Subproject Working Group
+     https://github.com/Azure/SONiC";
+
+  description
+    "This module defines configuration and operational state data for mac-dampening";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2020-10-08" {
+    description
+      "Initial revision";
+    reference "0.1.0";
+  }
+
+  //rpcs
+  rpc clear-mac-dampening-disabled-ports {
+        description
+            "Clears mac dampening settings for port(s) disabled due to mac
+            dampening. Possible values can be either 1) ALL - if this value is
+            passed for ifname then it clears mac dampening settings for all mac
+            dampening disabled ports. 2) specific name name - clears mac
+            dampening settings for specific mac dampening disabled ports. ";
+ 
+        input {
+            leaf ifname {
+                type union {
+                    type string;
+                    type enumeration {
+                        enum ALL {
+                            description "Specify to clear all mac dampening disabled ports";
+                        }
+                    }
+                }
+                description
+                    "Interface name for which mac dampening disabled port
+                    settting needs to be cleard. If specific interface name is
+                    provided then it clears mac dampening settings for that
+                    interface, else if ALL is passed it clears mac dampening
+                    settings for all mac dampening disabled ports. ";
+            }
+        }
+  }
+}

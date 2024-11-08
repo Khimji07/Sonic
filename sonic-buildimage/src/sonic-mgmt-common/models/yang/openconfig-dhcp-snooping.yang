@@ -1,0 +1,562 @@
+module openconfig-dhcp-snooping {
+
+  yang-version "1.1";
+
+  //namespace
+  namespace "http://openconfig.net/yang/dhcp-snooping/extension";
+  prefix "oc-dhcp-snooping";
+
+  import openconfig-inet-types { prefix oc-inet; }
+  import openconfig-extensions { prefix oc-ext; }
+  import openconfig-yang-types { prefix oc-yang; }
+
+  //meta
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module defines configuration and operational state data for DHCP Snooping";
+
+  revision "2021-07-22" {
+    description
+      "Initial draft.";
+    reference "1.0.2";
+  }
+
+  oc-ext:openconfig-version "1.0.2";
+
+  typedef binding {
+    type enumeration {
+      enum STATIC{
+        description "Static binding entry";
+      }
+      enum DYNAMIC {
+        description "Dynamic binding entry";
+      }
+      enum TENTATIVE {
+        description "tentative binding entry";
+      }
+    }
+    description "Type of DHCP snooping binding entry";
+  }
+
+  grouping dhcp-snooping-global-config {
+    description
+      "Configuration data for global DHCP Snooping parameters";
+
+    leaf dhcpv4-admin-enable {
+      type boolean;
+      default false;
+      description
+        "";
+    }
+    leaf dhcpv4-verify-mac-address {
+      type boolean;
+      default true;
+      description
+        "";
+    }
+    leaf dhcpv6-admin-enable {
+      type boolean;
+      default false;
+      description
+        "";
+    }
+    leaf dhcpv6-verify-mac-address {
+      type boolean;
+      default true;
+      description
+        "";
+    }
+  }
+
+  grouping dhcp-snooping-global-state {
+    description
+      "State data for global DHCP snooping";
+
+    leaf-list dhcpv4-snooping-vlan {
+      type string;
+      description "";
+    }
+    leaf-list dhcpv6-snooping-vlan {
+      type string;
+      description "";
+    }
+    leaf-list dhcpv4-trusted-intf {
+      type string;
+      description "";
+    }
+    leaf-list dhcpv6-trusted-intf {
+      type string;
+      description "";
+    }
+  }
+
+  grouping dhcp-snooping-top {
+    description
+      "Top-level grouping for DHCP Snooping model";
+
+    container dhcp-snooping {
+      description
+        "Top-level container for DHCP Snooping configuration and state data";
+    
+      container config {
+        description
+          "Configuration data ";
+
+        uses dhcp-snooping-global-config;
+      }
+
+      container state {
+        config false;
+        description
+          "Operational state data for DHCP snooping";
+
+        uses dhcp-snooping-global-config;
+        uses dhcp-snooping-global-state;
+      }
+    }
+  }
+
+  grouping dhcp-snooping-static-binding-config {
+    description
+      "Grouping for static binding entries";
+
+    leaf mac {
+      type oc-yang:mac-address;
+      description
+        "MAC address of the static DHCP snooping entry";
+    }
+    leaf iptype {
+      type string;
+      description
+        "";
+    }
+    leaf vlan {
+      type string;
+      description
+        "";
+    }
+    leaf interface {
+      type string;
+      description
+        "";
+    }
+    leaf ip {
+      type oc-inet:ip-address;
+      description
+        "IPv4 or IPv6 address";
+    }         
+  }
+
+  grouping dhcp-snooping-static-binding-state {
+    description
+      "Grouping for static binding entries";
+  }
+
+  grouping dhcp-snooping-static-binding-top {
+    description
+      "Grouping for static binding entries";
+
+    container dhcp-snooping-static-binding {
+      description
+        "Container for static binding configuration";
+
+      list entry {
+        key "mac iptype";
+        description
+          "List of static bindings by ip type";
+
+        leaf mac {
+          type leafref {
+            path "../config/mac";
+          }
+          description
+            "";
+        }
+
+        leaf iptype{
+          type leafref {
+            path "../config/iptype";
+          }
+          description
+            "";
+        }
+
+        container config {
+           description
+             "Configuration data ";
+
+           uses dhcp-snooping-static-binding-config;
+        }
+
+        container state {
+          config false;
+
+          description
+            "State";
+
+          uses dhcp-snooping-static-binding-config;
+          uses dhcp-snooping-static-binding-state;
+        }
+      }
+    }
+  }
+
+  grouping dhcp-snooping-binding-state {
+    description
+      "Grouping for snooping binding state table";
+
+    leaf mac {
+      type oc-yang:mac-address;
+      config false;
+      description
+        "MAC address of the DHCP snooping binding entry";
+    }
+    leaf iptype {
+      type string;
+      config false;
+      description
+        "IP version ipv4 or ipv6";
+    }
+    leaf vlan {
+      type string;
+      config false;
+      description
+         "";
+    }
+    leaf intf {
+      type string;
+      config false;
+      description
+        "";
+    }
+    leaf ipaddress {
+      type oc-inet:ip-address;
+      config false;
+      description
+        "IPv4 or IPv6 address";
+    }
+    leaf lease-time {
+      type uint32;
+      config false;
+      description
+        "";
+    }
+    leaf lease-end-time {
+      type uint32;
+      config false;
+      description
+        "";
+    }
+    leaf type {
+      type string;
+      config false;
+      description
+        "Static or dynamic DHCP binding entry";
+    }
+  }
+
+  grouping dhcp-snooping-binding-count-details {
+    description
+      "";
+
+    leaf v4-dynamic-count {
+      type uint32;
+      config false;
+      description
+        "";
+    }
+
+    leaf v4-static-count {
+      type uint32;
+      config false;
+      description
+        "";
+    }
+
+    leaf v4-tentative-count {
+      type uint32;
+      config false;
+      description
+        "";
+    }
+
+    leaf v6-dynamic-count {
+      type uint32;
+      config false;
+      description
+        "";
+    }
+
+    leaf v6-static-count {
+      type uint32;
+      config false;
+      description
+        "";
+    }
+
+    leaf v6-tentative-count {
+      type uint32;
+      config false;
+      description
+        "";
+    }
+  }
+
+  grouping dhcp-snooping-binding-count-details-top {
+    description "";
+    container dhcp-snooping-binding-count {
+      description "";
+      container state {
+        config false;
+        description "";
+        uses dhcp-snooping-binding-count-details;
+      }
+    }
+  }
+
+  grouping dhcp-snooping-binding-entry-list-top {
+    description
+      "Top grouping for dhcp snooping binding mapping";
+
+    container dhcp-snooping-binding-entry-list {
+      config false;
+      description
+        "dhcp snooping binding mapping";
+      list dhcp-snooping-binding-list {
+        key "mac iptype";
+
+        description "list";
+        leaf mac {
+          type leafref {
+            path "../state/mac";
+          }
+          description "";
+        }
+
+        leaf iptype {
+          type leafref {
+            path "../state/iptype";
+          }
+          description "";
+        }
+
+        container state {
+          config false;
+          description "";
+          uses dhcp-snooping-binding-state;
+        }
+      }
+    }
+  }
+
+  grouping dhcp-snooping-binding-top {
+    description "";
+    container dhcp-snooping-binding {
+      description "";
+
+      uses dhcp-snooping-binding-count-details-top;
+      uses dhcp-snooping-binding-entry-list-top;
+    }
+  }
+
+  grouping dhcp-snooping-statistics-detail-state {
+    description
+      "Grouping for statistics details";
+
+    leaf errmsgrx {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf errrxsrcip {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf numdhcppktrcvd {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf numdhcppktproc {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf numdhcppktfiltered {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf numdhcpfwd {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf numreleasedeclineunknownerr {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf numdynbindingadd {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf numdynbindingdel {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf numdhcppktdropped {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf numdhcptxdrops {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf errmsgbig {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf errmsgtx {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf numdhcppktbindingexists {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf errrxsrcmac {
+      type uint64;
+      config false;
+      description "";
+    }
+  }
+
+  grouping dhcp-snooping-statistics-detail-top {
+    description
+      "Top level grouping for statistics-detail";
+
+    container dhcp-snooping-statistics-detail {
+      config false;
+      description
+        "dhcp-snooping-statistics-detail container";
+
+      list dhcp-snooping-statistics-detail-list {
+        key "iptype";
+
+        description "list";
+        leaf iptype {
+          type leafref {
+            path "../state/iptype";
+          }
+          description "";
+        }
+
+        container state {
+          config false;
+          description "";
+
+          leaf iptype {
+            type string;
+            config false;
+            description "";
+          }
+
+          uses dhcp-snooping-statistics-detail-state;
+        }
+      }
+    }
+  }
+
+  grouping dhcp-snooping-statistics-state {
+    description
+      "Grouping for snooping statistics";
+
+    leaf mac-verify-failures {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf if-mismatches {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf server-msgs-on-untrusted {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf v6-mac-verify-failures {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf v6-if-mismatches {
+      type uint64;
+      config false;
+      description "";
+    }
+    leaf v6-server-msgs-on-untrusted {
+      type uint64;
+      config false;
+      description "";
+    }
+  }
+
+  grouping dhcp-snooping-statistics-top {
+    description
+      "Top level grouping for dhcp snooping statistics";
+
+    container dhcp-snooping-statistics {
+      config false;
+      description
+        "dhcp-snooping-statistics container";
+
+      list dhcp-snooping-statistics-list {
+        key "interface";
+        description "list";
+
+        leaf interface {
+          type leafref {
+            path "../state/interface";
+          }
+          description "";
+        }
+
+        container state {
+          config false;
+          description "";
+
+          leaf interface {
+            type string;
+            config false;
+            description
+              "Interface Name";
+          }
+          uses dhcp-snooping-statistics-state;
+        }
+      }
+    }
+  }
+
+  uses dhcp-snooping-top;
+  uses dhcp-snooping-static-binding-top;
+  uses dhcp-snooping-binding-top;
+  uses dhcp-snooping-statistics-detail-top;
+  uses dhcp-snooping-statistics-top;
+
+}

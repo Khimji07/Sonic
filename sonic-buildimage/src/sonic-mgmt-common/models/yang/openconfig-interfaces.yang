@@ -50,7 +50,44 @@ module openconfig-interfaces {
     Section 4.c of the IETF Trust's Legal Provisions Relating
     to IETF Documents (http://trustee.ietf.org/license-info).";
 
-  oc-ext:openconfig-version "2.4.1";
+  oc-ext:openconfig-version "2.6.1";
+
+  revision "2022-06-10" {
+    description
+      "Add dhcp snooping v4 and v6 trust leaf";
+    reference "2.6.1";
+  }
+
+  revision "2021-06-15" {
+    description
+      "Add interface counters, nat-zone attributes and rate-interval leaf";
+    reference "2.6.0";
+  }
+
+  revision "2021-06-14" {
+    description
+      "Add MAC address leaf";
+    reference "2.5.1";
+  }
+
+  revision "2021-04-06" {
+    description
+      "Add leaves for management and cpu interfaces";
+    reference "2.5.0";
+  }
+
+  revision "2019-11-19" {
+    description
+      "Update description of interface name.";
+    reference "2.4.3";
+  }
+
+  revision "2019-07-10" {
+    description
+      "Remove redundant nanosecond units statements to reflect
+      universal definition of timeticks64 type.";
+    reference "2.4.2";
+  }
 
   revision "2018-11-21" {
     description
@@ -461,6 +498,12 @@ module openconfig-interfaces {
       oc-ext:telemetry-on-change;
     }
 
+    leaf mac-address {
+      type oc-yang:mac-address;
+      description
+    "MAC address for interface.";
+    }
+
     leaf admin-status {
       type enumeration {
         enum UP {
@@ -547,7 +590,6 @@ module openconfig-interfaces {
 
     leaf last-change {
       type oc-types:timeticks64;
-      units nanoseconds;
       description
         "This timestamp indicates the absolute time of the last
         state change of the interface (e.g., up-to-down transition).
@@ -567,6 +609,33 @@ module openconfig-interfaces {
         which does not have an associated physical port or
         channel on the system.";
       oc-ext:telemetry-on-change;
+    }
+
+    leaf management {
+      type boolean;
+      description
+        "When set to true, the interface is a dedicated
+        management interface that is not connected to dataplane
+        interfaces.  It may be used to connect the system to an
+        out-of-band management network, for example.";
+      oc-ext:telemetry-on-change;
+    }
+
+    leaf cpu {
+      type boolean;
+      description
+        "When set to true, the interface is for traffic
+        that is handled by the system CPU, sometimes also called the
+        control plane interface.  On systems that represent the CPU
+        interface as an Ethernet interface, for example, this leaf
+        should be used to distinguish the CPU interface from dataplane
+        interfaces.";
+      oc-ext:telemetry-on-change;
+    }
+
+    leaf rate-interval {
+      type uint16;
+      description "Time interval in seconds, which is used to compute rate and utilization for an interface.";
     }
   }
 
@@ -853,7 +922,6 @@ module openconfig-interfaces {
 
       leaf last-clear {
         type oc-types:timeticks64;
-        units nanoseconds;
         description
           "Timestamp of the last time the interface counters were
           cleared.
@@ -862,6 +930,66 @@ module openconfig-interfaces {
           the Unix Epoch (Jan 1, 1970 00:00:00 UTC).";
         oc-ext:telemetry-on-change;
       }
+
+      leaf in-octets-per-second {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        description
+          "The total number of octets received per second on the interface";
+      }
+
+      leaf in-pkts-per-second {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        description
+          "The total number of packets received per second on the interface";
+      }
+
+      leaf in-bits-per-second {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        description
+          "The total number of bits received per second on the interface";
+      }
+
+      leaf in-utilization {
+        type oc-types:percentage;
+        description
+          "RX utilization of the interface";
+      }
+
+      leaf out-octets-per-second {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        description
+          "The total number of octets transmitted per second on the interface";
+      }
+
+      leaf out-pkts-per-second {
+        type decimal64 {
+          fraction-digits 2;
+         }
+        description
+          "The total number of packets transmitted per second on the interface";
+      }
+
+      leaf out-bits-per-second {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        description
+          "The total number of bits transmitted per second on the interface";
+      }
+
+      leaf out-utilization {
+        type oc-types:percentage;
+        description
+          "TX utilization of the interface";
+       }
     }
   }
 
@@ -1004,6 +1132,104 @@ module openconfig-interfaces {
     }
   }
 
+  grouping interfaces-interface-nat-zone-config {
+    description "Config level grouping associated with nat-zone";
+
+    leaf nat-zone {
+      type uint8 {
+        range "0..3";
+      }
+      description
+        "NAT zone id.";
+    }
+  }
+
+  grouping interfaces-interface-nat-zone-top {
+    description "Top level grouping associated with nat-zone";
+
+    container nat-zone {
+      description "Config and operational parameters associated with nat-zone";
+
+      container config {
+        description "Config parameters for nat-zone";
+
+        uses interfaces-interface-nat-zone-config;
+      }
+      container state {
+        config false;
+        description "State parameters for nat-zone";
+
+        uses interfaces-interface-nat-zone-config;
+      }
+    }
+  }
+
+  grouping interfaces-interface-dhcpv4-snooping-trust-config {
+    description "Config level grouping associated with dhcpv4 snooping trust";
+
+    leaf dhcpv4-snooping-trust {
+      type enumeration {
+          enum ENABLE;
+          enum DISABLE;
+      }
+      description
+        "v4 dhcp snooping.";
+    }
+  }
+
+  grouping interfaces-interface-dhcpv6-snooping-trust-config {
+    description "Config level grouping associated with dhcpv6 snooping trust";
+
+    leaf dhcpv6-snooping-trust {
+      type enumeration {
+          enum ENABLE;
+          enum DISABLE;
+      }
+      description
+        "v6 dhcp snooping.";
+    }
+  }
+
+  grouping interfaces-interface-dhcpv4-snooping-trust-top {
+    description "Top level grouping associated with snooping-trust";
+
+    container dhcpv4-snooping-trust {
+      description "Config and operational parameters associated with dhcpv4-snooping-trust";
+
+      container config {
+        description "Config parameters for dhcpv4-snooping-trust";
+
+        uses interfaces-interface-dhcpv4-snooping-trust-config;
+      }
+      container state {
+        config false;
+        description "State parameters for dhcpv4-snooping-trust";
+
+        uses interfaces-interface-dhcpv4-snooping-trust-config;
+      }
+    }
+  }
+
+  grouping interfaces-interface-dhcpv6-snooping-trust-top {
+    description "Top level grouping associated with dhcpv6-snooping-trust";
+
+    container dhcpv6-snooping-trust {
+      description "Config and operational parameters associated with dhcpv6-snooping-trust";
+
+      container config {
+        description "Config parameters for dhcpv6-snooping-trust";
+
+        uses interfaces-interface-dhcpv6-snooping-trust-config;
+      }
+      container state {
+        config false;
+        description "State parameters for dhcpv6-snooping-trust";
+
+        uses interfaces-interface-dhcpv6-snooping-trust-config;
+      }
+    }
+  }
+
   grouping interfaces-top {
     description
       "Top-level grouping for interface configuration and
@@ -1026,7 +1252,7 @@ module openconfig-interfaces {
             path "../config/name";
           }
           description
-            "References the configured name of the interface";
+            "References the name of the interface";
             //TODO: need to consider whether this should actually
             //reference the name in the state subtree, which
             //presumably would be the system-assigned name, or the
@@ -1058,6 +1284,9 @@ module openconfig-interfaces {
 
         uses interface-phys-holdtime-top;
         uses subinterfaces-top;
+        uses interfaces-interface-nat-zone-top;
+        uses interfaces-interface-dhcpv4-snooping-trust-top;
+        uses interfaces-interface-dhcpv6-snooping-trust-top;
       }
     }
   }

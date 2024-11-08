@@ -1,0 +1,57 @@
+module openconfig-primary-encryption-key {
+
+  yang-version "1.1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/primary-encryption-key/extension";
+
+  prefix "oc-pek";
+
+  // import some basic types
+  import openconfig-types { prefix oc-types; }
+  import openconfig-extensions { prefix oc-ext; }
+  import ietf-yang-types { prefix yang; }
+
+  // meta
+  organization "SONiC";
+
+  contact "SONIC";
+
+  description
+  "This module defines data for primary encryption key configuration.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2021-10-08" {
+    description
+    "Initial draft revision.";
+    reference "0.1.0";
+  }
+  grouping primary-encryption-key-config {
+    description "Top level grouping for attributes for primary encryption key infra.";
+    leaf configured {
+      type boolean;
+      description
+        "Primary encryption key passphrase is configured or not.";
+    }
+  }
+
+  grouping primary-encryption-key-top {
+    description
+      "Top level grouping for attributes for primary encryption key.";
+
+    container primary-encryption-key {
+      description
+        "Parameters related to primary-encryption-key configuration and status.";
+
+      container state {
+        config false;
+        description
+            "State parameters of primary-encryption-key";
+
+        uses primary-encryption-key-config;
+      }
+    }
+  }
+  uses primary-encryption-key-top;
+}

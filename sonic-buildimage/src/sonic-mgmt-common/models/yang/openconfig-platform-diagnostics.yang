@@ -1,0 +1,1044 @@
+module openconfig-platform-diagnostics {
+  yang-version 1;
+
+  // namespace
+
+  namespace "http://openconfig.net/yang/platform-diagnostics/extension";
+  prefix oc-pf-diag;
+
+  import openconfig-types { prefix oc-types; }
+  import openconfig-extensions { prefix oc-ext; }
+
+  organization
+    "Broadcom Inc.";
+  contact
+    "SONiC";
+  description
+    "SONIC Platform Diagnostics";
+  oc-ext:openconfig-version "1.0.0";
+
+  revision 2023-09-26 {
+    description
+      "Added objects for additional monitored parameters of media eeprom.";
+    reference
+      "1.0.1";
+  }
+
+  revision 2021-03-26 {
+    description
+      "Initial revision.";
+    reference
+      "1.0.0";
+  }
+
+  typedef float-precision2 {
+    type decimal64 {
+      fraction-digits 2;
+    }
+    description "Float with precision 2";
+  }
+
+  typedef cable-diag-status-type {
+    type enumeration {
+      enum SUBMITTED {
+        description
+          "Submitted";
+      }
+      enum IN_PROGRESS {
+        description
+          "In Progress";
+      }
+      enum GEARBOX {
+        description
+          "In Progress(GearBox)";
+      }
+      enum COMPLETED {
+        description
+          "Completed";
+      }
+      enum FAILED {
+        description
+          "Failed";
+      }
+    }
+    description
+      "Cable-Diagnostics Status";
+  }
+
+  grouping openconfig-platform-diagnostics-cable-diag-top {
+    description
+      "Top level of the cable diagnostics task state information";
+    list cable-diagnostics-info {
+      key "ifname";
+      description
+        "Cable diagnostics task list";
+      leaf ifname {
+        type leafref {
+          path "../config/ifname";
+        }
+        description
+          "Interface ID";
+      }
+      container config {
+        description
+          "Configuration data for the conducted cable-diag test";
+        leaf ifname {
+          type string;
+          description
+            "Interface ID";
+        }
+        leaf status {
+          type cable-diag-status-type;
+          description
+            "Status of the conducted cable-diag test";
+        }
+      }
+      container state {
+        config false;
+        description
+          "Operational report for the conducted cable-diag test";
+        leaf ifname {
+          type leafref {
+            path "../../config/ifname";
+          }
+          description
+            "Interface ID";
+        }
+        leaf status {
+          type cable-diag-status-type;
+          description
+            "Status of the conducted cable-diag test";
+        }
+        leaf type {
+          type string;
+          description
+            "Transceiver Type";
+        }
+        leaf vendor {
+          type string {
+            length "1..16";
+          }
+          description
+            "Full name of transceiver vendor. 16-octet field that
+             contains ASCII characters, left-aligned and padded on the
+             right with ASCII spaces (20h)";
+        }
+        leaf vendor-part {
+          type string {
+            length "1..16";
+          }
+          description
+            "Transceiver vendor's part number. 16-octet field that
+             contains ASCII characters, left-aligned and padded on the
+             right with ASCII spaces (20h). If part number is undefined,
+             all 16 octets = 0h";
+        }
+        leaf result {
+          type string;
+          description
+            "Test Result";
+        }
+        leaf length {
+          type string;
+          description
+            "Cable Length";
+        }
+        leaf timestamp {
+          type string;
+          description
+            "Timestamp of the conducted test report";
+        }
+      }
+    }
+  }
+  grouping transceiver-dom-info-additional-values {
+    description
+      "Transceiver additional dom parameter values";
+    leaf signal-noise-ratio0 {
+      type float-precision2;
+      description
+        "Signal to noise ratio of lane 0 in dB";
+    }
+    leaf signal-noise-ratio1 {
+      type float-precision2;
+      description
+        "Signal to noise ratio of lane 1 in dB";
+    }
+    leaf residual-isi-dispersn0 {
+      type float-precision2;
+      description
+        "RESIDUAL_ISI/Dispersion of lane 0 in ps/nm";
+    }
+    leaf residual-isi-dispersn1 {
+      type float-precision2;
+      description
+        "RESIDUAL_ISI/Dispersion of lane 1 in ps/nm";
+    }
+    leaf histogrm-pam4-lvl-transition0 {
+      type float-precision2;
+      description
+        "Histogram, PAM-4 Level Transition of lane 0 in dB";
+    }
+    leaf histogrm-pam4-lvl-transition1 {
+      type float-precision2;
+      description
+        "Histogram, PAM-4 Level Transition of lane 1 in dB";
+    }
+    leaf pre-fec-ber-average {
+	  type string;
+      description
+        "Pre-FEC BER, average";
+    }
+    leaf uncorrected-ber {
+	  type string;
+      description
+        "Uncorrected BER/Frame error rate";
+    }
+    leaf tec-current0 {
+      type float-precision2;
+      description
+        "TEC current of lane 0 in mA";
+    }
+    leaf tec-current1 {
+      type float-precision2;
+      description
+        "TEC current of lane 1 in mA";
+    }
+    leaf laser-frequency0 {
+      type float-precision2;
+      description
+        "Laser frequency of lane 0 in MHz";
+    }
+    leaf laser-frequency1 {
+      type float-precision2;
+      description
+        "Laser frequency of lane 1 in MHz";
+    }
+  }
+
+  grouping transceiver-dom-info-additional-thresholds {
+    description
+      "Transceiver additional dom parameter thresholds";
+    leaf signal-noise-ratio-alarm-low {
+      type float-precision2;
+      description
+        "Signal to noise ratio alarm threshold low in dB";
+    }
+    leaf signal-noise-ratio-alarm-high {
+      type float-precision2;
+      description
+        "Signal to noise ratio alarm threshold high in dB";
+    }
+    leaf signal-noise-ratio-warn-low {
+      type float-precision2;
+      description
+        "Signal to noise ratio warning threshold low in dB";
+    }
+    leaf signal-noise-ratio-warn-high {
+      type float-precision2;
+      description
+        "Signal to noise ratio warning threshold high in dB";
+    }
+    leaf residual-isi-dispersn-alarm-low {
+      type float-precision2;
+      description
+        "RESIDUAL_ISI/Dispersion alarm threshold low in ps/nm";
+    }
+    leaf residual-isi-dispersn-alarm-high {
+      type float-precision2;
+      description
+        "RESIDUAL_ISI/Dispersion alarm threshold high in ps/nm";
+    }
+    leaf residual-isi-dispersn-warn-low {
+      type float-precision2;
+      description
+        "RESIDUAL_ISI/Dispersion warning threshold low in ps/nm";
+    }
+    leaf residual-isi-dispersn-warn-high {
+      type float-precision2;
+      description
+        "RESIDUAL_ISI/Dispersion warning threshold high in ps/nm";
+    }
+    leaf histogrm-pam4-lvl-transition-alarm-low {
+      type float-precision2;
+      description
+        "Histogram, PAM-4 Level Transition alarm threshold low in dB";
+    }
+    leaf histogrm-pam4-lvl-transition-alarm-high {
+      type float-precision2;
+      description
+        "Histogram, PAM-4 Level Transition alarm threshold high in dB";
+    }
+    leaf histogrm-pam4-lvl-transition-warn-low {
+      type float-precision2;
+      description
+        "Histogram, PAM-4 Level Transition warning threshold low in dB";
+    }
+    leaf histogrm-pam4-lvl-transition-warn-high {
+      type float-precision2;
+      description
+        "Histogram, PAM-4 Level Transition warning threshold high in dB";
+    }
+    leaf pre-fec-ber-average-alarm-low {
+	  type string;
+      description
+        "Pre-FEC BER, average alarm threshold low";
+    }
+    leaf pre-fec-ber-average-alarm-high {
+	  type string;
+      description
+        "Pre-FEC BER, average alarm threshold high";
+    }
+    leaf pre-fec-ber-average-warn-low {
+	  type string;
+      description
+        "Pre-FEC BER, average warning threshold low";
+    }
+    leaf pre-fec-ber-average-warn-high {
+	  type string;
+      description
+        "Pre-FEC BER, average warning threshold high";
+    }
+    leaf uncorrected-ber-alarm-low {
+	  type string;
+      description
+        "Uncorrected BER/Frame error rate alarm threshold low";
+    }
+    leaf uncorrected-ber-alarm-high {
+	  type string;
+      description
+        "Uncorrected BER/Frame error rate alarm threshold high";
+    }
+    leaf uncorrected-ber-warn-low {
+	  type string;
+      description
+        "Uncorrected BER/Frame error rate warning threshold low";
+    }
+    leaf uncorrected-ber-warn-high {
+	  type string;
+      description
+        "Uncorrected BER/Frame error rate warning threshold high";
+    }
+    leaf tec-current-alarm-low {
+      type float-precision2;
+      description
+        "TEC current alarm threshold low in mA";
+    }
+    leaf tec-current-alarm-high {
+      type float-precision2;
+      description
+        "TEC current alarm threshold high in mA";
+    }
+    leaf tec-current-warn-low {
+      type float-precision2;
+      description
+        "TEC current warning threshold low in mA";
+    }
+    leaf tec-current-warn-high {
+      type float-precision2;
+      description
+        "TEC current warning threshold high in mA";
+    }
+    leaf laser-frequency-alarm-low {
+      type float-precision2;
+      description
+        "Laser frequency alarm threshold low in MHz";
+    }
+    leaf laser-frequency-alarm-high {
+      type float-precision2;
+      description
+        "Laser frequency warning threshold low in MHz";
+    }
+    leaf laser-frequency-warn-low {
+      type float-precision2;
+      description
+        "Laser frequency warning threshold low in MHz";
+    }
+    leaf laser-frequency-warn-high {
+      type float-precision2;
+      description
+        "Laser frequency warning threshold high in MHz";
+    }
+  }
+
+  grouping openconfig-platform-diagnostics-xcvr-dom-top {
+    description
+      "Top level of the transceiver digital optical monitoring";
+    list transceiver-dom-info {
+      key "ifname";
+      description
+        "Transceiver digital optical monitoring information list";
+      leaf ifname {
+        type leafref {
+          path "../config/ifname";
+        }
+        description
+          "Interface ID";
+      }
+      container config {
+        description
+          "Configuration data for the transceiver digital optical monitoring";
+        leaf ifname {
+          type string;
+          description
+            "Interface ID";
+        }
+      }
+      container state {
+        config false;
+        description
+          "Operational states of the transceiver digital optical monitoring";
+        leaf ifname {
+          type leafref {
+            path "../../config/ifname";
+          }
+          description
+            "Interface ID";
+        }
+        leaf type {
+          type string;
+          description
+            "Transceiver Type";
+        }
+        leaf vendor {
+          type string {
+            length "1..16";
+          }
+          description
+            "Full name of transceiver vendor. 16-octet field that
+             contains ASCII characters, left-aligned and padded on the
+             right with ASCII spaces (20h)";
+        }
+        leaf vendor-part {
+          type string {
+            length "1..16";
+          }
+          description
+            "Transceiver vendor's part number. 16-octet field that
+             contains ASCII characters, left-aligned and padded on the
+             right with ASCII spaces (20h). If part number is undefined,
+             all 16 octets = 0h";
+        }
+        leaf memory-type {
+          type string;
+          description
+            "Type of the upper memory. It's 'Flat' if only page 00h is available,
+             or 'Paged' if the optional pages are available";
+        }
+        leaf cable-class {
+          type string;
+          description
+            "Cable class/Media type of the transceiver";
+        }
+        leaf lane-count {
+          type string;
+          description
+            "Effective lane count of the line side";
+        }
+        leaf wavelength {
+          type float-precision2;
+          description "Wavelength of optical media";
+        }
+        leaf temperature {
+          type float-precision2;
+          description
+            "Internally measured transceiver temperature in degrees Celsius";
+        }
+        leaf voltage {
+          type float-precision2;
+          description
+            "Internally measured transceiver supply voltage in Volts";
+        }
+        leaf rx1-power {
+          type float-precision2;
+          description
+            "Measured Rx received power (dBm) of lane1";
+        }
+        leaf rx2-power {
+          type float-precision2;
+          description
+            "Measured Rx received power (dBm) of lane2";
+        }
+        leaf rx3-power {
+          type float-precision2;
+          description
+            "Measured Rx received power (dBm) of lane3";
+        }
+        leaf rx4-power {
+          type float-precision2;
+          description
+            "Measured Rx received power (dBm) of lane4";
+        }
+        leaf rx5-power {
+          type float-precision2;
+          description
+            "Measured Rx received power (dBm) of lane5";
+        }
+        leaf rx6-power {
+          type float-precision2;
+          description
+            "Measured Rx received power (dBm) of lane6";
+        }
+        leaf rx7-power {
+          type float-precision2;
+          description
+            "Measured Rx received power (dBm) of lane7";
+        }
+        leaf rx8-power {
+          type float-precision2;
+          description
+            "Measured Rx received power (dBm) of lane8";
+        }
+        leaf tx1-bias {
+          type float-precision2;
+          description
+            "Measured Tx bias current (uA) of lane1";
+        }
+        leaf tx2-bias {
+          type float-precision2;
+          description
+            "Measured Tx bias current (uA) of lane2";
+        }
+        leaf tx3-bias {
+          type float-precision2;
+          description
+            "Measured Tx bias current (uA) of lane3";
+        }
+        leaf tx4-bias {
+          type float-precision2;
+          description
+            "Measured Tx bias current (uA) of lane4";
+        }
+        leaf tx5-bias {
+          type float-precision2;
+          description
+            "Measured Tx bias current (uA) of lane5";
+        }
+        leaf tx6-bias {
+          type float-precision2;
+          description
+            "Measured Tx bias current (uA) of lane6";
+        }
+        leaf tx7-bias {
+          type float-precision2;
+          description
+            "Measured Tx bias current (uA) of lane7";
+        }
+        leaf tx8-bias {
+          type float-precision2;
+          description
+            "Measured Tx bias current (uA) of lane8";
+        }
+        leaf tx1-power {
+          type float-precision2;
+          description
+            "Measured Tx output power (dBm) of lane1";
+        }
+        leaf tx2-power {
+          type float-precision2;
+          description
+            "Measured Tx output power (dBm) of lane2";
+        }
+        leaf tx3-power {
+          type float-precision2;
+          description
+            "Measured Tx output power (dBm) of lane3";
+        }
+        leaf tx4-power {
+          type float-precision2;
+          description
+            "Measured Tx output power (dBm) of lane4";
+        }
+        leaf tx5-power {
+          type float-precision2;
+          description
+            "Measured Tx output power (dBm) of lane5";
+        }
+        leaf tx6-power {
+          type float-precision2;
+          description
+            "Measured Tx output power (dBm) of lane6";
+        }
+        leaf tx7-power {
+          type float-precision2;
+          description
+            "Measured Tx output power (dBm) of lane7";
+        }
+        leaf tx8-power {
+          type float-precision2;
+          description
+            "Measured Tx output power (dBm) of lane8";
+        }
+        leaf alarm-temp-hi {
+          type float-precision2;
+          description
+            "Alarm threshold for high transceiver temperature in degrees Celsius";
+        }
+        leaf alarm-temp-lo {
+          type float-precision2;
+          description
+            "Alarm threshold for low transceiver temperature in degrees Celsius";
+        }
+        leaf alarm-volt-hi {
+          type float-precision2;
+          description
+            "Alarm threshold for high transceiver supply voltage in Volts";
+        }
+        leaf alarm-volt-lo {
+          type float-precision2;
+          description
+            "Alarm threshold for low transceiver supply voltage in Volts";
+        }
+        leaf alarm-rx-power-hi {
+          type float-precision2;
+          description
+            "Alarm threshold for high Rx received power in dBm";
+        }
+        leaf alarm-rx-power-lo {
+          type float-precision2;
+          description
+            "Alarm threshold for low Rx received power in dBm";
+        }
+        leaf alarm-tx-bias-hi {
+          type float-precision2;
+          description
+            "Alarm threshold for high Tx bias current in uA";
+        }
+        leaf alarm-tx-bias-lo {
+          type float-precision2;
+          description
+            "Alarm threshold for low Tx bias current in uA";
+        }
+        leaf alarm-tx-power-hi {
+          type float-precision2;
+          description
+            "Alarm threshold for high Tx output power in dBm";
+        }
+        leaf alarm-tx-power-lo {
+          type float-precision2;
+          description
+            "Alarm threshold for low Tx output power in dBm";
+        }
+        leaf warning-temp-hi {
+          type float-precision2;
+          description
+            "Warning threshold for high transceiver temperature";
+        }
+        leaf warning-temp-lo {
+          type float-precision2;
+          description
+            "Warning threshold for low transceiver temperature";
+        }
+        leaf warning-volt-hi {
+          type float-precision2;
+          description
+            "Warning threshold for high transceiver supply voltage in Volts";
+        }
+        leaf warning-volt-lo {
+          type float-precision2;
+          description
+            "Warning threshold for low transceiver supply voltage in Volts";
+        }
+        leaf warning-rx-power-hi {
+          type float-precision2;
+          description
+            "Warning threshold for high Rx received power in dBm";
+        }
+        leaf warning-rx-power-lo {
+          type float-precision2;
+          description
+            "Warning threshold for low Rx received power in dBm";
+        }
+        leaf warning-tx-bias-hi {
+          type float-precision2;
+          description
+            "Warning threshold for high Tx bias current in uA";
+        }
+        leaf warning-tx-bias-lo {
+          type float-precision2;
+          description
+            "Warning threshold for low Tx bias current in uA";
+        }
+        leaf warning-tx-power-hi {
+          type float-precision2;
+          description
+            "Warning threshold for high Tx output power in dBm";
+        }
+        leaf warning-tx-power-lo {
+          type float-precision2;
+          description
+            "Warning threshold for low Tx output power in dBm";
+        }
+        leaf timestamp {
+          type string;
+          description
+            "Timestamp of the diagnostics statistics";
+        }
+        uses transceiver-dom-info-additional-values;
+        uses transceiver-dom-info-additional-thresholds;
+      }
+    }
+  }
+
+  grouping openconfig-platform-diagnostics-xcvr-diag-loopbacks-top {
+    description
+      "Configuration parameters for QSFPDD CMIS diagnostics";
+    leaf lb-host-input {
+      type boolean;
+      default "false";
+      description
+        "Loopback by forwarding data from input to output of the host side";
+    }
+    leaf lb-host-output {
+      type boolean;
+      default "false";
+      description
+        "Loopback by forwarding data from output to input of the host side";
+    }
+    leaf lb-media-input {
+      type boolean;
+      default "false";
+      description
+        "Loopback by forwarding data from input to output of the media side";
+    }
+    leaf lb-media-output {
+      type boolean;
+      default "false";
+      description
+        "Loopback by forwarding data from output to input of the media side";
+    }
+  }
+
+  grouping openconfig-platform-diagnostics-xcvr-diag-capabilities-top {
+    description
+      "Diagnostic capabilities";
+    leaf loopback {
+      type string;
+      description
+        "Loopback capabilities";
+    }
+    leaf pattern {
+      type string;
+      description
+        "General pattern capabilities";
+    }
+    leaf report {
+      type string;
+      description
+        "Diagnostic reporting capabilities";
+    }
+    leaf pattern-gen-host {
+      type string;
+      description
+        "Supported pattern list in Host side generator mode, separated by commas.";
+    }
+    leaf pattern-gen-media {
+      type string;
+      description
+        "Supported pattern list in Media side generator mode, separated by commas.";
+    }
+    leaf pattern-chk-host {
+      type string;
+      description
+        "Supported pattern list in Host side checker mode, separated by commas.";
+    }
+    leaf pattern-chk-media {
+      type string;
+      description
+        "Supported pattern list in Media side checker mode, separated by commas.";
+    }
+  }
+
+  grouping openconfig-platform-diagnostics-xcvr-diag-reports-top {
+    description
+      "Diagnostic reports";
+    leaf ber1 {
+      type string;
+      description
+        "Bit error rate of lane-1";
+    }
+    leaf ber2 {
+      type string;
+      description
+        "Bit error rate of lane-2";
+    }
+    leaf ber3 {
+      type string;
+      description
+        "Bit error rate of lane-3";
+    }
+    leaf ber4 {
+      type string;
+      description
+        "Bit error rate of lane-4";
+    }
+    leaf ber5 {
+      type string;
+      description
+        "Bit error rate of lane-5";
+    }
+    leaf ber6 {
+      type string;
+      description
+        "Bit error rate of lane-6";
+    }
+    leaf ber7 {
+      type string;
+      description
+        "Bit error rate of lane-7";
+    }
+    leaf ber8 {
+      type string;
+      description
+        "Bit error rate of lane-8";
+    }
+    leaf snr1 {
+      type string;
+      description
+        "Signal noise ratio of lane-1";
+    }
+    leaf snr2 {
+      type string;
+      description
+        "Signal noise ratio of lane-2";
+    }
+    leaf snr3 {
+      type string;
+      description
+        "Signal noise ratio of lane-3";
+    }
+    leaf snr4 {
+      type string;
+      description
+        "Signal noise ratio of lane-4";
+    }
+    leaf snr5 {
+      type string;
+      description
+        "Signal noise ratio of lane-5";
+    }
+    leaf snr6 {
+      type string;
+      description
+        "Signal noise ratio of lane-6";
+    }
+    leaf snr7 {
+      type string;
+      description
+        "Signal noise ratio of lane-7";
+    }
+    leaf snr8 {
+      type string;
+      description
+        "Signal noise ratio of lane-8";
+    }
+  }
+
+  grouping openconfig-platform-diagnostics-xcvr-diag-patterns-top {
+    description
+      "Pseudorandom binary sequence pattern generation and checking";
+    leaf pattern-gen-host {
+      type boolean;
+      default "false";
+      description
+        "Enable PRBS pattern generation at the host side";
+    }
+    leaf pattern-gen-media {
+      type boolean;
+      default "false";
+      description
+        "Enable PRBS pattern generation at the media side";
+    }
+    leaf pattern-chk-host {
+      type boolean;
+      default "false";
+      description
+        "Enable PRBS pattern checking at the host side";
+    }
+    leaf pattern-chk-media {
+      type boolean;
+      default "false";
+      description
+        "Enable PRBS pattern checking at the media side";
+    }
+    leaf pattern-gen-host-fec {
+      type boolean;
+      default "false";
+      description
+        "Enable FEC for PRBS pattern generation at the host side";
+    }
+    leaf pattern-gen-media-fec {
+      type boolean;
+      default "false";
+      description
+        "Enable FEC for PRBS pattern generation at the media side";
+    }
+    leaf pattern-chk-host-fec {
+      type boolean;
+      default "false";
+      description
+        "Enable FEC for PRBS pattern checking at the host side";
+    }
+    leaf pattern-chk-media-fec {
+      type boolean;
+      default "false";
+      description
+        "Enable FEC for PRBS pattern checking at the media side";
+    }
+  }
+
+  grouping openconfig-platform-diagnostics-xcvr-diag-top {
+    description
+      "Top level grouping for CMIS diagnostics";
+    list transceiver-diagnostics-list {
+      key "ifname";
+      description
+        "CMIS diagnostic controls";
+      leaf ifname {
+        type leafref {
+          path "../config/ifname";
+        }
+        description
+          "Interface ID";
+      }
+      container config {
+        description
+          "Configuration data for CMIS diagnostic controls";
+        leaf ifname {
+          type string;
+          description
+            "Interface ID";
+        }
+        uses openconfig-platform-diagnostics-xcvr-diag-loopbacks-top;
+        uses openconfig-platform-diagnostics-xcvr-diag-patterns-top;
+      }
+      container state {
+        config false;
+        description
+          "Operational states for CMIS diagnostic controls";
+        leaf ifname {
+          type leafref {
+            path "../../config/ifname";
+          }
+          description
+            "Interface ID";
+        }
+        uses openconfig-platform-diagnostics-xcvr-diag-loopbacks-top;
+        uses openconfig-platform-diagnostics-xcvr-diag-patterns-top;
+        container capabilities {
+          description
+            "QSFPDD CMIS diagnostic capabilities";
+          uses openconfig-platform-diagnostics-xcvr-diag-capabilities-top;
+        }
+        container reports {
+          description
+            "QSFPDD CMIS diagnostic reports";
+          container host {
+            description
+              "QSFPDD CMIS diagnostic reports for the host/system side";
+            uses openconfig-platform-diagnostics-xcvr-diag-reports-top;
+          }
+          container media {
+            description
+              "QSFPDD CMIS diagnostic reports for the media/line side";
+            uses openconfig-platform-diagnostics-xcvr-diag-reports-top;
+          }
+        }
+      }
+    }
+  }
+
+  grouping openconfig-platform-diagnostics-xcvr-cmis-top {
+    description
+      "Top level of the CMIS transceivers";
+    list transceiver-cmis-info {
+      key "ifname";
+      description
+        "CMIS transceiver list";
+      leaf ifname {
+        type leafref {
+          path "../config/ifname";
+        }
+        description
+          "Interface ID";
+      }
+      container config {
+        description
+          "Configuration data for the CMIS transceiver";
+        leaf ifname {
+          type string;
+          description
+            "Interface ID";
+        }
+        leaf appsel {
+          type uint8 {
+            range "1 .. 15";
+          }
+          description
+            "Application Selection Code";
+        }
+      }
+      container state {
+        config false;
+        description
+          "Operational states of the CMIS transceiver";
+        leaf ifname {
+          type leafref {
+            path "../../config/ifname";
+          }
+          description
+            "Interface ID";
+        }
+        leaf type {
+          type string;
+          description
+            "Transceiver Type";
+        }
+        leaf revision {
+          type string;
+          description
+            "CMIS Revision Id";
+        }
+        leaf appsel {
+          type uint8 {
+            range "1 .. 15";
+          }
+          description
+            "Application Selection Code";
+        }
+        leaf status {
+          type string;
+          description
+            "Transceiver Status";
+        }
+      }
+    }
+  }
+
+  grouping openconfig-platform-diagnostics-top {
+    description
+      "Top-level grouping for Platform Diagnostics";
+    container cable-diagnostics {
+      description
+        "Top level container for Cable Diagnostics";
+      uses openconfig-platform-diagnostics-cable-diag-top;
+    }
+    container transceiver-cmis {
+      description
+        "Top level container for CMIS Transceivers";
+      uses openconfig-platform-diagnostics-xcvr-cmis-top;
+    }
+    container transceiver-diagnostics {
+      description
+        "Top level container for Transceiver Diagnostics";
+      uses openconfig-platform-diagnostics-xcvr-diag-top;
+    }
+    container transceiver-dom {
+      description
+        "Top level container for Transceiver Digital Optical Monitoring";
+      uses openconfig-platform-diagnostics-xcvr-dom-top;
+    }
+  }
+
+  uses openconfig-platform-diagnostics-top;
+}

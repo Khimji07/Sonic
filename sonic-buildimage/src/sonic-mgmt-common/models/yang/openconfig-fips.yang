@@ -1,0 +1,57 @@
+module openconfig-fips {
+    yang-version "1";
+    namespace "http://openconfig.net/yang/fips/extension";
+    prefix "oc-fips";
+    import openconfig-extensions { prefix "oc-ext"; }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "This module contains a collection of YANG definitions for FIPS compliant mode";
+
+    oc-ext:openconfig-version "0.1.0";
+
+    revision 2023-12-29 {
+        description "Initial revision.";
+        reference "0.1.0";
+    }
+
+    grouping fips-config {
+        description "FIPS compliant mode configuration";
+
+        leaf fips-mode {
+            type boolean;
+            description "Enable or Disable FIPS compliant mode of the system";
+        }
+    }
+
+    grouping fips-top {
+        description "Top level FIPS configurations";
+        container fips {
+
+            description
+              "FIPS configuration and status commands";
+
+            container config {
+                description
+                    "FIPS configuration commands";
+                uses fips-config;
+            }
+
+            container state{
+                config false;
+                description
+                  "FIPS status commands";
+                uses fips-config;
+            }
+
+        }
+    }
+
+    uses fips-top;
+
+}

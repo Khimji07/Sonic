@@ -1,0 +1,18 @@
+module openconfig-ip-helper-rpc-annot {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/openconfig-ip-helper-rpc-annot";
+    prefix "openconfig-ip-helper-rpc-annot";
+
+    import openconfig-ip-helper-rpc { prefix oc-ip-helper-rpc; }
+    import sonic-extensions { prefix sonic-ext; }
+
+    deviation /oc-ip-helper-rpc:clear-ip-helper-statistics {
+        deviate add {
+           sonic-ext:rpc-callback "rpc_clear_ip_helper";
+           sonic-ext:user-role-priv "rpc:netadmin";
+        }
+    }
+
+}

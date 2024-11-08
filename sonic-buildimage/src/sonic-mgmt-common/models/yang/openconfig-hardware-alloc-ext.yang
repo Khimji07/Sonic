@@ -1,0 +1,833 @@
+module openconfig-hardware-alloc-ext {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/hardware-alloc/extension";
+
+    prefix "oc-hardware-alloc-ext";
+
+    import openconfig-extensions { prefix oc-ext; }
+
+    // meta
+    organization "SONiC";
+
+    contact
+        "SONiC
+        https://github.com/Azure/SONiC";
+
+    description
+        "This model describes the hardware allocation extensions.";
+
+    oc-ext:openconfig-version "0.1.0";
+
+    revision 2021-08-24 {
+        description
+            "Added support for hardware allocation.";
+
+        reference "0.1.0";
+    }
+
+    identity TCAM_FEATURE {
+        description
+            "Base identity for Hardware Tcam Feature";
+    }
+
+    identity L2_ACL {
+        base TCAM_FEATURE;
+        description
+            "TCAM for ACL feature of type L2";
+    }
+
+    identity L3_ACL {
+        base TCAM_FEATURE;
+        description
+            "TCAM for ACL feature of type L3";
+    }
+
+    identity L3V6_ACL {
+        base TCAM_FEATURE;
+        description
+            "TCAM for ACL feature of type L3V6";
+    }
+
+    identity FORWARDING_FBS {
+        base TCAM_FEATURE;
+        description
+            "TCAM for FBS feature of type FORWARDING";
+    }
+
+    identity MONITORING_FBS {
+        base TCAM_FEATURE;
+        description
+            "TCAM for FBS feature of type MONITORING";
+    }
+
+    identity QOS_FBS {
+        base TCAM_FEATURE;
+        description
+            "TCAM for FBS feature of type QOS";
+    }
+
+    identity FBS {
+        base TCAM_FEATURE;
+        description
+            "TCAM for FBS feature";
+    }
+
+    identity TAM {
+        base TCAM_FEATURE;
+        description
+            "TCAM for Telemetry feature";
+    }
+
+    identity MLAG {
+        base TCAM_FEATURE;
+        description
+            "TCAM for MCLAG feature";
+    }
+
+    identity PFCWD {
+        base TCAM_FEATURE;
+        description
+            "TCAM for PFC Watchdog feature";
+    }
+
+    identity TCAM_FEATURE_STAGE {
+        description
+            "Base identity for Hardware Tcam Feature Stage";
+    }
+
+    identity INGRESS {
+        base TCAM_FEATURE_STAGE;
+        description
+            "Hardware Tcam Feature Ingress Stage";
+    }
+
+    identity EGRESS {
+        base TCAM_FEATURE_STAGE;
+        description
+            "Hardware Tcam Feature Egress Stage";
+    }
+
+    grouping hardware-alloc-ext-tcam-allocation-feature-config {
+        description
+            "Configuration data for Hardware TCAM feature allocation";
+
+        leaf feature {
+            type identityref {
+                base TCAM_FEATURE;
+            }
+
+            description
+                "Access-list or Flow-based-service Tcam Feature";
+        }
+
+        leaf key-profile {
+            type string;
+
+            description
+                "Key profile for Tcam Feature";
+        }
+
+        leaf size {
+            type uint16;
+
+            description
+                "Size of the Tcam Feature";
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-allocation-feature-state {
+        description
+            "Operational state for Hardware TCAM feature allocation data";
+    }
+
+    grouping hardware-alloc-ext-tcam-allocation-ingress-top {
+        description
+            "Top-level grouping for Hardware TCAM ingress allocation data";
+
+        container ingress-features {
+            description
+                "Enclosing container the list of TCAM ingress feature entries";
+
+            list ingress-feature {
+                key "feature";
+                description
+                    "List of TCAM ingress feature entry";
+
+                leaf feature {
+                    type leafref {
+                        path "../config/feature";
+                    }
+
+                    description
+                        "Reference to feature list key";
+                }
+
+                container config {
+                    description
+                        "Configuration data";
+
+                    uses hardware-alloc-ext-tcam-allocation-feature-config;
+                }
+
+                container state {
+                    config false;
+                    
+                    description
+                        "Operational state data for Hardware Allocation TCAM ingress feature";
+
+                    uses hardware-alloc-ext-tcam-allocation-feature-config;
+                    uses hardware-alloc-ext-tcam-allocation-feature-state;
+                }
+            }
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-allocation-egress-top {
+        description
+            "Top-level grouping for Hardware TCAM egress allocation data";
+
+        container egress-features {
+            description
+                "Enclosing container the list of TCAM egress feature entries";
+
+            list egress-feature {
+                key "feature";
+                description
+                    "List of TCAM egress feature entry";
+
+                leaf feature {
+                    type leafref {
+                        path "../config/feature";
+                    }
+
+                    description
+                        "Reference to feature list key";
+                }
+
+                container config {
+                    description
+                        "Configuration data";
+
+                    uses hardware-alloc-ext-tcam-allocation-feature-config;
+                }
+
+                container state {
+                    config false;
+                    
+                    description
+                        "Operational state data for Hardware Allocation TCAM egress feature";
+
+                    uses hardware-alloc-ext-tcam-allocation-feature-config;
+                    uses hardware-alloc-ext-tcam-allocation-feature-state;
+                }
+            }
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-allocation-config {
+        description
+            "Global configuration data for Hardware TCAM allocation";
+    }
+
+    grouping hardware-alloc-ext-tcam-allocation-state {
+        description
+            "Global operational state data for Hardware TCAM allocation";
+    }
+
+    grouping hardware-alloc-ext-tcam-allocation-top {
+        description
+            "Top-level grouping for Hardware TCAM allocation data";
+
+        container allocation {
+            description
+                "Top-level enclosing container for Hardware TCAM allocation model
+                config and operational state data";
+
+            container config {
+                description
+                    "Configuration for Hardware TCAM allocation data";
+
+                uses hardware-alloc-ext-tcam-allocation-config;
+            }
+
+            container state {
+                config false;
+
+                description
+                    "Operational state for Hardware TCAM allocation data";
+
+                uses hardware-alloc-ext-tcam-allocation-config;
+                uses hardware-alloc-ext-tcam-allocation-state;
+            }
+
+            uses hardware-alloc-ext-tcam-allocation-ingress-top;
+            uses hardware-alloc-ext-tcam-allocation-egress-top;
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-key-profile-entry-state {
+        description
+            "Operational state for Hardware Allocation TCAM key-profile entry data";
+
+        leaf name {
+            type string;
+
+            description
+                "Name of the TCAM key-profile";
+        }
+
+        leaf ether-type {
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that EtherType field is 
+                present in the key-profile";
+        }
+
+        leaf vlan {
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that Vlan field is 
+                present in the key-profile";
+        }
+
+        leaf src-mac {
+            when "((current()/../../../../feature = 'L2_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            default false;
+            description
+                "If set to true, this field indicates that source mac field is 
+                present in the key-profile";
+        }
+
+        leaf dst-mac {
+            when "((current()/../../../../feature = 'L2_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that destination mac field is 
+                present in the key-profile";
+        }
+
+        leaf pcp {
+            when "((current()/../../../../feature = 'L2_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that pcp field is 
+                present in the key-profile";
+        }
+
+        leaf dei {
+            when "((current()/../../../../feature = 'L2_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that dei field is 
+                present in the key-profile";
+        }
+
+        leaf ip-protocol {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that IP Protocol is 
+                present in the key-profile";
+        }
+
+        leaf dscp {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that DSCP is 
+                present in the key-profile";
+        }
+
+        leaf src-ip {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that ip source field is 
+                present in the key-profile";
+        }
+
+        leaf dst-ip {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that ip destination field is 
+                present in the key-profile";
+        }
+
+        leaf src-ipv6 {
+            when "((current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that ipv6 source field is 
+                present in the key-profile";
+        }
+
+        leaf dst-ipv6 {
+            when "((current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            default false;
+
+            description
+                "If set to true, this field indicates that ipv6 destination field is 
+                present in the key-profile";
+        }
+
+        leaf tcp-flags {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            must "current()/../ip-protocol = 'true'" {
+                error-message "TCP Flags can be included only when IP Protocol is included.";
+            }
+            default false;
+            description
+                "If set to true, this field indicates that TCP flags field is 
+                present in the key-profile";
+        }
+
+        leaf icmp-type {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            must "current()/../ip-protocol = 'true'" {
+                error-message "ICMP Type can be included only when IP Protocol is included.";
+            }
+            default false;
+
+            description
+                "If set to true, this field indicates that icmp type is 
+                present in the key-profile";
+        }
+
+        leaf icmp-code {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            must "current()/../ip-protocol = 'true'" {
+                error-message "ICMP Code can be included only when IP Protocol is included.";
+            }
+            default false;
+
+            description
+                "If set to true, this field indicates that icmp code is 
+                present in the key-profile";
+        }
+
+        leaf l4-src-port {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            must "current()/../ip-protocol = 'true'" {
+                error-message "L4 Source Port can be included only when IP Protocol is included.";
+            }
+            default false;
+
+            description
+                "If set to true, this field indicates that L4 Src Port is 
+                present in the key-profile";
+        }
+
+        leaf l4-src-port-range {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            must "current()/../ip-protocol = 'true'" {
+                error-message "L4 Source Port Range can be included only when IP Protocol is included.";
+            }
+            default false;
+
+            description
+                "If set to true, this field indicates that L4 Src port range is 
+                present in the key-profile";
+        }
+
+        leaf l4-dst-port {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            must "current()/../ip-protocol = 'true'" {
+                error-message "L4 Destination Port can be included only when IP Protocol is included.";
+            }
+            default false;
+
+            description
+                "If set to true, this field indicates that L4 Dst port is 
+                present in the key-profile";
+        }
+
+        leaf l4-dst-port-range {
+            when "((current()/../../../../feature = 'L3_ACL') or (current()/../../../../feature = 'L3V6_ACL') or (current()/../../../../feature = 'FBS'))";
+            type boolean;
+            must "current()/../ip-protocol = 'true'" {
+                error-message "L4 Destination Port Range can be included only when IP Protocol is included.";
+            }
+            default false;
+
+            description
+                "If set to true, this field indicates that L4 Dst port range is 
+                present in the key-profile";
+        }
+
+        leaf width {
+            type string;
+
+            description
+                "Width of the TCAM Key-profile entry";
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-key-profile-entries-top {
+        description
+            "Top-level grouping for Hardware Allocation TCAM key-profile entries data";
+
+        container key-profiles {
+            config false;
+            description
+                "Enclosing container the list of TCAM key-profiles";
+
+            list key-profile {
+                key "name";
+                description
+                    "List of TCAM key-profile";
+
+                leaf name {
+                    type leafref {
+                        path "../state/name";
+                    }
+
+                    description
+                        "Reference to feature list key";
+                }
+                container state {
+                    config false;
+                    
+                    description
+                        "Operational state data for Hardware Allocation TCAM key-profile";
+
+                    uses hardware-alloc-ext-tcam-key-profile-entry-state;
+                }
+            }
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-key-profile-feature-state {
+        description
+            "Operational state for Hardware Allocation TCAM feature data";
+
+        leaf feature {
+            type identityref {
+                base TCAM_FEATURE;
+            }
+
+            must "(./feature != 'FORWARDING_FBS') and (./feature != 'MONITORING_FBS') and (./feature != 'QOS_FBS')" {
+                error-message "QoS/Forwarding/Monitoring FBS is not allowed as feature value";
+            }
+
+            description
+                "Access-list or Flow-based-service Tcam Feature";
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-key-profile-ingress-top {
+        description
+            "Top-level grouping for Hardware Allocation TCAM ingress key-profile data";
+
+        container ingress-features {
+            config false;
+            description
+                "Enclosing container the list of TCAM ingress feature key-profile entries";
+
+            list ingress-feature {
+                key "feature";
+                description
+                    "List of TCAM ingress feature key-profile entry";
+
+                leaf feature {
+                    type leafref {
+                        path "../state/feature";
+                    }
+
+                    description
+                        "Reference to feature list key";
+                }
+
+                container state {
+                    config false;
+                    
+                    description
+                        "Operational state data for Hardware Allocation TCAM ingress feature key-profile";
+
+                    uses hardware-alloc-ext-tcam-key-profile-feature-state;
+                }
+                uses hardware-alloc-ext-tcam-key-profile-entries-top;
+            }
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-key-profile-egress-top {
+        description
+            "Top-level grouping for Hardware Allocation TCAM egress key-profile data";
+
+        container egress-features {
+            config false;
+            description
+                "Enclosing container the list of TCAM egress feature key-profile entries";
+
+            list egress-feature {
+                key "feature";
+                description
+                    "List of TCAM egress feature key-profile entry";
+
+                leaf feature {
+                    type leafref {
+                        path "../state/feature";
+                    }
+
+                    description
+                        "Reference to feature list key";
+                }
+
+                container state {
+                    config false;
+                    
+                    description
+                        "Operational state data for Hardware Allocation TCAM egress feature key-profile";
+
+                    uses hardware-alloc-ext-tcam-key-profile-feature-state;
+                }
+
+                uses hardware-alloc-ext-tcam-key-profile-entries-top;
+            }
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-key-profile-state {
+        description
+            "Global operational state data for Hardware Allocation TCAM key-profile";
+    }
+
+    grouping hardware-alloc-ext-tcam-key-profile-top {
+        description
+            "Top-level grouping for Hardware Allocation TCAM key-profile data";
+
+        container key-profile {
+            description
+                "Top-level enclosing container for Hardware Allocation TCAM key-profile model
+                operational state data";
+
+            container state {
+                config false;
+
+                description
+                    "Operational state for Hardware Allocation TCAM key-profile data";
+
+                uses hardware-alloc-ext-tcam-key-profile-state;
+            }
+
+            uses hardware-alloc-ext-tcam-key-profile-ingress-top;
+            uses hardware-alloc-ext-tcam-key-profile-egress-top;
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-resource-feature-state {
+        description
+            "Operational state for Hardware Allocation TCAM feature data";
+
+        leaf max-slices {
+            type uint8 {
+                range "1..16";
+            }
+
+            description
+                "Maximum number of slices in the Hardware TCAM";
+        }
+
+        leaf utilized-slices {
+            type uint8 {
+                range "1..16";
+            }
+
+            description
+                "Number of slices utilized in the Hardware TCAM";
+        }
+
+        leaf max-features {
+            type uint8 {
+                range "1..16";
+            }
+
+            description
+                "Maximum number of features in the Hardware TCAM";
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-resource-ingress-top {
+        description
+            "Top-level grouping for Hardware Allocation TCAM ingress resource data";
+
+        container ingress-feature {
+            config false;
+            description
+                "Enclosing container of TCAM ingress feature resource data";
+
+            container state {
+                config false;
+                    
+                description
+                    "Operational state data for Hardware Allocation TCAM ingress feature resource";
+
+                uses hardware-alloc-ext-tcam-resource-feature-state;
+            }
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-resource-egress-top {
+        description
+            "Top-level grouping for Hardware Allocation TCAM egress resource data";
+
+        container egress-feature {
+            config false;
+            description
+                "Enclosing container of TCAM egress feature resource data";
+
+            container state {
+                config false;
+                    
+                description
+                    "Operational state data for Hardware Allocation TCAM egress feature resource";
+
+                uses hardware-alloc-ext-tcam-resource-feature-state;
+            }
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-resource-state {
+        description
+            "Global operational state data for Hardware Allocation TCAM resource";
+    }
+
+    grouping hardware-alloc-ext-tcam-resource-top {
+        description
+            "Top-level grouping for Hardware Allocation TCAM resource data";
+
+        container resource {
+            description
+                "Top-level enclosing container for Hardware Allocation TCAM resource model
+                operational state data";
+
+            container state {
+                config false;
+
+                description
+                    "Operational state for Hardware Allocation TCAM resource data";
+
+                uses hardware-alloc-ext-tcam-resource-state;
+            }
+
+            uses hardware-alloc-ext-tcam-resource-ingress-top;
+            uses hardware-alloc-ext-tcam-resource-egress-top;
+        }
+    }
+
+    grouping hardware-alloc-ext-tcam-config {
+        description
+            "Global configuration data for Hardware Allocation TCAM";
+    }
+
+    grouping hardware-alloc-ext-tcam-state {
+        description
+            "Global operational state data for Hardware Allocation TCAM";
+    }
+
+    grouping hardware-alloc-ext-tcam-top {
+        description
+            "Top-level grouping for Hardware Allocation TCAM data";
+
+        container tcam {
+            description
+                "Top-level enclosing container for Hardware Allocation TCAM model
+                config and operational state data";
+
+            container config {
+                description
+                    "Configuration for Hardware Allocation TCAM data";
+
+                uses hardware-alloc-ext-tcam-config;
+            }
+
+            container state {
+                config false;
+
+                description
+                    "Operational state for Hardware Allocation TCAM data";
+
+                uses hardware-alloc-ext-tcam-config;
+                uses hardware-alloc-ext-tcam-state;
+            }
+
+            uses hardware-alloc-ext-tcam-allocation-top;
+            uses hardware-alloc-ext-tcam-key-profile-top;
+            uses hardware-alloc-ext-tcam-resource-top;
+        }
+    }
+
+    grouping hardware-alloc-ext-config {
+        description
+            "Global configuration data for Hardware Allocation";
+    }
+
+    grouping hardware-alloc-ext-state {
+        description
+            "Global operational state data for Hardware Allocation";
+    }
+
+    grouping hardware-alloc-ext-top {
+        description
+            "Top-level grouping for Hardware allocation data";
+
+        container hardware-alloc {
+            description
+                "Top-level enclosing container for Hardware model
+                config and operational state data";
+
+            container config {
+                description
+                    "Configuration for Hardware data";
+
+                uses hardware-alloc-ext-config;
+            }
+
+            container state {
+                config false;
+
+                description
+                    "Operational state for Hardware data";
+
+                uses hardware-alloc-ext-config;
+                uses hardware-alloc-ext-state;
+            }
+
+            uses hardware-alloc-ext-tcam-top;
+        }
+    }
+
+    //data definition statements
+    uses hardware-alloc-ext-top;
+}

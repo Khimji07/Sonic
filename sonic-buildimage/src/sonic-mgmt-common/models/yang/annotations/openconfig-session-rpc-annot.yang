@@ -1,0 +1,21 @@
+module openconfig-session-rpc-annot {
+  yang-version "1";
+  namespace "http://openconfig.net/yang/annotation/openconfig-session-rpc";
+  prefix "oc-sess-rpc-annot";
+
+  import openconfig-session-rpc { prefix "oc-sess-rpc"; }
+  import sonic-extensions { prefix "sonic-ext"; }
+
+  deviation /oc-sess-rpc:get-config-session {
+    deviate add {
+      sonic-ext:user-role-priv "rpc:netadmin,secadmin,operator";
+    }
+  }
+
+  deviation /oc-sess-rpc:kill-config-session {
+    deviate add {
+      sonic-ext:user-role-priv "rpc:admin";
+    }
+  }
+
+}

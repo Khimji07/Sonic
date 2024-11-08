@@ -1,0 +1,104 @@
+module openconfig-network-policy-ext-annot {
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/annotation/openconfig-network-policy-ext-annot";
+    prefix "oc-network-policy-ext-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import openconfig-network-policy-ext { prefix oc-nwp-ext; }
+
+    // meta
+    organization
+       "SONiC";
+
+    contact
+       "SONiC";
+
+    description
+       "SONIC Network Policy";
+
+    revision 2021-05-03 {
+       description
+          "Initial revision.";
+    }
+
+    deviation /oc-nwp-ext:network-policies {
+        deviate add {
+            sonic-ext:user-role-priv "write:netadmin";
+        }
+    }
+
+    deviation /oc-nwp-ext:network-policies {
+        deviate add {
+            sonic-ext:pre-transformer "network_policy_pre_xfmr";
+        }
+    }
+
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy {
+        deviate add {
+            sonic-ext:table-name "NETWORK_POLICY_PROFILE";
+        }
+    }
+	
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:number {
+        deviate add {
+            sonic-ext:field-transformer "network_policy_num_xfmr";
+        }
+	}
+
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:config/oc-nwp-ext:number {
+        deviate add {
+            sonic-ext:field-transformer "network_policy_num_xfmr";
+        }
+	}
+
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:state/oc-nwp-ext:number {
+        deviate add {
+            sonic-ext:field-transformer "network_policy_num_xfmr";
+        }
+	}
+
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:applications/oc-nwp-ext:application {
+        deviate add {
+            sonic-ext:table-name "NETWORK_POLICY_APP";
+            sonic-ext:key-transformer "network_policy_app_key_xfmr";
+        }
+    }
+	
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:applications/oc-nwp-ext:application/oc-nwp-ext:type {
+        deviate add {
+            sonic-ext:field-transformer "network_policy_app_type_xfmr";
+        }
+	}
+
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:applications/oc-nwp-ext:application/oc-nwp-ext:config/oc-nwp-ext:type {
+        deviate add {
+            sonic-ext:field-transformer "network_policy_app_type_xfmr";
+        }
+	}
+
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:applications/oc-nwp-ext:application/oc-nwp-ext:state/oc-nwp-ext:type {
+        deviate add {
+            sonic-ext:field-transformer "network_policy_app_type_xfmr";
+        }
+	}
+
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:applications/oc-nwp-ext:application/oc-nwp-ext:config/oc-nwp-ext:vlan-id {
+        deviate add {
+            sonic-ext:field-name "vlan";
+        }
+	}
+
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:applications/oc-nwp-ext:application/oc-nwp-ext:state/oc-nwp-ext:vlan-id {
+        deviate add {
+            sonic-ext:field-name "vlan";
+        }
+	}
+
+    deviation /oc-nwp-ext:network-policies/oc-nwp-ext:network-policy/oc-nwp-ext:applications/oc-nwp-ext:application/oc-nwp-ext:state/oc-nwp-ext:tagged {
+        deviate add {
+            sonic-ext:field-transformer "network_policy_app_tagged_xfmr";
+        }
+	}
+}
+

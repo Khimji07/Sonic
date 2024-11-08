@@ -1,0 +1,66 @@
+module openconfig-authmgr-rpc {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/authmgr-rpc/extension";
+
+  prefix "oc-authmgr-rpc";
+
+  import ietf-yang-types {
+        prefix yang;
+  }
+  import openconfig-extensions { prefix oc-ext; }
+
+  // meta
+  organization "OpenConfig working group";
+
+  contact
+    "OpenConfig working group
+    www.openconfig.net";
+
+  description
+    "This module defines rpc configuration 
+    for authentication manager.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2022-07-08" {
+    description
+      "Initial public revision";
+    reference "0.1.0";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  rpc clear-authmgr-sessions {
+    description "RPC for clearing authmgr authentication sessions on interface. Input can be :
+        1. Single interface name
+        2. All interfaces
+        3. Client MAC address";
+
+    input {
+        leaf interface {
+            type string;
+            description
+                "Interface for which clear operation needs to be performed";
+        }
+    }
+  }
+
+  rpc clear-authmgr-history {
+    description "RPC for clearing authmgr history. Input can be :
+        1. Single interface name
+        2. All interfaces";
+
+    input {
+        leaf interface {
+            type string;
+            description
+                "Interface for which clear operation needs to be performed";
+        }
+    }
+  }
+}

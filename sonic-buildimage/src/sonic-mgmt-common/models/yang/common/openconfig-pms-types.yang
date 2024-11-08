@@ -1,0 +1,46 @@
+module openconfig-pms-types {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/pms/types/extension";
+
+  prefix "oc-pms-types";
+
+  // import some basic types
+  import openconfig-extensions { prefix oc-ext; }
+
+
+  // meta
+  organization "OpenConfig working group";
+
+  contact
+    "OpenConfig working group
+    www.openconfig.net";
+
+  description
+    "This module defines types related to the
+    port mac security(pms) protocol model.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2021-05-10" {
+    description
+      "Initial public revision";
+    reference "0.1.0";
+  }
+  // identity statements
+
+  identity PMS_VIOLATION_ACTION {
+    description
+      "action to be taken on the unknown source MAC traffic after crossing the user specified threshold.";
+  }
+
+  identity PROTECT {
+    base PMS_VIOLATION_ACTION;
+    description
+      "drop all unknown source MAC traffic on the port in HW.";
+  }
+
+}
+

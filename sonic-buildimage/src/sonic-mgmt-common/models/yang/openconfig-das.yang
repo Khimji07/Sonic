@@ -1,0 +1,440 @@
+module openconfig-das {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/das/extension";
+
+  prefix "oc-das";
+
+  import ietf-yang-types {
+        prefix yang;
+  }
+
+  import openconfig-extensions { prefix oc-ext; }
+
+  import ietf-inet-types {
+        prefix inet;
+  }
+
+  // meta
+  organization "OpenConfig working group";
+
+  contact
+    "OpenConfig working group
+    www.openconfig.net";
+
+  description
+    "This module defines configuration and operational state data
+     for Dynamic Authorization Server.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2022-05-27" {
+    description
+      "Initial public revision";
+    reference "0.1.0";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:regexp-posix;
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  // identity statements
+
+
+  // grouping statements
+
+  grouping das-global-config-table-config {
+     description
+        "Grouping for Dynamic Authorization Server global config parameters";
+
+     leaf das-admin-mode {
+         type boolean;
+             description
+                "Indicates whether DAS mode is enabled in the system.";
+     }
+
+     leaf das-port {
+         type uint16 {
+             range 1025..65535 {
+                  error-message "DAS port must be in range of 1025-65535.";
+                  error-app-tag das-port-invalid;
+             }
+         }
+         description
+            "UDP Port number used by the DAS.";
+     }
+
+     leaf das-auth-type {
+         type enumeration {
+             enum ALL {
+                 description
+                    "Indicates all COA client authentication types.";
+             }
+             enum ANY {
+                 description
+                    "Indicates any COA client authentication types.";
+             }
+             enum SESSION_KEY {
+                 description
+                    "Indicates session-key as COA client authentication types.";
+             }
+         }
+         description
+            "Type of authorization that the device must use for RADIUS Clients.
+             The clients must match the configured attributes for authorization.";
+     }
+
+     leaf global-server-key {
+         type string {
+             length "1..65";
+             pattern "[^ #,]*" {
+                    error-message 'DAS shared secret (Valid chars are ASCII printable except SPACE, "#", and ",")';
+             }
+             oc-ext:posix-pattern '^[^ #,]*$';
+         }
+         description
+            'DAS global shared secret (Valid chars are ASCII printable except SPACE, "#", and ",")';
+     }
+
+     leaf encrypted {
+         type boolean;
+         description
+            "Indicates whether the key is encrypted or not.";
+    }
+
+     leaf ignore-bounce-port {
+         type boolean;
+             description
+                "Indicates whether bounce-host-port attribute is ignored when received as part of CoA message.";
+     }
+
+     leaf ignore-disable-port {
+         type boolean;
+             description
+                "Indicates whether disable-host-port attribute is ignored when received as part of CoA message.";
+     }
+
+     leaf ignore-session-key {
+         type boolean;
+             description
+                "Indicates whether session key is ignored while processing the DAC request.";
+     }
+
+     leaf ignore-server-key {
+         type boolean;
+             description
+                "Indicates whether server key is ignored while processing the DAC request.";
+     }
+
+     leaf das-vrf-name {
+         type string {
+             pattern "mgmt|Vrf[a-zA-Z0-9_-]+" {
+                 error-message "Invalid VRF name for DAS";
+             }
+             oc-ext:posix-pattern '^mgmt|Vrf[a-zA-Z0-9_-]+$';
+         }
+         description
+             "DAS VRF";
+     }
+
+     leaf das-request-timeout {
+         type uint8 {
+             range 1..30 {
+                 error-message "DAS request timeout must be in range of 1-30.";
+                 error-app-tag das-request-timeout-invalid;
+             }
+         }
+         description
+             "Time interval after which the request received by the DAS from the DAC will be timed out if there is no response received to the DAS by the registered applications before that interval.";
+     }
+
+  }
+
+  grouping das-client-config-table-config {
+     description
+        "Grouping for Dynamic Authorization Server per client config parameters";
+
+     leaf clientaddress {
+        type inet:host;
+        description
+           "Reference to IP address or hostname of a DAC.";
+     }
+
+     leaf server-key {
+         type string {
+             length "1..65";
+             pattern "[^ #,]*" {
+                    error-message 'Shared secret (Valid chars are ASCII printable except SPACE, "#", and ",")';
+             }
+             oc-ext:posix-pattern '^[^ #,]*$';
+         }
+         description
+            'Shared secret (Valid chars are ASCII printable except SPACE, "#", and ",")';
+     }
+
+     leaf encrypted {
+         type boolean;
+         description
+            "Indicates whether the key is encrypted or not.";
+    }
+  }
+
+  grouping das-global-counter-stats-table-data {
+     description
+        "Grouping for DAS global counter stats.";
+
+     leaf num-coa-requests-received {
+         type uint32;
+             description
+                "Number of coa requests received.";
+     }
+
+     leaf num-coa-ack-responses-sent {
+         type uint32;
+             description
+                "Number of coa ack responses sent.";
+     }
+
+     leaf num-coa-nak-responses-sent {
+         type uint32;
+             description
+                "Number of coa nak responses sent.";
+     }
+
+     leaf num-coa-requests-ignored {
+         type uint32;
+             description
+                "Number of coa requests ignored.";
+     }
+
+     leaf num-coa-missing-unsupported-attributes-requests {
+         type uint32;
+             description
+                "Number of coa missing or unsupported attributes requests.";
+     }
+
+     leaf num-coa-session-context-not-found-requests {
+         type uint32;
+             description
+                "Number of coa session context not found requests.";
+     }
+
+     leaf num-coa-invalid-attribute-value-requests {
+         type uint32;
+             description
+                "Number of coa invalid attribute value requests.";
+     }
+
+     leaf num-coa-administratively-prohibited-requests {
+         type uint32;
+             description
+                "Number of coa administratively prohibited requests.";
+     }
+  }
+
+  grouping das-client-counter-stats-table-data {
+     description
+        "Grouping for DAS client counter stats.";
+
+     leaf clientaddr {
+         type inet:host;
+             description
+                "Ipv4 or Ipv6 or DNS address of the client.";
+     }
+
+     leaf num-coa-requests-received {
+         type uint32;
+             description
+                "Number of coa requests received.";
+     }
+
+     leaf num-coa-ack-responses-sent {
+         type uint32;
+             description
+                "Number of coa ack responses sent.";
+     }
+
+     leaf num-coa-nak-responses-sent {
+         type uint32;
+             description
+                "Number of coa nak responses sent.";
+     }
+
+     leaf num-coa-requests-ignored {
+         type uint32;
+             description
+                "Number of coa requests ignored.";
+     }
+
+     leaf num-coa-missing-unsupported-attributes-requests {
+         type uint32;
+             description
+                "Number of coa missing or unsupported attributes requests.";
+     }
+
+     leaf num-coa-session-context-not-found-requests {
+         type uint32;
+             description
+                "Number of coa session context not found requests.";
+     }
+
+     leaf num-coa-invalid-attribute-value-requests {
+         type uint32;
+             description
+                "Number of coa invalid attribute value requests.";
+     }
+
+     leaf num-coa-administratively-prohibited-requests {
+         type uint32;
+             description
+                "Number of coa administratively prohibited requests.";
+     }
+  }
+
+  grouping das-global-config-table-top {
+     description
+        "Top-level Grouping for Dynamic Authorization Server global configuration";
+
+     container config {
+        description
+          "Config conatiner for Dynamic Authorization Server global config data";
+
+        uses das-global-config-table-config;
+     }
+
+    container state {
+       config false;
+
+       description
+         "State container for Dynamic Authorization Server global state data";
+
+       uses das-global-config-table-config;
+    }
+  }
+
+  grouping das-client-config-table-top {
+    description
+       "Top-level Grouping for DAS clients config, state data";
+
+   list das-client-config-table-entry {
+       max-elements 8;
+       key "clientaddress";
+       description
+         "DAS clients entry list.";
+
+       leaf clientaddress {
+           type leafref {
+           path "../config/clientaddress";
+       }
+       description
+         "Reference to DAS clients entry list key.";
+       }
+
+    container config {
+       description
+         "Config conatiner for DAS clients config data.";
+
+       uses das-client-config-table-config;
+    }
+
+    container state {
+       config false;
+
+       description
+         "State container for DAS clients state data.";
+
+       uses das-client-config-table-config;
+    }
+   }
+  }
+
+  grouping das-client-counter-stats-table-top {
+    description
+      "Top-level grouping for DAS client couter stats.";
+
+    list das-client-counter-stats-table-entry {
+      key "clientaddr";
+      description
+        "Ipv4 or Ipv6 or Host address of the client.";
+
+      leaf clientaddr {
+        type leafref {
+          path "../state/clientaddr";
+        }
+        description
+          "Reference to DAS client Ipv4 or Ipv6 or Host address.";
+      }
+
+      container state {
+        config false;
+        description
+          "State containter for DAS client couter stats.";
+
+        uses das-client-counter-stats-table-data;
+      }
+   }
+  }
+
+  grouping das-global-counter-stats-table-top {
+    description
+      "Top-level grouping for DAS global couter stats.";
+
+      container state {
+        config false;
+        description
+          "State containter for DAS global counter stats.";
+
+        uses das-global-counter-stats-table-data;
+      }
+  }
+
+
+  grouping das-top {
+    description
+        "Top-level grouping for Dynamic Authorization Server.";
+
+    container das {
+        description
+            "Top-level container for Dynamic Authorization Server.";
+
+    container das-global-config-table {
+        description
+            "Container for Dynamic Authorization Server global configuration
+             and operation data";
+
+        uses das-global-config-table-top;
+    }
+
+    container das-client-config-table {
+        description
+            "Container for Dynamic Authorization Server clients config
+             and state data";
+
+        uses das-client-config-table-top;
+    }
+
+    container das-client-counter-stats-table {
+        config false;
+        description
+          "Container for Dynamic Authorization Server client counter stats.";
+
+        uses das-client-counter-stats-table-top;
+    }
+
+    container das-global-counter-stats-table {
+        config false;
+        description
+          "Container for Dynamic Authorization Server global counter stats.";
+
+        uses das-global-counter-stats-table-top;
+    }
+
+    }
+  }
+  // data definition statements
+  uses das-top;
+
+}
