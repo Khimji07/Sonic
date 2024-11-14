@@ -1,0 +1,263 @@
+  module openconfig-poe {
+
+    yang-version "1.1";
+
+    namespace "http://openconfig.net/yang/poe/extension";
+
+    prefix "oc-poe-global";
+
+    import openconfig-extensions { prefix oc-ext; }
+
+    organization "SONiC";
+
+    contact "SONiC";
+
+    description
+      "This module defines the Power over Ethernet (PoE) model
+      for the global and card level";
+
+    oc-ext:openconfig-version "0.1.1";
+
+    revision "2021-05-10" {
+        description
+        "Initial public revision";
+        reference "0.1.1";
+    }
+
+    grouping poe-card-config {
+      description
+        "PoE card level config grouping";
+
+      leaf card-id {
+        type uint8 {
+          range "0..127";
+          }
+        description "Identifier for the card";
+      }
+      uses poe-config;
+    }
+
+    grouping poe-config {
+      description
+        "PoE config grouping";
+
+      leaf power-management-model {
+        type enumeration {
+          enum INVALID {
+            description "Invalid power management mode.";
+          }
+          enum STATIC {
+            description "Static power management mode.";
+          }
+          enum STATIC_PRIORITY {
+            description "Static Priority power management mode.";
+          }
+          enum DYNAMIC {
+            description "Dynamic power management mode.";
+          }
+          enum DYNAMIC_PRIORITY {
+            description "Dynamic Priority power management mode.";
+          }
+          enum CLASS {
+            description "Class power management mode.";
+          }
+        }
+        description "Describes or controls the power management algorithm used by the pse
+         to deliver power to the requesting PDsthat a pds.
+         A value of dynamic means that power consumption of each port
+         is measured and calculated in real-time.
+         A value of static means that power allocated for each port depends
+         on the type of power threshold configured on the port.";
+      }
+
+      leaf power-usage-threshold {
+          type uint32 {
+              range "1..99";
+          }
+          description "Inline Power Usage Threshold.";
+      }
+
+      leaf auto-reset-mode {
+        type boolean;
+        description
+          "Enable or disable PoE Auto Reset Mode. Useful
+          if the port is stuck in error state";
+      }
+    }
+
+  grouping poe-state {
+    description
+      "PoE state grouping";
+
+    leaf firmware-version {
+      type string;
+      description "Version string of the PoE Controller firmware.";
+    }
+
+    leaf max-power-budget {
+        type uint32;
+        description "Maximum Power Available";
+    }
+
+    leaf power-threshold {
+        type decimal64 { fraction-digits 2; }
+        description "Power Threshold";
+    }
+
+    leaf power-consumption {
+        type decimal64 { fraction-digits 2; }
+        description "Power Consumed";
+    }
+  }
+
+  grouping poe-global-state {
+    description
+      "PoE global level state grouping";
+    uses poe-state;
+    leaf pse-oper-status {
+      type enumeration {
+        enum OFF {
+          description "PoE is disabled.";
+        }
+        enum ON {
+          description "PoE is enabled.";
+        }
+      }
+      description "Operational status of PoE.";
+    }
+  }
+
+  grouping poe-top {
+   description
+      "PoE top level grouping";
+
+   container poe {
+      description
+        "Top-level container for PoE configuration and state data";
+
+      container global {
+        description
+          "PoE configuration and state data for the global";
+
+        container config {
+          description
+            "Configuration data for PoE";
+          uses poe-config;
+        }
+
+        container state {
+          config false;
+          description
+            "Operational state data for PoE";
+          uses poe-config;
+          uses poe-global-state;
+        }
+      }
+
+      container cards {
+         description
+          "PoE configuration and state data for the all the cards";
+
+        list card {
+          key "card-id";
+          description
+            "PoE configuration and state data for the card";
+
+          leaf card-id {
+            type leafref {
+              path "../config/card-id";
+            }
+            description "Card Identifier";
+          }
+
+          container config {
+            description
+            "Configuration data for PoE";
+            uses poe-card-config;
+          }
+
+          container state {
+            config false;
+            description
+              "Operational state data for PoE";
+            uses poe-card-config;
+            uses poe-state;
+          }
+        }
+      }
+   }
+  }
+  uses poe-top;
+
+  // rpc statements
+  rpc reset-poe {
+    description "To reset the PoE on the given Ethernet interface";
+    input {
+      leaf interface-name {
+        type string;
+          description
+            "Ethernet interface name";
+      }
+    }
+
+    output {
+      leaf status {
+        type enumeration {
+          enum POE_RESET_SUCCESS {
+            description "PoE reset status is success";
+          }
+          enum POE_NOT_ENABLED {
+            description "PoE not enabled";
+          }
+          enum POE_RESET_ERROR {
+            description "PoE reset status is failed";
+          }
+        }
+        description
+          "The status of the operation execution request.";
+      }
+
+      leaf status-detail {
+        type string;
+          description
+            "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc clear-counters {
+    description "To reset PoE counters on the given Ethernet interface";
+    input {
+      leaf interface-name {
+        type string;
+          description
+            "Ethernet interface name";
+      }
+    }
+
+    output {
+      leaf status {
+        type enumeration {
+          enum POE_CLEAR_COUNTERS_SUCCESS {
+            description "PoE clear counters is a success";
+          }
+          enum POE_NOT_ENABLED {
+            description "PoE not enabled";
+          }
+          enum POE_CLEAR_COUNTERS_ERROR {
+            description "PoE clear counters failed";
+          }
+        }
+        description
+          "The status of the operation execution request.";
+      }
+
+      leaf status-detail {
+        type string;
+          description
+            "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+}

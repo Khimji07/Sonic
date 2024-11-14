@@ -1,0 +1,232 @@
+module sonic-switch-resource {
+  namespace "http://github.com/Azure/sonic-switch-resource";
+  prefix sswresource;
+  yang-version 1.1;
+
+  import sonic-extension {
+    prefix sonic-ext;
+  }
+
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "SONiC Switch Resource yang model";
+
+  revision 2020-07-07 {
+    description
+      "Initial revision.";
+  }
+
+  typedef switch-resource-type {
+    type enumeration {
+      enum DROP_MONITOR {
+        description
+          "Drop Monitor Resource";
+      }
+      enum ROUTE_SCALE {
+        description
+          "Route Scale Resource";
+      }
+      enum VLAN_STACKING {
+        description
+          "Vlan Stacking";
+      }
+      enum L2_NEXTHOP_GROUP {
+        description
+          "L2 Nexthop group";
+      }
+    }
+    description
+      "The Different Resource Types of Switch Resource Management  ";
+  }
+
+
+  typedef flow-scale-limit {
+    type enumeration {
+      enum "NONE" {
+        description
+          "No flow scale  configured.";
+      }
+      enum "MIN" {
+        description
+          "Minimum flow scale configured.";
+      }
+      enum "UNSUPPORTED" {
+        description
+          "flow scale not supported.";
+      }
+    }
+    description
+      "Drop Monitor Flow scale limit ";
+
+  }
+
+  typedef route-scale-limit {
+    type enumeration {
+      enum "DEFAULT" {
+        description
+          "No route scale configured.";
+      }
+      enum "MAX" {
+        description
+          "Maximum route scale configured.";
+      }
+      enum "MAX_V6" {
+        description
+          "Maximum ipv6 route scale configured.";
+      }
+      enum "V4_V6_MAX" {
+        description
+          "Maximum ipv4 and ipv6 route scale configured.";
+      }
+    }
+    description
+      "Route scale limit ";
+
+  }
+
+  typedef host-scale-limit {
+    type enumeration {
+      enum "DEFAULT" {
+        description
+          "No host scale configured.";
+      }
+      enum "L2_L3" {
+        description
+          "L2 L3 host scale configured.";
+      }
+      enum "L2_L3_BALANCED" {
+        description
+          "L2 L3 BALANCED host scale configured.";
+      }
+    }
+    description
+      "Host scale limit ";
+
+  }
+
+  typedef vlan-stacking-type {
+    type enumeration {
+      enum DISABLED {
+        description
+          "Vlan stacking not enabled.";
+      }
+      enum ENABLED {
+        description
+          "Vlan stacking enabled.";
+      }
+    }
+    description
+      "Vlan stacking limit ";
+
+  }
+
+  typedef l2-nexthop-group-type {
+    type enumeration {
+      enum DISABLED {
+        description
+          "L2 nexthop Group not enabled.";
+      }
+      enum ENABLED {
+        description
+          "L2 nexthop Group enabled.";
+      }
+    }
+    description
+      "L2 nexthop Group limit ";
+
+  }
+
+  container sonic-switch-resource {
+    container SWITCH_RESOURCE_TABLE {
+      list SWITCH_RESOURCE_TABLE_LIST {
+        key "name";
+
+        leaf name {
+          type switch-resource-type;
+          description
+            "Types of Switch Resources";
+        }
+
+
+        leaf flows {
+          type flow-scale-limit;
+          must 'not(current()/../../SWITCH_RESOURCE_TABLE_LIST[name="ROUTE_SCALE"]/routes) or' +
+               '(current()/../../SWITCH_RESOURCE_TABLE_LIST[name="ROUTE_SCALE"]/routes = "DEFAULT")'
+          {
+              error-message "Remove route-scale configuration before configuring drop-monitor flows";
+              error-app-tag switch-resouce-invalid-config;
+          }
+          must 'not(current()/../../SWITCH_RESOURCE_TABLE_LIST[name="ROUTE_SCALE"]/hosts) or' +
+               '(current()/../../SWITCH_RESOURCE_TABLE_LIST[name="ROUTE_SCALE"]/hosts = "DEFAULT")'
+          {
+              error-message "Remove host-scale configuration before configuring drop-monitor flows";
+              error-app-tag switch-resouce-invalid-config;
+          }
+          sonic-ext:custom-validation IsDropMonitorSupported;
+          description
+            "Drop Monitor Flow scale options ";
+        }
+
+        leaf routes {
+          type route-scale-limit;
+          sonic-ext:custom-validation IsRouteScaleConfigurable;
+          description
+            "Route scale options ";
+        }
+
+        leaf hosts {
+          type host-scale-limit;
+          sonic-ext:custom-validation IsHostScaleConfigurable;
+          description
+            "Host scale options ";
+        }
+
+        leaf vlan-stacking {
+          type vlan-stacking-type;
+          sonic-ext:custom-validation IsUatModeConfigurable;
+          sonic-ext:custom-validation IsActiveVlanMappings;
+          description
+            "Vlan stacking options ";
+        }
+
+        leaf l2-nexthop-group {
+          type l2-nexthop-group-type;
+          sonic-ext:custom-validation IsUatModeL2NhgConfigurable;
+          description
+            "L2 Nexthop Group options ";
+        }
+      }
+    }
+
+    container SWITCH_RESOURCE_STATE_TABLE {
+
+      sonic-ext:db-name "COUNTERS_DB";
+      sonic-ext:key-delim ":";
+
+      config false;
+      description "state switch resource table";
+
+      list SWITCH_RESOURCE_STATE_TABLE_LIST {
+        key "name";
+
+        leaf name {
+          type switch-resource-type;
+          description
+            "Types of Switch Resources";
+        }
+
+
+        leaf flows_in_hardware {
+          type flow-scale-limit;
+          description
+            "Shows user-configured flow scale when the system boots up ";
+        }
+      }
+    }
+  }
+}

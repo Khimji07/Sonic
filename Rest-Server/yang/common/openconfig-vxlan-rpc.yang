@@ -1,0 +1,51 @@
+module openconfig-vxlan-rpc {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/vxlan-rpc/extension";
+
+  prefix "oc-vxlan-rpc"; 
+
+  import openconfig-extensions { prefix oc-ext; }
+  
+  // meta
+  organization
+    "OCP SONiC Subproject";
+
+  contact
+    "OCP SONiC Subproject Working Group
+     https://github.com/Azure/SONiC";
+
+  description
+    "This module defines configuration and operational state data for vxlan";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2020-10-08" {
+    description
+      "Initial revision";
+    reference "0.1.0";
+  }
+
+  //rpcs
+  rpc clear-vxlan-statistics {
+        description
+            "Clear VXLAN counters for all or a specific tunnel. ";
+ 
+        input {
+            leaf vxlan_tunnel_iface {
+                type string;
+                description
+                    "Parameter for clearing VXLAN statistics";
+            }
+        }
+        output {
+            leaf status {
+                type string;
+                description
+                    " Success / Failure of clearing VXLAN statistics";
+            }
+        }
+  }
+}

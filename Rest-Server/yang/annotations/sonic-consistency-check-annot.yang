@@ -1,0 +1,64 @@
+module sonic-consistency-check-annot {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/annotation/sconsistencycheck-annot";
+    prefix "scc-annot";
+
+    import sonic-consistency-check { prefix scc; }
+    import sonic-extensions { prefix sonic-ext; }
+
+    deviation /scc:start-acl-check {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_start_acl_check";
+        }
+    }
+
+    deviation /scc:stop-acl-check {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_stop_acl_check";
+        }
+    }
+
+    deviation /scc:show-acl-check {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_show_acl_check";
+        }
+    }
+
+    deviation /scc:start-route-check {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_start_route_check";
+        }
+    }
+
+    deviation /scc:stop-route-check {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_stop_route_check";
+        }
+    }
+
+    deviation /scc:show-route-check {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_show_route_check";
+        }
+    }
+
+    deviation /scc:start-check {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_start_check";
+        }
+    }
+
+    deviation /scc:stop-check {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_stop_check";
+        }
+    }
+
+    deviation /scc:show-check {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_show_check";
+        }
+    }
+}

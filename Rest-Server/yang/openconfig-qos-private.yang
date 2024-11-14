@@ -1,0 +1,201 @@
+module openconfig-qos-private {
+
+    yang-version "1";
+
+    // namespace
+    namespace "http://openconfig.net/yang/qos-private/extension";
+
+    prefix "oc-qos-private";
+
+    import openconfig-extensions { prefix oc-ext; }
+
+    organization "Dell";
+
+    contact
+      "Dell";
+
+    description
+      "This module describes deviation in QoS model.";
+
+    oc-ext:openconfig-version "0.1.0";
+
+    revision "2021-08-01" {
+      description
+        "Private definitions in QoS model.";
+      reference "0.1.0";
+    }
+
+  typedef rpcStatus {
+    description "Status for RPC operations";
+    type enumeration {
+        enum success {
+            description "The operation was successful.";
+        }
+        enum failed {
+            description "The operation failed.";
+        }
+    }
+  }
+
+  // rpc statements
+  rpc clear-watermarks {
+    description
+      "Clear the recorded watermarks for various buffers";
+    input {
+      leaf buffer {
+        type string;
+        description
+          "queue or priority-groups buffers";
+      }
+
+      leaf buffer-type {
+        type string;
+        description
+          "For Queue buffers, the type of queue: unicast or multicast;
+          for Priority Group buffers, the shared buffer or headroom buffer";
+      }
+
+      leaf watermark-type {
+        type string;
+        description
+          "watermark or persistent-watermark";
+      }
+
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf-list status-detail {
+        type string;
+        description "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc clear-threshold-breach {
+    description "RPC for clearing threshold breaches. Input can be :
+      1. Single breach event id
+      2. All breach events";
+
+    input {
+      leaf breach-event-id {
+        type union {
+          type enumeration {
+            enum ALL {
+              description
+                "ECN for all packets.";
+            }
+          }
+          type uint64;
+        }
+        description
+          "Input parameter breach event id - all or a evendId";
+      }
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc qos-buffer-config {
+    description "RPC for initialising and clearing the system's pre-defined default tables for
+                 QoS-buffer operations. Tables include buffer-pools, buffer-profiles,
+                 buffer-priority-groups and buffer-queues, for both ingress and egress
+                 operations.This operation will internally generate write memory and reboot 
+                 operations after buffer initialization or clearing";
+
+    input {
+      leaf operation {
+        type enumeration {
+          enum INIT {
+            description
+              "Initialise buffer tables for Qos-buffer operation.";
+          }
+          enum CLEAR {
+            description
+              "Remove the buffer tables related to Qos-buffer operation";
+          }
+        }
+        description
+          "Input parameter to initialise/clear the buffer";
+      }
+    }
+    output {
+      leaf status {
+        type uint32;
+        description
+          "The status of the operation execution request. 0 for SUCCESS and 1 for ERROR.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc qos-roce-config {
+    description "RPC for enabling and disabling the system's pre-defined default tables for
+                 RoCE QoS operations. Tables include buffer-pools, buffer-profiles,
+                 buffer-priority-groups and buffer-queues, ECN for both ingress and egress
+                 operations.This operation will internally generate write memory and reboot 
+                 operations after buffer initialization or clearing";
+
+    input {
+      leaf operation {
+        type enumeration {
+          enum ENABLE {
+            description
+              "Enable RoCE Qos configuration operation.";
+          }
+          enum DISABLE {
+            description
+              "Disable RoCE QoS configuration operation.";
+          }
+        }
+        description
+          "Input parameter to RoCE Enable/Disable";
+      }
+
+      leaf force {
+        type boolean;
+        description
+          "Force RoCE configurations.";
+      }
+
+      leaf pfc-priority{
+          type string {
+              pattern "[0-7](,[0-7])?"{
+                  error-message "Invalid PFC Priority configuration";
+                  error-app-tag pfc-enable-invalid;
+              }
+          }
+      }
+    }
+    output {
+      leaf status {
+        type rpcStatus;
+        description
+          "The status of the operation execution request. 0 for SUCCESS and 1 for ERROR.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+}

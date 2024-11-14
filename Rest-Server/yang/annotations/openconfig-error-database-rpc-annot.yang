@@ -1,0 +1,30 @@
+module openconfig-error-database-rpc-annot {
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/annotation/openconfig-error-database-rpc-annot";
+    prefix "oc-error-database-rpc-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import openconfig-error-database-rpc { prefix oc-error-database-rpc; }
+
+    // meta
+    organization
+       "SONiC";
+
+    contact
+       "SONiC";
+
+    description
+       "SONIC error-database";
+
+    revision 2021-07-27 {
+       description
+          "Initial revision";
+    }
+
+    deviation /oc-error-database-rpc:clear-error-table {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_clear_error_table";
+        }
+    }
+}

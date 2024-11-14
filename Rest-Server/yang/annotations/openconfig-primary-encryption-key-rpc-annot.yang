@@ -1,0 +1,18 @@
+module openconfig-primary-encryption-key-rpc-annot {
+
+    yang-version "1.1";
+
+    namespace "http://openconfig.net/yang/primary-encryption-key-rpc-annot";
+    prefix "oc-primary-encryption-key-rpc-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+
+    import openconfig-primary-encryption-key-rpc {prefix oc-primary-encryption-key-rpc; }
+
+    deviation /oc-primary-encryption-key-rpc:update-primary-encryption-key {
+      deviate add {
+        sonic-ext:rpc-callback "rpc_update_primary_encryption_key";
+        sonic-ext:user-role-priv "rpc:netadmin"; 
+      }
+    }
+}

@@ -1,0 +1,177 @@
+module openconfig-license-mgmt-private {
+
+    yang-version "1.1";
+
+    // namespace
+    namespace "http://openconfig.net/yang/license-mgmt-private/extension";
+
+    prefix "oc-license";
+
+    import openconfig-extensions { prefix oc-ext; }
+    import openconfig-yang-types { prefix oc-yang; }
+
+    organization "Dell";
+
+    contact
+      "Dell";
+
+    description
+      "This module describes deviation in license management model.";
+
+    oc-ext:openconfig-version "0.1.0";
+
+    revision "2022-08-04" {
+      description
+        "Private definitions in license management model.";
+      reference "0.1.0";
+    }
+
+    typedef license-file-uri-type {
+       type string {
+            pattern "((home|ftp|http|scp):.*)" {
+                error-message "Invalid folder name.";
+            }
+            oc-ext:posix-pattern '^(home|ftp|http|scp):.*$';
+       }
+       description
+            "Pattern for safe access to the file system";
+    }
+
+
+    rpc install {
+        description
+           "This procedure installs sonic license on a switch from the switch's home path or external servers";
+        input {
+            leaf filename {
+                type license-file-uri-type;
+                description 
+                    "Provide the filename in URI format for the file to be installed.";
+            }
+        }
+
+        output {
+            leaf status {
+                type int32;
+                description 
+                    "The status of the operation execution request.";
+            }
+            leaf status-detail {
+                type string;
+                description 
+                    "The detailed status of the operation execution request.";
+            }
+        }
+    }
+
+
+
+    grouping license-managament-platform-data { 
+        description 
+            "Grouping for platform data";
+
+        leaf mfg-name {
+            type string;
+            description 
+                "Manufacturing Name";    
+        }
+        leaf product-version {
+            type string;
+            description 
+                "Product Name"; 
+        }    
+        leaf platform-name {
+            type string;
+            description 
+                "Platform Name"; 
+        }    
+        leaf serial-number {
+            type string;
+            description 
+                "Serial Number";
+        }
+        leaf service-tag{
+            type string;
+            description 
+                "Service Tag";
+        }    
+        leaf software-version { 
+            type string;
+            description 
+                "Software Version";
+        }
+    }
+
+    grouping license-managament-license-data {
+       description 
+           "Grouping for license data"; 
+
+        leaf license-enabled{
+            type string;
+            description 
+                "License Support for the device.";
+        }
+        leaf software-type {
+            type string;
+            description 
+                "Software type - SoNiC"; 
+        }    
+        leaf license-status {
+            type string;
+            description 
+                "License installation status"; 
+        }   
+        leaf license-type {
+            type string;
+            description 
+                "License type"; 
+        }    
+        leaf start-date {
+            type oc-yang:date-and-time;
+            description 
+                "License start date"; 
+        }
+        leaf license-duration {
+            type string;
+            description 
+                "License duration - 3Y | 5Y"; 
+        }    
+        leaf license-location {
+            type string;
+            description 
+                "License file location."; 
+        }
+    }
+   
+
+    grouping license-management-top {
+        description
+            "Top-level grouping for license managament";
+        
+        container license-management {
+            config false;
+            description 
+                "Top-level container for license management";
+
+            container state {
+                description 
+                    "Operational state data for license and platform details";
+
+                container license {
+                    description 
+                        "State data for license details";
+                    uses license-managament-license-data;  
+                }  
+            
+                container platform{               
+                    description 
+                        "State data for platform details";
+                    uses license-managament-platform-data;
+                } 
+            }
+        }    
+    }
+
+    uses license-management-top;
+
+}
+

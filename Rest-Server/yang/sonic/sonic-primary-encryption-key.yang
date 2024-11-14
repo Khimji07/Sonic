@@ -1,0 +1,47 @@
+module sonic-primary-encryption-key {
+    namespace "http://github.com/Azure/sonic-primary-encryption-key";
+    prefix pek;
+    yang-version 1.1;
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONIC PRIMARY ENCRYPTION KEY";
+
+    revision 2021-10-06 {
+        description "Initial revision.";
+    }
+
+
+    container sonic-primary-encryption-key {
+
+        container PRIMARY_ENCRYPTION_KEY {
+            sonic-ext:db-name "STATE_DB";
+            sonic-ext:key-delim "|";
+
+            list PRIMARY_ENCRYPTION_KEY_LIST {
+                key "id";
+                leaf id {
+                    type enumeration {
+                        enum config;
+                    }
+                }
+
+                leaf configured {
+                    type boolean;
+                    default false;
+                    description 
+                        "Indicates if the primary-encryption key is configured by user.";
+                }
+            }
+        }
+    }
+}

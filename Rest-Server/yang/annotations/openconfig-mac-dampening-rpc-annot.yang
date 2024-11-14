@@ -1,0 +1,33 @@
+module openconfig-mac-dampening-rpc-annot {
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/mac-dampening-rpc-annot";
+    prefix "oc-mac-dampening-rpc-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import openconfig-mac-dampening-rpc { prefix oc-mac-damp-rpc; }
+
+    // meta
+    organization
+        "OCP SONiC Subproject";
+
+    contact
+        "OCP SONiC Subproject Working Group
+        https://github.com/Azure/SONiC";
+
+    description
+        "SONIC mac-dampening";
+
+	revision "2020-10-08" {
+		description
+			"Initial revision";
+		reference "0.1.0";
+	}
+
+    deviation /oc-mac-damp-rpc:clear-mac-dampening-disabled-ports {
+        deviate add {
+	        sonic-ext:rpc-callback "rpc_clear_oc_mac_damp_disabled_ports";
+                sonic-ext:user-role-priv "rpc:netadmin";
+        }
+    }
+}

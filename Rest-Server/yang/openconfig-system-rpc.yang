@@ -1,0 +1,111 @@
+module openconfig-system-rpc {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/system-rpc/extension";
+
+  prefix "oc-sys-rpc"; 
+
+  import openconfig-extensions { prefix oc-ext; }
+  
+  // meta
+  organization
+    "SONiC";
+
+  contact
+    "OCP SONiC Subproject Working Group
+     https://github.com/Azure/SONiC";
+
+  description
+    "This module defines RPCs for system wide services";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2022-09-28" {
+    description
+      "Initial revision";
+    reference "0.1.0";
+  }
+ 
+  grouping status-state {
+      description
+          "Operation status";
+
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf-list status-detail {
+            type string;
+            description "The detailed status of the operation execution request.";
+      }
+
+  }
+
+  //rpcs
+  rpc show-system-status {
+     description "Display the system ready status";
+
+     output {
+        uses oc-sys-rpc:status-state;
+     }
+  }
+
+  rpc show-system-status-brief {
+     description "Display the detailed system ready status";
+
+     output {
+        uses oc-sys-rpc:status-state;
+     }
+  }
+
+  rpc show-system-status-detail {
+     description "Display the detailed system ready status";
+
+     output {
+        uses oc-sys-rpc:status-state;
+     }
+  }
+
+  rpc show-system-status-core {
+     description "Display the core system ready status";
+
+     output {
+        uses oc-sys-rpc:status-state;
+     }
+  }
+ 
+  // adaptive-routing-and-switching
+  rpc clear-nhg-statistics {
+    description "RPC for clearing NHG statistics. Input can be :
+      1. Single NHG ID
+      2. All NHG IDs";
+
+    input {
+     leaf nhg-id {
+       type union {
+         type uint32;
+         type string;
+       }
+       description
+         "all or one nhgid as input";
+     }
+    }
+
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  } 
+}
+

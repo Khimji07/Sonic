@@ -1,0 +1,452 @@
+module openconfig-dhcp-snooping-annot {
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/annotation/openconfig-dhcp-snooping-annot";
+    prefix "oc-dhcp-snooping-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import openconfig-dhcp-snooping { prefix oc-dhcp-snooping; }
+
+    // meta
+    organization
+       "SONiC";
+
+    contact
+       "SONiC";
+
+    description
+       "SONIC dhcp-snooping";
+
+    revision 2021-07-27 {
+       description
+          "Initial revision";
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping {
+      deviate add {
+	sonic-ext:user-role-priv "write:netadmin";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:config {
+      deviate add {
+        sonic-ext:table-name "DHCP_SNOOPING";
+        sonic-ext:key-transformer "dhcp_snooping_global_key_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:config/oc-dhcp-snooping:dhcpv4-admin-enable {
+      deviate add {
+        sonic-ext:field-transformer "dhcp_snooping_dhcpv4_admin_enable_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:config/oc-dhcp-snooping:dhcpv4-verify-mac-address {
+      deviate add {
+        sonic-ext:field-transformer "dhcp_snooping_dhcpv4_verify_mac_address_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:config/oc-dhcp-snooping:dhcpv6-admin-enable {
+      deviate add {
+        sonic-ext:field-transformer "dhcp_snooping_dhcpv6_admin_enable_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:config/oc-dhcp-snooping:dhcpv6-verify-mac-address {
+      deviate add {
+        sonic-ext:field-transformer "dhcp_snooping_dhcpv6_verify_mac_address_xfrm";
+      }
+    }
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:state/oc-dhcp-snooping:dhcpv4-admin-enable {
+      deviate add {
+        sonic-ext:table-name "DHCP_SNOOPING";
+        sonic-ext:key-transformer "dhcp_snooping_global_key_xfrm";
+        sonic-ext:field-transformer "dhcp_snooping_dhcpv4_admin_enable_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:state/oc-dhcp-snooping:dhcpv4-verify-mac-address {
+      deviate add {
+        sonic-ext:table-name "DHCP_SNOOPING";
+        sonic-ext:key-transformer "dhcp_snooping_global_key_xfrm";
+        sonic-ext:field-transformer "dhcp_snooping_dhcpv4_verify_mac_address_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:state/oc-dhcp-snooping:dhcpv6-admin-enable {
+      deviate add {
+        sonic-ext:table-name "DHCP_SNOOPING";
+        sonic-ext:key-transformer "dhcp_snooping_global_key_xfrm";
+        sonic-ext:field-transformer "dhcp_snooping_dhcpv6_admin_enable_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:state/oc-dhcp-snooping:dhcpv6-verify-mac-address {
+      deviate add {
+        sonic-ext:table-name "DHCP_SNOOPING";
+        sonic-ext:key-transformer "dhcp_snooping_global_key_xfrm";
+        sonic-ext:field-transformer "dhcp_snooping_dhcpv6_verify_mac_address_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:state/oc-dhcp-snooping:dhcpv4-snooping-vlan {
+      deviate add {
+        sonic-ext:table-name "VLAN";
+        sonic-ext:field-transformer "dhcp_snooping_v4_vlan_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:state/oc-dhcp-snooping:dhcpv6-snooping-vlan {
+      deviate add {
+        sonic-ext:table-name "VLAN";
+        sonic-ext:field-transformer "dhcp_snooping_v6_vlan_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:state/oc-dhcp-snooping:dhcpv4-trusted-intf {
+      deviate add {
+        sonic-ext:table-name "PORT";
+        sonic-ext:field-transformer "dhcp_snooping_v4_trusted_intf_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping/oc-dhcp-snooping:state/oc-dhcp-snooping:dhcpv6-trusted-intf {
+      deviate add {
+        sonic-ext:table-name "PORT";
+        sonic-ext:field-transformer "dhcp_snooping_v6_trusted_intf_xfrm";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-static-binding {
+      deviate add {
+	sonic-ext:user-role-priv "write:netadmin";
+        sonic-ext:db-name "CONFIG_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_STATIC_BINDING"; 
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-static-binding/oc-dhcp-snooping:entry/oc-dhcp-snooping:config/oc-dhcp-snooping:mac {
+      deviate add {
+        sonic-ext:field-name "mac";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-static-binding/oc-dhcp-snooping:entry/oc-dhcp-snooping:config/oc-dhcp-snooping:iptype {
+      deviate add {
+        sonic-ext:field-name "iptype";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-static-binding/oc-dhcp-snooping:entry/oc-dhcp-snooping:config/oc-dhcp-snooping:vlan {
+      deviate add {
+        sonic-ext:field-name "vlan";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-static-binding/oc-dhcp-snooping:entry/oc-dhcp-snooping:config/oc-dhcp-snooping:interface {
+      deviate add {
+        sonic-ext:field-name "interface";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-static-binding/oc-dhcp-snooping:entry/oc-dhcp-snooping:config/oc-dhcp-snooping:ip {
+      deviate add {
+        sonic-ext:field-name "ip";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding {
+      deviate add {
+	sonic-ext:user-role-priv "write:netadmin";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding {
+      deviate add {
+        sonic-ext:db-name "APPL_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_BINDING";
+        sonic-ext:key-transformer "dhcp_snooping_binding_key_xfmr";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-count/oc-dhcp-snooping:state/oc-dhcp-snooping:v4-dynamic-count {
+      deviate add {
+        sonic-ext:db-name "APPL_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_BINDING";
+        sonic-ext:key-transformer "dhcp_snooping_binding_key_xfmr";
+        sonic-ext:field-transformer "dhcp_snooping_binding_v4_dynamic_count_xfmr";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-count/oc-dhcp-snooping:state/oc-dhcp-snooping:v4-static-count {
+      deviate add {
+        sonic-ext:db-name "APPL_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_BINDING";
+        sonic-ext:key-transformer "dhcp_snooping_binding_key_xfmr";
+        sonic-ext:field-transformer "dhcp_snooping_binding_v4_static_count_xfmr";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-count/oc-dhcp-snooping:state/oc-dhcp-snooping:v4-tentative-count {
+      deviate add {
+        sonic-ext:db-name "APPL_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_BINDING";
+        sonic-ext:key-transformer "dhcp_snooping_binding_key_xfmr";
+        sonic-ext:field-transformer "dhcp_snooping_binding_v4_tentative_count_xfmr";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-count/oc-dhcp-snooping:state/oc-dhcp-snooping:v6-dynamic-count {
+      deviate add {
+        sonic-ext:db-name "APPL_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_BINDING";
+        sonic-ext:key-transformer "dhcp_snooping_binding_key_xfmr";
+        sonic-ext:field-transformer "dhcp_snooping_binding_v6_dynamic_count_xfmr";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-count/oc-dhcp-snooping:state/oc-dhcp-snooping:v6-static-count {
+      deviate add {
+        sonic-ext:db-name "APPL_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_BINDING";
+        sonic-ext:key-transformer "dhcp_snooping_binding_key_xfmr";
+        sonic-ext:field-transformer "dhcp_snooping_binding_v6_static_count_xfmr";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-count/oc-dhcp-snooping:state/oc-dhcp-snooping:v6-tentative-count {
+      deviate add {
+        sonic-ext:db-name "APPL_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_BINDING";
+        sonic-ext:key-transformer "dhcp_snooping_binding_key_xfmr";
+        sonic-ext:field-transformer "dhcp_snooping_binding_v6_tentative_count_xfmr";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-entry-list/oc-dhcp-snooping:dhcp-snooping-binding-list {
+      deviate add {
+        sonic-ext:key-transformer "dhcp_snooping_binding_key_xfmr";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-entry-list/oc-dhcp-snooping:dhcp-snooping-binding-list/oc-dhcp-snooping:state {
+      deviate add {
+        sonic-ext:db-name "APPL_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_BINDING";
+        sonic-ext:key-transformer "dhcp_snooping_binding_key_xfmr";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-entry-list/oc-dhcp-snooping:dhcp-snooping-binding-list/oc-dhcp-snooping:state/oc-dhcp-snooping:iptype {
+      deviate add {
+        sonic-ext:field-name "ipType";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-entry-list/oc-dhcp-snooping:dhcp-snooping-binding-list/oc-dhcp-snooping:state/oc-dhcp-snooping:lease-time {
+      deviate add {
+        sonic-ext:field-name "lease_time";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-entry-list/oc-dhcp-snooping:dhcp-snooping-binding-list/oc-dhcp-snooping:state/oc-dhcp-snooping:lease-end-time {
+      deviate add {
+        sonic-ext:field-name "lease_end_time";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-binding/oc-dhcp-snooping:dhcp-snooping-binding-entry-list/oc-dhcp-snooping:dhcp-snooping-binding-list/oc-dhcp-snooping:state/oc-dhcp-snooping:intf{
+      deviate add {
+        sonic-ext:field-transformer "dhcp_snooping_binding_intf_name_xfmr";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-statistics {
+      deviate add {
+	sonic-ext:user-role-priv "write:netadmin";
+      }
+    }
+
+    deviation /oc-dhcp-snooping:dhcp-snooping-statistics {
+      deviate add {
+        sonic-ext:db-name "APPL_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_STATISTICS";
+        sonic-ext:key-transformer "dhcp_snooping_statistics_key_xfmr";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics/oc-dhcp-snooping:dhcp-snooping-statistics-list {
+     deviate add {
+       sonic-ext:key-transformer "dhcp_snooping_statistics_key_xfmr";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics/oc-dhcp-snooping:dhcp-snooping-statistics-list/oc-dhcp-snooping:state {
+     deviate add {
+       sonic-ext:db-name "APPL_DB";
+       sonic-ext:table-name "DHCP_SNOOPING_STATISTICS";
+       sonic-ext:key-transformer "dhcp_snooping_statistics_key_xfmr";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics/oc-dhcp-snooping:dhcp-snooping-statistics-list/oc-dhcp-snooping:state/oc-dhcp-snooping:interface {
+     deviate add {
+       sonic-ext:field-transformer "dhcp_snooping_statistics_intf_name_xfmr";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics/oc-dhcp-snooping:dhcp-snooping-statistics-list/oc-dhcp-snooping:state/oc-dhcp-snooping:mac-verify-failures {
+     deviate add {
+       sonic-ext:field-name "mac_verify_failures";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics/oc-dhcp-snooping:dhcp-snooping-statistics-list/oc-dhcp-snooping:state/oc-dhcp-snooping:if-mismatches {
+     deviate add {
+       sonic-ext:field-name "if_mismatches";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics/oc-dhcp-snooping:dhcp-snooping-statistics-list/oc-dhcp-snooping:state/oc-dhcp-snooping:server-msgs-on-untrusted {
+     deviate add {
+       sonic-ext:field-name "server_msgs_on_untrusted";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics/oc-dhcp-snooping:dhcp-snooping-statistics-list/oc-dhcp-snooping:state/oc-dhcp-snooping:v6-mac-verify-failures {
+     deviate add {
+       sonic-ext:field-name "v6_mac_verify_failures";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics/oc-dhcp-snooping:dhcp-snooping-statistics-list/oc-dhcp-snooping:state/oc-dhcp-snooping:v6-if-mismatches {
+     deviate add {
+       sonic-ext:field-name "v6_if_mismatches";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics/oc-dhcp-snooping:dhcp-snooping-statistics-list/oc-dhcp-snooping:state/oc-dhcp-snooping:v6-server-msgs-on-untrusted {
+     deviate add {
+       sonic-ext:field-name "v6_server_msgs_on_untrusted";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail {
+      deviate add {
+        sonic-ext:db-name "APPL_DB";
+        sonic-ext:table-name "DHCP_SNOOPING_STATISTICS_DETAIL";
+        sonic-ext:key-transformer "dhcp_snooping_statistics_detail_key_xfmr";
+     }
+   } 
+   
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list {
+     deviate add {
+       sonic-ext:key-transformer "dhcp_snooping_statistics_detail_key_xfmr";
+     } 
+   } 
+   
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state {
+     deviate add {
+       sonic-ext:db-name "APPL_DB";
+       sonic-ext:table-name "DHCP_SNOOPING_STATISTICS_DETAIL";
+       sonic-ext:key-transformer "dhcp_snooping_statistics_detail_key_xfmr";
+     } 
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:iptype {
+     deviate add {
+       sonic-ext:field-name "ipType";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:errmsgrx {
+     deviate add {
+       sonic-ext:field-name "errMsgRx";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:errrxsrcip {
+     deviate add {
+       sonic-ext:field-name "errRxSrcIp";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:numdhcppktrcvd {
+     deviate add {
+       sonic-ext:field-name "numDhcpPktRcvd";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:numdhcppktproc {
+     deviate add {
+       sonic-ext:field-name "numDhcpPktProc";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:numdhcppktfiltered {
+     deviate add {
+       sonic-ext:field-name "numDhcpPktFiltered";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:numdhcpfwd {
+     deviate add {
+       sonic-ext:field-name "numDhcpFwd";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:numreleasedeclineunknownerr {
+     deviate add {
+       sonic-ext:field-name "numReleaseDeclineUnknownErr";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:numdynbindingadd {
+     deviate add {
+       sonic-ext:field-name "numDynBindingAdd";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:numdynbindingdel {
+     deviate add {
+       sonic-ext:field-name "numDynBindingDel";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:numdhcppktdropped {
+     deviate add {
+       sonic-ext:field-name "numDhcpPktDropped";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:numdhcptxdrops {
+     deviate add {
+       sonic-ext:field-name "numDhcpTxDrops";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:errmsgbig {
+     deviate add {
+       sonic-ext:field-name "errMsgBig";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:errmsgtx {
+     deviate add {
+       sonic-ext:field-name "errMsgTx";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:numdhcppktbindingexists {
+     deviate add {
+       sonic-ext:field-name "numDhcpPktBindingExists";
+     }
+   }
+
+   deviation /oc-dhcp-snooping:dhcp-snooping-statistics-detail/oc-dhcp-snooping:dhcp-snooping-statistics-detail-list/oc-dhcp-snooping:state/oc-dhcp-snooping:errrxsrcmac {
+     deviate add {
+       sonic-ext:field-name "errRxSrcMac";
+     }
+   }
+}

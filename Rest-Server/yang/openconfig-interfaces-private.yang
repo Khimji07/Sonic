@@ -1,0 +1,350 @@
+module openconfig-interfaces-private {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/interfaces/private/extension";
+
+  prefix "oc-intf-priv";
+
+  // import some basic types
+  import openconfig-interfaces { prefix oc-intf; }
+  import openconfig-extensions { prefix oc-ext; }
+  import openconfig-vlan { prefix oc-vlan; }
+  import openconfig-inet-types { prefix oc-inet; }
+  import openconfig-if-ip {prefix oc-ip; }
+  import openconfig-vlan-types { prefix oc-vlan-types; }
+  import openconfig-yang-types { prefix oc-yang; }
+  import openconfig-types { prefix oc-types; }
+
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module describes a YANG model for openconfig-interfaces private yang definitions.";
+
+  oc-ext:openconfig-version "0.0.3";
+
+  revision "2021-09-09" {
+    description
+      "Add OpenConfig POSIX pattern extensions.";
+    reference "0.0.3";
+  }
+
+
+  revision "2021-07-01" {
+    description
+      "Add YANG definitions for ARP/NDP RPC.";
+    reference "0.0.2";
+  }
+
+  revision "2021-06-25" {
+    description
+      "Add YANG definitions for Gateway address attribute and RPCs.";
+    reference "0.0.1";
+  }
+
+
+  typedef status {
+      type enumeration {
+          enum "SUCCESS" {
+              description
+                  "Indicates successful RPC call.";
+          }
+          enum ERROR {
+              description
+                  "Indicates error in RPC call execution.";
+          }
+      }
+      description
+          "Indicates 0 for SUCCESS and 1 for ERROR cases.";
+  }
+
+  augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:config" {
+    description "Additional attributes for IPv4 address config container associated with an interface";
+    leaf gw-addr {
+      type oc-inet:ipv4-address;
+      description "IPv4 Gateway address";
+    }
+  }
+
+  augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:state" {
+    description "Additional attributes for IPv4 address state container associated with an interface";
+    leaf gw-addr {
+      type oc-inet:ipv4-address;
+      description "IPv4 Gateway address";
+    }
+  }
+
+
+  augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:config" {
+    description "Additional attributes for IPv6 address config container associated with an interface";
+    leaf gw-addr {
+      type oc-inet:ipv6-address;
+      description "IPv6 Gateway address";
+    }
+    leaf eui64 {
+      type boolean;
+      default false;
+      description
+         "Controls whether IPv6 EUI-64 is enabled or disabled on this interface.";
+    }
+  }
+
+  augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:state" {
+    description "Additional attributes for IPv6 address state container associated with an interface";
+    leaf gw-addr {
+      type oc-inet:ipv6-address;
+      description "IPv6 Gateway address";
+    }
+    leaf eui64 {
+      type boolean;
+      default false;
+      description
+         "Controls whether IPv6 EUI-64 is enabled or disabled on this interface.";
+    }
+    leaf eui64-addr {
+        type oc-inet:ipv6-address;
+        description "IPv6 EUI-64 address";
+    }
+  }
+
+  augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:config" {
+    description "Additional attributes for IPv6 address config container associated with VLAN interface";
+    leaf eui64 {
+      type boolean;
+      default false;
+      description
+         "Controls whether IPv6 EUI-64 is enabled or disabled on this interface.";
+    }
+  }
+
+  augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:state" {
+    description "Additional attributes for IPv6 address state container associated with VLAN interface";
+    leaf eui64 {
+      type boolean;
+      default false;
+      description
+         "Controls whether IPv6 EUI-64 is enabled or disabled on this interface.";
+    }
+    leaf eui64-addr {
+        type oc-inet:ipv6-address;
+        description "IPv6 EUI-64 address";
+    }
+  }
+
+  // rpc statements
+  rpc clear-counters {
+    description "RPC for clearing interface counters. Input can be :
+      1. Single interface name
+      2. All interfaces
+      3. All interfaces of a particular type";
+
+    input {
+      leaf interface-param {
+        type string;
+        description
+          "parameter for clearing counters - all or interface type(Ethernet/PortChannel) or interface name";
+      }
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc vlan-replace {
+    description
+      "Replaces VLAN member list for given interfaces";
+    input {
+      leaf-list ifname {
+        type string;
+        description
+          "Interface with which VLAN needs to be replaced";
+      }
+      leaf-list vlanlist {
+        type union {
+          type oc-vlan-types:vlan-id;
+          type oc-vlan-types:vlan-range;
+        }
+        description
+          "list of VLANs that needs to be replaced with";
+      }
+
+    }
+    output {
+      leaf status {
+        type uint32;
+        description
+          "Status of operation execution request";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "Detailed status of operation execution request";
+      }
+    }
+  }
+
+  rpc get-neighbors {
+      description
+          "RPC for getting ARP/NDP entries. In the absence of input parameters,
+           only ARP entries from the default VRF will be returned.";
+
+      input {
+          leaf family {
+            type identityref {
+                base oc-types:ADDRESS_FAMILY;
+              }
+              description
+                  "Address family (IPV4/IPV6).";
+          }
+
+          leaf summary {
+              type boolean;
+              default false;
+              description
+                  "If True, returns the number of ARP/NDP entries only.";
+          }
+
+          leaf network-instance {
+              type string {
+                  length "3..15";
+                  pattern "all|default|mgmt|Vrf[0-9A-Za-z_-]" {
+                      error-message "Invalid VRF name";
+                      error-app-tag vrf-name-arp-invalid;
+                  }
+                  oc-ext:posix-pattern '^all|default|mgmt|Vrf[0-9A-Za-z_-]$';
+              }
+              description
+                  "Represents VRF name. Available options are:
+                  1. all:         Get ARP/NDP entries from all network instances.
+                  2. mgmt:        Get ARP/NDP entries from management VRF
+                  3. Vrf<suffix>: Data VRF name prefixed with 'Vrf'
+                  NOTES:
+                  a: 'all' is not valid network-instance name. It just
+                      indicates that the user wants to get ARP/NDP entries from
+                      all VRFs";
+          }
+
+          leaf mac {
+              type oc-yang:mac-address;
+              description "MAC address of the neighbor";
+          }
+
+          leaf ip {
+              type oc-inet:ip-address;
+              description
+                  "It is used to get ARP/NDP entries related to the given IPv4/IPv6 address.";
+          }
+
+          leaf interface {
+              type leafref {
+                  path "/oc-intf:interfaces/oc-intf:interface/oc-intf:name";
+
+              }
+              description
+                  "It is used to get ARP/NDP  entries learnt on the given inteface. Valid inputs are:
+                  Ethernet<port-number>/Vlan<Vlan ID>/PortChannel<port-channel ID>/eth<interface ID>.
+                  For example: Ethernet0, Vlan100, PortChannel10, eth0.";
+          }
+      }
+
+      output {
+          leaf status {
+              type status;
+              description
+                  "Status code return by the RPC. 0 for SUCCESS and 1 for ERROR.";
+          }
+
+
+          leaf status-details {
+              type string;
+              description
+                  "In case of SUCCESS, carries total number of ARP/NDP records, otherwise carries error description.";
+          }
+
+          leaf data {
+              type string;
+              description
+                  "On success carries ARP/NDP entries in JSON string format.";
+          }
+      }
+  }
+
+  rpc clear-interfaces-ip {
+    description
+      "Clear all IPv4/IPv6 addresses assigned to given interfaces list";
+    input {
+      leaf-list interfaces {
+        type leafref {
+          path "/oc-intf:interfaces/oc-intf:interface/oc-intf:name";
+        }
+        description
+          "Valid inputs are:
+                  List of Ethernet<port-number>/Vlan<Vlan ID>/PortChannel<port-channel ID>/eth<interface ID>.
+                  For example: [Vlan10, Vlan11]";
+      }
+      leaf family {
+        type identityref {
+          base oc-types:ADDRESS_FAMILY;
+        }
+        description
+          "Address family (IPv4/IPv6)";
+      }
+    }
+
+    output {
+      leaf status {
+        type status;
+        description
+          "Status code return by the RPC. 0 for SUCCESS and 1 for ERROR.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "Detailed status of operation execution request";
+      }
+    }
+  }
+
+  rpc default-interface-config {
+    description "This RPC is used to restore a selected interface configuration to its
+      factory default configuration state. When an error happens, the output parameter
+      status returns a non-zero value and the the output parameter status-detail provides
+      additional information about the error.";
+    input {
+      leaf ifname {
+        type leafref {
+          path "/oc-intf:interfaces/oc-intf:interface/oc-intf:name";
+        }
+        mandatory true;
+      }
+    }
+
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status code of the operation execution request. A non-zero value
+          indicates a failure.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+}

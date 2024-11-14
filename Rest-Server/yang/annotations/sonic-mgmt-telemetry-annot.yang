@@ -1,0 +1,15 @@
+module sonic-mgmt-telemetry-annot {
+    namespace "http://github.com/Azure/sonic-mgmt-telemetry-annot";
+    prefix "s-tele-annot";
+    yang-version 1.1;
+
+    import sonic-extensions { prefix sonic-ext; }
+    import sonic-mgmt-telemetry { prefix smgmt-tele; }
+
+    deviation /smgmt-tele:sonic-mgmt-telemetry {
+        deviate add {
+	    sonic-ext:user-role-priv "write:secadmin";
+        }
+
+    }
+}

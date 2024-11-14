@@ -1,0 +1,114 @@
+module sonic-mgmt-rest {
+    namespace "http://github.com/Azure/sonic-mgmt-rest";
+    prefix "s-rest";
+    yang-version 1.1;
+
+    import sonic-pki {
+        prefix spki;
+    }
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "This module defines the database schema for configuration and
+        monitoring of the Management REST Server.";
+
+    revision 2023-01-10 {
+        description
+            "Add validations";
+    }
+    revision 2021-11-01 {
+        description
+            "Initial revision.";
+    }
+    container sonic-mgmt-rest {
+        container REST_SERVER {
+           list REST_SERVER_LIST {
+               key "id";
+               leaf id {
+                   type enumeration {
+                       enum default;
+                   }
+               }
+               leaf port {
+                   type uint16;
+                   description
+                    "The port that the REST server listens on";
+               }
+               leaf disable {
+                   type boolean;
+                   description
+                    "Disable the REST server listener on this port.
+                    Only CLI requests will be processed.";
+               }
+               leaf log_level {
+                   type uint8;
+                   description
+                    "Log level of REST server";
+               }
+               leaf client_auth {
+                   type string {
+                       pattern "((password|cert|jwt|none),?)*" {
+                           error-message "Invalid Rest client_auth pattern";
+                           error-app-tag client-auth-invalid;
+                       }
+                   }
+                   sonic-ext:custom-validation ValidateClientAuth;
+               }
+                leaf req_limit {
+                    type uint32;
+                    description
+                        "Maximum number of concurrent requests allowed.
+                        Additional requests will be queued until any of
+                        the ongoing request completes. Server will not
+                        throttle the requests if this limit is set to 0.
+                        If not configured, server will assume a default
+                        value based on the system capability.";
+                }
+                leaf read_timeout {
+                    type uint32;
+                    units "seconds";
+                    description
+                        "Number of seconds the server waits for a valid
+                        http request header to arrive on a connection.
+                        Drops the connection if no or a partial header
+                        arrives during this interval. Default value is
+                        15 seconds. Value 0 will disable this timeout";
+                }
+               leaf security_profile {
+                   type leafref {
+                        path "/spki:sonic-pki/spki:SECURITY_PROFILES/spki:SECURITY_PROFILES_LIST/spki:profile-name";
+                   }
+                   sonic-ext:custom-validation ValidateSecurityProfile;
+               }
+                leaf api_timeout {
+                  type uint32;
+                  units "seconds";
+                  description
+                    "Server side timeout hint, in seconds, for all REST
+                    requests. Value 0 disables this timeout. When not
+                    configured, server will assume a default value based
+                    on the system capability.
+
+                    On timeout, server will abort processing the request
+                    and respond with 503 Service Unavailable error.
+                    Not all API handlers may honor this timeout. Hence
+                    server may take longer to complete some requests
+                    based on underlying handler implementation.
+
+                    API timeout does not count the socket read time (set
+                    via read_timeout); but counts the wating time due to
+                    concurrent request limit (set via req_limit).";
+                }
+           }
+        }
+    }
+}

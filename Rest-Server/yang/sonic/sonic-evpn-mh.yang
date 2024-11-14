@@ -1,0 +1,113 @@
+module sonic-evpn-mh {
+    namespace "http://github.com/Azure/sonic-evpn-mh";
+    prefix sonic-evpn-mh;
+    yang-version 1.1;
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "This module provides rest apis to configure EVPN_MH_GLOBAL db entries.";
+
+
+    revision 2023-02-07 {
+        description
+            "Initial revision.";
+    }
+
+    container sonic-evpn-mh {
+
+        container EVPN_MH_GLOBAL {
+            list EVPN_MH_GLOBAL_LIST {
+                key "evpn_mh";
+                sonic-ext:custom-validation ValidateEvpnMhGlobalCreationDeletion;
+
+                leaf evpn_mh {
+                      type enumeration {
+                           enum default;
+                      }
+                      description
+                           "evpn mh db key.";
+                }
+
+                leaf startup_delay {
+                    type uint32{
+                        range "0..3600" {
+                            error-message "startup_delay out of range";
+                        }
+                    }
+                    description
+                    "Time to wait before bringing up Multihomed ES.";
+                }
+
+                leaf mac_holdtime {
+                    type uint32{
+                        range "0..86400" {
+                            error-message "mac_holdtime out of range";
+                        }
+                    }
+                    description
+                    "Time to wait before aging out peer VTEPs MAC entry.";
+                }
+
+                leaf neigh_holdtime {
+                    type uint32{
+                        range "0..86400" {
+                            error-message "neigh_holdtime out of range";
+                        }
+                    }
+                    description
+                    "Time to wait before aging out peer VTEPs ARP/ND entry.";
+                }
+
+                leaf df_election_time {
+                    type uint32{
+                        range "0..86400" {
+                            error-message "df_election_time out of range";
+                        }
+                    }
+                    description
+                    "Time to wait before df election is triggered.";
+                }
+
+                leaf es_activation_delay {
+                    type uint32{
+                        range "0..1200000" {
+                            error-message "es_activation_delay out of range";
+                        }
+                    }
+                    description
+                    "Time to wait before activating the link for forwarding the traffic.";
+                }
+            }
+        }
+        container _EVPN_MH_ES_STARTUP_DELAY {
+            config false;
+            sonic-ext:db-name "APPL_DB";
+            list _EVPN_MH_ES_STARTUP_DELAY_LIST {
+                max-elements 1;
+                key "keyleaf";
+
+                leaf keyleaf {
+                    type enumeration {
+                        enum GLOBAL;
+                    }
+                    description
+                        "Key node identifier. It's value is always GLOBAL";
+                }
+                leaf delay_restore_start_time{
+                      type uint64;
+                      description
+                        "Delay Restore start time in seconds since the Epoch";
+                }
+            }
+        }
+    }
+}

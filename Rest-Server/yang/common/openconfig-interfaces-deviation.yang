@@ -1,0 +1,242 @@
+module openconfig-interfaces-deviation {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/interfaces/deviation/extension";
+
+  prefix "oc-intf-dev";
+
+  // import some basic types
+  import openconfig-interfaces { prefix oc-intf; }
+  import openconfig-extensions { prefix oc-ext; }
+  import openconfig-inet-types { prefix oc-inet; }
+  import openconfig-if-ip {prefix oc-ip; }
+  import openconfig-vlan-types { prefix oc-vlan-types; }
+  import openconfig-if-ethernet {prefix oc-eth; }
+  import openconfig-platform-port { prefix oc-port; }
+  import openconfig-platform-transceiver { prefix oc-transceiver; }
+  import openconfig-interfaces-ext { prefix oc-intf-ext; }
+  import openconfig-vlan {prefix oc-vlan;}
+  import openconfig-if-aggregate {prefix oc-lag;}
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module describes a YANG model for openconfig-interfaces deviations.";
+
+  oc-ext:openconfig-version "0.3.0";
+  
+  revision "2024-03-03" {
+    description
+      "Add Yang deviation for unsupported interface ethernet mac-address attribute.";
+    reference "0.3.0";
+  }
+
+  revision "2024-03-01" {
+    description
+      "Add Yang deviation for unsupported native vlan attribute.";
+    reference "0.2.9";
+  }
+
+  revision "2024-02-19" {
+    description
+      "Add Yang deviation for unsupported VLAN TPID attribute.";
+    reference "0.2.8";
+  }
+
+  revision "2023-10-27" {
+    description
+      "Add Yang deviations for unsupported double-tagged container.";
+    reference "0.2.7";
+  }
+
+  revision "2023-10-24" {
+    description
+      "Add Yang deviations for interface state counter in-unknown-protos.";
+    reference "0.2.6";
+  }
+
+  revision "2023-10-12" {
+    description
+      "Add Yang deviations for unsupported platform attributes.";
+    reference "0.2.5";
+  }
+
+  revision "2023-10-12" {
+    description
+      "Add Yang deviations for unsupported interface counters and interface loopback-mode.";
+      reference "0.2.4";
+  }
+
+  revision "2023-09-08" {
+    description
+      "Add Yang deviations for  unsupported port counters.";
+    reference "0.2.3";
+  }
+
+  revision "2021-06-25" {
+    description
+      "Remove YANG definitions for Gateway address attribute and RPCs.";
+    reference "0.2.2";
+  }
+
+  revision "2021-06-18" {
+    description
+      "Add Gateway address attribute and RPCs.";
+    reference "0.2.1";
+  }
+
+  revision "2021-06-16" {
+    description
+      "Add SubInterface Counters deviations.";
+    reference "0.1.1";
+  }
+
+  revision "2021-06-15" {
+    description
+      "Add SONiC specific Interface deviations.";
+    reference "0.1.0";
+  }
+
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-intf:management {
+    deviate not-supported;
+  }
+
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-intf:cpu {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:config/oc-intf:loopback-mode {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-intf:loopback-mode {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-intf:counters/oc-intf:in-unknown-protos {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-intf:counters/oc-intf:in-fcs-errors {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-intf:counters/oc-intf:carrier-transitions {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-port:hardware-port {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-transceiver:transceiver {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-transceiver:physical-channel {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-intf:state/oc-intf:management {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-intf:state/oc-intf:cpu {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-intf:state/oc-intf:mac-address {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-intf:state/oc-intf:admin-status {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-intf:state/oc-intf:oper-status {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-intf:state/oc-intf:last-change {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-intf:state/oc-intf:logical {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-intf:state/oc-intf:rate-interval {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-intf:state/oc-intf:name {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-intf:state/oc-intf:counters {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-eth:ethernet/oc-eth:state/oc-eth:counters/oc-eth:in-mac-control-frames {
+    deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-eth:ethernet/oc-eth:state/oc-eth:counters/oc-eth:in-mac-pause-frames {
+     deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-eth:ethernet/oc-eth:state/oc-eth:counters/oc-eth:out-mac-control-frames {
+     deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-eth:ethernet/oc-eth:state/oc-eth:counters/oc-eth:out-mac-pause-frames {
+     deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-eth:ethernet/oc-eth:state/oc-eth:counters/oc-eth:in-8021q-frames {
+     deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-eth:ethernet/oc-eth:state/oc-eth:counters/oc-eth:out-8021q-frames {
+     deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-eth:ethernet/oc-eth:state/oc-eth:counters/oc-eth:in-block-errors {
+     deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf-ext:mapped-vlans/oc-intf-ext:mapped-vlan/oc-intf-ext:match/oc-intf-ext:double-tagged {
+     deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:config/oc-vlan:tpid {
+     deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-vlan:tpid {
+     deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-lag:aggregation/oc-vlan:switched-vlan/oc-vlan:config/oc-vlan:native-vlan {
+      deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-lag:aggregation/oc-vlan:switched-vlan/oc-vlan:state/oc-vlan:native-vlan {
+      deviate not-supported;
+  }
+
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-eth:ethernet/oc-vlan:switched-vlan/oc-vlan:state/oc-vlan:native-vlan {
+      deviate not-supported;
+  }
+  deviation /oc-intf:interfaces/oc-intf:interface/oc-eth:ethernet/oc-eth:config/oc-eth:mac-address {
+        deviate not-supported;
+  }
+
+}

@@ -1,0 +1,196 @@
+module sonic-debugcounter {
+    namespace "http://github.com/Azure/sonic-debugcounter";
+    prefix sdc;
+    yang-version 1.1;
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    import sonic-common {
+        prefix cmn;
+    }
+
+    import sonic-mirror-session {
+        prefix sms;
+    }
+
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONIC DEBUG DROP COUNTERS";
+
+    revision 2021-08-12 {
+        description
+            "Initial revision.";
+    }
+
+    container sonic-debugcounter {
+
+        container DEBUG_COUNTER {
+
+            list DEBUG_COUNTER_LIST {
+                key "name";
+
+                leaf name {
+                    type string {
+                        pattern '[a-zA-Z0-9]{1}([-a-zA-Z0-9_]{0,31})';
+                        length 1..32 {
+                            error-message "Invalid drop counter name";
+                            error-app-tag counter-name-invalid;
+                        }
+                    }
+                    description
+                        "Drop counter name";
+                }
+
+                leaf desc {
+                    type string {
+                        length 1..255 {
+                            error-app-tag rule-desc-invalid-length;
+                        }
+                    }
+                    description
+                        "Description about the drop counter.";
+                }
+
+                leaf group {
+                    type string {
+                        length 1..32 {
+                            error-app-tag rule-desc-invalid-length;
+                        }
+                    }
+                    description
+                        "Drop counter group. Multiple counters can belong to same group";
+                }
+
+                leaf alias {
+                    type string {
+                        length 1..32 {
+                            error-app-tag rule-desc-invalid-length;
+                        }
+                    }
+                    description
+                        "Drop counter Alias.";
+                }
+
+                leaf type {
+                    type enumeration {
+                         enum PORT_INGRESS_DROPS;
+                         enum PORT_EGRESS_DROPS;
+                         enum SWITCH_INGRESS_DROPS;
+                         enum SWITCH_EGRESS_DROPS;
+                    }
+                    description
+                        "debug counter type";
+                }
+
+                leaf status {
+                    type cmn:mode-enable;
+                    description
+                        "Enable/disable the drop counter";
+                    sonic-ext:custom-validation ValidateDropCounterAvailablile;
+                }
+
+                leaf mirror {
+                    type leafref {
+                        path "/sms:sonic-mirror-session/sms:MIRROR_SESSION/sms:MIRROR_SESSION_LIST/sms:name";
+                    }
+                    description
+                        "Mirror session to mirror the dropped frames";
+                    sonic-ext:custom-validation ValidateMirrorAction;
+                }
+
+                leaf-list reasons {
+                    type string {
+                        length 1..32 {
+                            error-message "Invalid drop counter name";
+                            error-app-tag counter-name-invalid;
+                        }
+                    }
+                    sonic-ext:custom-validation ValidateDebugDropReason;
+                }
+            }
+        }
+
+        container DEBUG_COUNTER_DROP_REASON {
+
+            list DEBUG_COUNTER_DROP_REASON_LIST {
+                key "name reason";
+
+                leaf name {
+                    type string {
+                        pattern '[a-zA-Z0-9]{1}([-a-zA-Z0-9_]{0,31})';
+                        length 1..32 {
+                            error-message "Invalid drop counter name";
+                            error-app-tag counter-name-invalid;
+                        }
+                    }
+                    description
+                        "Drop counter name";
+                }
+                leaf reason {
+                    type string {
+                        length 1..32 {
+                            error-message "Invalid drop counter name";
+                            error-app-tag counter-name-invalid;
+                        }
+                    }
+                    sonic-ext:custom-validation ValidateDropReason;
+                }
+            }
+        }
+
+        //state sonic debug counter table
+        container DEBUG_COUNTER_CAPABILITIES { 
+
+            sonic-ext:db-name "STATE_DB"; 
+            sonic-ext:key-delim "|"; 
+
+            config false;
+            description "state debug counter capabilities table";
+
+            list DEBUG_COUNTER_CAPABILITIES_LIST { 
+                sonic-ext:db-name "STATE_DB"; 
+
+                key "type";
+
+                leaf type {
+                    type enumeration {
+                         enum PORT_INGRESS_DROPS;
+                         enum PORT_EGRESS_DROPS;
+                         enum SWITCH_INGRESS_DROPS;
+                         enum SWITCH_EGRESS_DROPS;
+                    }
+                    description
+                        "debug counter type";
+                }
+
+                leaf count {
+                    type uint16;
+                    description
+                        "Number of supported debug counters";
+                }
+
+                leaf reasons {
+                    type string {
+                    }
+                    description
+                        "Count supported drop reasons";
+                }
+
+                leaf mirror_reasons {
+                    type string {
+                    }
+                    description
+                        "Mirror supported drop reasons";
+                }
+            }
+        }
+    }
+}

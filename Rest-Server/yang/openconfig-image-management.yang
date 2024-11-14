@@ -1,0 +1,782 @@
+module openconfig-image-management {
+
+  yang-version "1";
+
+  namespace "http://openconfig.net/yang/image-management/extension";
+
+  prefix "oc-img-mgmt";
+
+  import openconfig-extensions { prefix oc-ext; }
+  import openconfig-types { prefix "oc-types"; }
+  import openconfig-yang-types { prefix oc-yang; }
+
+  organization "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module defines operational state data
+    for Image Management.";
+
+  revision "2023-07-28" {
+    description
+      "Add firmware package management containers and RPCs for image firmware install and image firmware cancel.";
+      reference "1.4.0";
+  }
+
+  revision "2023-02-27" {
+    description
+      "Add file download speed for image status update.";
+      reference "1.3.0";
+  }
+
+  revision "2021-12-16" {
+    description
+      "Add OpenConfig POSIX pattern extensions.";
+      reference "1.2.0";
+  }
+
+  revision "2021-10-12" {
+    description
+      "Adding Image management install state container and RPCs for Image install, Image install cancel, Image remove and Image set-default.";
+    reference "1.1.0";
+  }
+
+  revision "2021-09-14" {
+    description
+      "Update to meet Openconfig standard.";
+    reference "1.0.0";
+  }
+ 
+  revision "2020-07-20" {
+    description
+      "Initial public revision";
+    reference "0.1.0";
+  }
+ 
+
+  oc-ext:openconfig-version "1.0.0";
+
+  typedef filename-uri-type {
+    type string {
+      pattern "((https?|file):.*)";
+    }
+    description
+      "Support for following URI format:
+         http://hostip/filepath
+         https://hostip/filepath
+         file://filename";
+    oc-ext:posix-pattern '^((https?|file):.*)$';
+  }
+
+  typedef stage-status-option {
+    type enumeration {
+      enum STAGE_IDLE {
+        description "Status is idle";
+      }
+      enum STAGE_PROGRESS {
+        description "Staging in progress";
+      }
+      enum STAGE_FAILED {
+        description "Staging failed";
+      }
+      enum STAGE_SET_BOOT {
+        description "Set next boot in progress";
+      }
+      enum STAGE_SET_BOOT_FAILED {
+        description "Set next boot failed";
+      }
+      enum STAGE_STATE_SUCCESS {
+        description "Staging successful";
+      }
+    }
+    description
+      "Staging status";
+  }
+
+  typedef transfer-status-option {
+    type enumeration {
+      enum TRANSFER_IDLE {
+        description "Status is idle";
+      }
+      enum TRANSFER_DOWNLOAD {
+        description "File download in progress";
+      }
+      enum TRANSFER_DOWNLOAD_FAILED {
+        description "File download failed";
+      }
+      enum TRANSFER_VALIDATION {
+        description "File validation in progress";
+      }
+      enum TRANSFER_FILE_VALIDATION_FAILED {
+        description "File validation failed";
+      }
+      enum TRANSFER_FILE_EXTRACTION {
+        description "File extraction in progress";
+      }
+      enum TRANSFER_FILE_EXTRACTION_FAILED {
+        description "File extraction failed";
+      }
+      enum TRANSFER_STATE_SUCCESS {
+        description "File transfer successful";
+      }
+    }
+    description
+      "File transfer status";
+  }
+
+  grouping image-management-global-state {
+     description "Grouping for image-mangement global data.";
+     container global {
+        description "Enclosing container for global data.";
+        container state {
+           description "State container for global data.";
+ 
+           leaf current {
+              type string;
+              description "Active image.";
+           }
+           leaf next-boot {
+              type string;
+              description "Next boot image.";
+           }
+        }
+     }
+  }
+
+  grouping image-management-patches-state{
+     description "Grouping for patches list.";
+
+     list patch {
+         key "patch-time";
+         description "List of patches on the device.";
+         leaf patch-time {
+             type leafref {
+                 path "../state/patch-time";
+             }
+             description
+                 "Reference to image list  key";
+         }
+
+         container state {
+             description
+                 "patch list state information.";
+
+             leaf patch-time{
+                 type string;
+                 description "patch time.";
+             }
+             leaf start{
+                 type string;
+                 description "start time.";
+             }
+             leaf end{
+                 type string;
+                 description "end time.";
+             }
+             leaf id {
+                 type string;
+                 description "patch id.";
+             }
+             leaf tag {
+                 type string;
+                 description "patch name.";
+             }
+             leaf state {
+                 type string;
+                 description "patch state.";
+             }
+             leaf status {
+                 type string;
+                 description "patch status.";
+             }
+             leaf dependency {
+                 type string;
+                 description "dependency status.";
+             }
+             leaf date {
+                 type string;
+                 description "patch date";
+             }
+         }
+     }
+  }
+  grouping image-management-images-state {
+     description "Grouping for image-mangement list.";
+     container images {
+        description "Enclosing container for image list.";
+
+        list image {
+           key "image-name";
+           description "List of images on the device.";
+           leaf image-name {
+              type leafref {
+                 path "../state/image-name";
+              }
+              description
+                 "Reference to image list  key";
+             }
+ 
+             container state {
+                description
+                   "Image list state information.";
+ 
+                leaf image-name {
+                   type string;
+                   description "Image name.";
+                }
+             }
+          }
+     }
+  }
+
+  grouping state-mgmt {
+      description "Install state information.";
+
+      leaf file-progress {
+          type oc-types:percentage;
+          description "Image update file downloading progress information.";
+      }
+      leaf file-size {
+          type oc-yang:counter64;
+          description "Image update file size.";
+      }
+      leaf file-transfer-bytes {
+          type oc-yang:counter64;
+          description "Image update file download bytes.";
+      }
+      leaf transfer-status {
+          type string;
+          description
+              "Image update file download status.
+              TRANSFER_IDLE / TRANSFER_DOWNLOAD / TRANSFER_DOWNLOAD_FAILED / TRANSFER_VALIDATION / TRANSFER_FILE_VALIDATION_FAILED /
+              TRANSFER_FILE_EXTRACTION / TRANSFER_FILE_EXTRACTION_FAILED / TRANSFER_TRANSFER_FAILED / TRANSFER_STATE_SUCCESS.";
+      }
+      leaf transfer-status-detail {
+          type string;
+          description "Image update file download status detail.";
+      }
+      leaf transfer-start-time {
+          type string;
+          description "Image update file download start time.";
+      }
+      leaf transfer-end-time {
+          type string;
+          description "Image update file download end time.";
+      }
+  }
+  grouping install-mgmt {
+      leaf trigger {
+          type string;
+          description "trigger command.";
+      }
+      leaf install-status {
+          type string;
+          description
+              "Image update file installation status.
+              INSTALL_IDLE / INSTALL_PROGRESS / INSTALL_FAILED / INSTALL_STATE_SUCCESS.";
+      }
+      leaf install-start-time {
+          type string;
+          description "Install start time";
+      }
+      leaf install-end-time {
+          type string;
+          description "Install end time";
+      }
+      leaf rollback-status {
+          type string;
+          description
+              "Image update file installation status.
+              ROLLBACK_IDLE / ROLLBACK_PROGRESS / ROLLBACK_FAILED / ROLLBACK_STATE_SUCCESS.";
+      }
+      leaf rollback-start-time {
+          type string;
+          description "rollback start time";
+      }
+      leaf rollback-end-time {
+          type string;
+          description "rollback end time";
+      }
+      leaf recovery-status {
+          type string;
+          description
+              "Image update file installation status.
+              RECOVER_IDLE / RECOVER_PROGRESS / RECOVER_FAILED / RECOVER_STATE_SUCCESS.";
+      }
+      leaf recovery-start-time {
+          type string;
+          description "recovery start time";
+      }
+      leaf recovery-end-time {
+          type string;
+          description "recovery end time";
+      }
+
+  }
+  grouping image-management-install-state {
+     description "Grouping for image-mangement list.";
+     container install {
+        description "Enclosing container for image list.";
+
+        container state {
+            description "Install state information.";
+
+            leaf operation-status {
+                type string;
+                description
+                    "Global state image information.
+                    GLOBAL_STATE_IDLE / GLOBAL_STATE_DOWNLOAD / GLOBAL_STATE_INSTALL / GLOBAL_STATE_FAILED / GLOBAL_STATE_SUCCESS.";
+            }
+            leaf file-progress {
+                type oc-types:percentage;
+                description "Image update file downloading progress information.";
+            }
+            leaf file-size {
+                type oc-yang:counter64;
+                description "Image update file size.";
+            }
+            leaf file-transfer-bytes {
+                type oc-yang:counter64;
+                description "Image update file download bytes.";
+            }
+            leaf file-download-speed {
+                type oc-yang:counter64;
+                description "Image update file download speed.";
+            }
+            leaf transfer-status {
+                type string;
+                description
+                    "Image update file download status.
+                    TRANSFER_IDLE / TRANSFER_DOWNLOAD / TRANSFER_DOWNLOAD_FAILED / TRANSFER_VALIDATION / TRANSFER_FILE_VALIDATION_FAILED /
+                    TRANSFER_FILE_EXTRACTION / TRANSFER_FILE_EXTRACTION_FAILED / TRANSFER_TRANSFER_FAILED / TRANSFER_STATE_SUCCESS.";
+            }
+            leaf transfer-status-detail {
+                type string;
+                description "Image update file download status detail.";
+            }
+            leaf transfer-start-time {
+                type oc-types:timeticks64;
+                description "Image update file download start time.";
+            }
+            leaf transfer-end-time {
+                type oc-types:timeticks64;
+                description "Image update file download end time.";
+            }
+            leaf install-status {
+                type string;
+                description
+                    "Image update file installation status.
+                    INSTALL_IDLE / INSTALL_PROGRESS / INSTALL_FAILED / INSTALL_SET_BOOT / INSTALL_SET_BOOT_FAILED / INSTALL_REBOOT / INSTALL_STATE_SUCCESS.";
+            }
+            leaf install-status-detail {
+                type string;
+                description "Image update file installation status detail.";
+            }
+            leaf install-start-time {
+                type oc-types:timeticks64;
+                description "Image update file installation start time.";
+            }
+            leaf install-end-time {
+                type oc-types:timeticks64;
+                description "Image update file installation end time.";
+            }
+        }
+
+     }
+  }
+  grouping image-management-top {
+     description "Top level grouping for image management containers.";
+     container image-management {
+        config false;
+        description
+           "Enclosing container for operational state data.";
+
+        uses image-management-global-state;
+        uses image-management-images-state;
+        uses image-management-install-state;
+     }
+  }
+
+  grouping patch-management-install-state {
+      description "Grouping for patch-mangement status.";
+      container patch-install {
+          description "Enclosing container for patch.";
+
+          container download-state {
+              uses state-mgmt;
+          }
+          container install-state {
+              uses install-mgmt;
+          }
+      }
+  }
+  grouping patch-management-list {
+     description "Grouping for patch-mangement list.";
+     container patch-list {
+        description "Enclosing container for patch list.";
+        uses image-management-patches-state; 
+     }
+  }
+  grouping patch-management-history {
+     description "Grouping for patch-mangement history.";
+     container patch-history{
+        description "Enclosing container for patch history.";
+        uses image-management-patches-state; 
+     }
+  }
+  grouping patch-management-top {
+     description "Top level grouping for patch management containers.";
+     container patch-management {
+        config false;
+        description
+           "Enclosing container for operational state data.";
+
+        uses patch-management-install-state;
+        uses patch-management-list;
+        uses patch-management-history;
+     }
+  }
+
+  grouping fwpkg-management-install-state {
+     description "Grouping for fwpkg-management status";
+     container fwpkg-install {
+        description "Enclosing container for firmware updater package.";
+
+        container download-state {
+            description "Download state information.";
+
+            leaf file-progress {
+                type oc-types:percentage;
+                description "Firmware updater package downloading progress information.";
+            }
+            leaf file-size {
+                type oc-yang:counter64;
+                description "Firmware updater package size.";
+            }
+            leaf file-transfer-bytes {
+                type oc-yang:counter64;
+                description "Firmware updater package download bytes.";
+            }
+            leaf file-download-speed {
+                type oc-yang:counter64;
+                description "Firmware updater package download speed.";
+            }
+            leaf transfer-status {
+                type transfer-status-option;
+                description "Firmware updater package download status";
+            }
+            leaf transfer-status-detail {
+                type string;
+                description "Firmware updater package download status detail.";
+            }
+            leaf transfer-start-time {
+                type oc-types:timeticks64;
+                description "Firmware updater package download start time.";
+            }
+            leaf transfer-end-time {
+                type oc-types:timeticks64;
+                description "Firmware updater package download end time.";
+            }
+        }
+        container stage-state {
+            description "Staging state information.";
+
+            leaf stage-status {
+                type stage-status-option;
+                description "Firmware updater package staging status.";
+            }
+            leaf stage-status-detail {
+                type string;
+                description "Firmware updater package staging status detail.";
+            }
+            leaf stage-start-time {
+                type oc-types:timeticks64;
+                description "Firmware updater package staging start time.";
+            }
+            leaf stage-end-time {
+                type oc-types:timeticks64;
+                description "Firmware updater package staging end time.";
+            }
+        }
+
+     }
+  }
+  grouping fwpkg-management-pending {
+     description "Grouping for fwpkg-management pending.";
+     container fwpkg-pending {
+        description "Enclosing container for firmware updater package pending list.";
+
+        list fwpkg {
+           key "name";
+           description "List of staged firmware updater packages that are pending a reboot.";
+           leaf name {
+              type leafref {
+                 path "../state/name";
+              }
+              description
+                 "Reference to firmware updater package list key";
+           }
+
+           container state {
+              description
+                 "Firmware updater package state information.";
+
+              leaf name {
+                 type string;
+                 description "Firmware updater package name.";
+              }
+              leaf date {
+                 type string;
+                 description "Firmware updater package staged date.";
+              }
+              leaf version {
+                 type string;
+                 description "Firmware updater package version.";
+              }
+           }
+        }
+     }
+  }
+  grouping fwpkg-management-result {
+     description "Grouping for fwpkg-management result.";
+     container fwpkg-result {
+        description "Enclosing container for firmware updater package result list.";
+
+        list fwpkg {
+           key "name";
+           description "List of firmware updater packages' installation results.";
+           leaf name {
+              type leafref {
+                 path "../state/name";
+              }
+              description
+                 "Reference to firmware updater package list key";
+           }
+
+           container state {
+              description
+                 "Firmware updater package result state information.";
+
+              leaf name {
+                 type string;
+                 description "Firmware updater package name.";
+              }
+              leaf date {
+                 type string;
+                 description "Firmware updater package installation date.";
+              }
+              leaf result {
+                 type string;
+                 description "Firmware updater package installation result.";
+              }
+              leaf version {
+                 type string;
+                 description "Firmware updater package version.";
+              }
+           }
+        }
+     }
+  }
+  grouping fwpkg-management-top {
+     description "Top level grouping for fwpkg-management containers.";
+     container fwpkg-management {
+        config false;
+        description
+           "Enclosing container for operational state data.";
+
+        uses fwpkg-management-install-state;
+        uses fwpkg-management-pending;
+        uses fwpkg-management-result;
+     }
+  }
+
+  uses image-management-top;
+  uses patch-management-top;
+  uses fwpkg-management-top;
+
+  // rpc statements
+
+  rpc image-install {
+    description
+      "This RPC is used to kickoff a background task to download, install and load the new software.";
+    input {
+     leaf image-name {
+        type filename-uri-type;
+        description
+          "Provides the type of link to installer's destination(url or path(obsolute-path)).";
+      }
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc image-install-cancel {
+    description
+      "This RPC is used to cancel an existing installation that is in progress.";
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc image-remove {
+    description
+      "This RPC is used to remove an unused image from the disk.";
+    input {
+      leaf image-name {
+        type string;
+        description
+          "Provides the name of the image to be remove from the disk.";
+      }
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc image-default {
+    description
+      "This RPC is used to set default image which loaded in all subsequent reboots";
+    input {
+      leaf image-name {
+        type string;
+        description
+          "Provides the name of the image to be set as default.";
+      }
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+  rpc do-patch-install {
+    description
+      "This RPC is used to kickoff a background task to download, install and load the new software.";
+    input {
+     leaf patch-name {
+        type filename-uri-type;
+        description
+          "Provides the type of link to installer's destination(url or path(obsolute-path)).";
+      }
+     leaf skip-image-check {
+        type string;
+        description
+          "option to skip image check";
+      }
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc do-patch-rollback {
+    description
+      "This RPC is used to kickoff a background task to rollback the installed patch";
+    input {
+     leaf patch-name {
+        type string;
+        description
+          "Provides the tag of the already installed patch.";
+      }
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc do-fwpkg-install {
+    description
+      "This RPC is used to kickoff a background task to download and stage a firmware updater package.";
+    input {
+     leaf fwpkg-name {
+        type filename-uri-type;
+        description
+          "Provides the type of link to the firmware updater package's destination(url or path(absolute-path)).";
+      }
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc do-fwpkg-install-cancel {
+    description
+      "This RPC is used to cancel a pending firmware updater package.";
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf status-detail {
+        type string;
+        description
+          "The detailed status of the operation execution request.";
+      }
+    }
+  }
+}

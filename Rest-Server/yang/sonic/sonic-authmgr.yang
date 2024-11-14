@@ -1,0 +1,737 @@
+module sonic-authmgr {
+    namespace "http://github.com/Azure/sonic-authmgr";
+    prefix authmgr;
+    yang-version 1.1;
+
+    import sonic-port {
+        prefix prt;
+    }
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    import ietf-yang-types {
+        prefix yang;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+	"Authentication manager config.";
+
+    revision 2020-04-26 {
+        description
+            "Initial revision.";
+
+    }
+
+    container sonic-authmgr {
+        description
+	  "Authentication manager top level container.";
+
+	container PAC_PORT_CONFIG_TABLE {
+
+	     description
+		"Container for authentication manager port config table.";
+
+	     list PAC_PORT_CONFIG_TABLE_LIST {
+                key "port";
+                sonic-ext:custom-validation ValidatePacPortChannelIntf;
+                sonic-ext:custom-validation ValidatePacRoutingIntfCheck;
+                sonic-ext:custom-validation ValidatePacMirrorSessionDstPort;
+                sonic-ext:custom-validation ValidatePacPmsPort;
+
+		leaf port {
+		   type leafref {
+			path "/prt:sonic-port/prt:PORT/prt:PORT_LIST/prt:ifname";
+		   }
+                   description
+			"Name of the interface on which port control mode get applied.";
+                 }
+
+		leaf port_control_mode {
+		   type enumeration {
+			enum auto {
+			   description
+				"Enable auto port control mode on a port.";
+			}
+		        enum force-authorized {
+			   description
+				"Enable force authorized port control mode on a port.";
+			}
+			enum force-unauthorized {
+			   description
+				"Enable force unauthorized port control mode on a port.";
+			}
+		   }
+		   description
+			"Enable 802.1X port control on an interface.
+                        Note: Enabling PAC on the port will revert all switchport configurations on the port,
+                        if port control mode is auto/force-unauthorized and port pae role is authenticator.";
+                }
+
+		leaf host_control_mode {
+                   type enumeration {
+                        enum single-host {
+			   description
+				"Only single client can communicate through the port.";
+			}
+                        enum multi-auth {
+			   description
+				"Enable multi auth mode as host control mode on a port";
+			}
+                        enum multi-domain {
+			   description
+				"Allows for authentication of multiple clients
+				individually on one authenticator port.";
+			}
+                        enum multi-host {
+			   description
+				"Multiple hosts can communicate over a single port.
+				Only the first supplicant is authenticated while
+				subsequent hosts have network access without having to
+				authenticate";
+			}
+                   }
+                   description
+                         "Allow for single or multiple hosts to communicate through
+          		 an 802.1X controlled port.";
+		}
+
+    		leaf reauth_enable {
+      		   type boolean;
+     		   description
+        		"Indicates whether Reauthentication is enabled on
+        		the port.";
+    		}
+
+    		leaf open_authentication_mode {
+      		   type boolean;
+      		   description
+        		"Indicates whether Open Authentication mode is enabled on the port.";
+   		}
+
+        leaf quiet_period {
+           type uint32 {
+              range 1..65535 {
+                  error-message "quiet period value must be in range of 1-65535.";
+                  error-app-tag quiet-period-invalid;
+              }
+           }
+           units "seconds";
+           description
+              "The initial value of the timer that defines the period
+              during which the Authenticator will not attempt to authenticate the Supplicant.";
+        }
+
+        leaf server_timeout {
+           type uint32 {
+              range 10..65535 {
+                  error-message "server timeout value must be in range of 10-65535.";
+                  error-app-tag server-timeout-invalid;
+              }
+           }
+           units "seconds";
+           description
+              "The timer starts when the access device sends a RADIUS Access-Request packet
+              to the Authentication server. The MAB authentication fails, if no response
+              is received during server timeout period.";
+        }
+
+    		leaf reauth_period {
+      		   type uint32 {
+			range 1..65535 {
+                            error-message "reauth period value must be in range of 1-65535.";
+			    error-app-tag reauth-period-invalid;
+			}
+      		   }
+      		   units "seconds";
+      		   description
+        		"The initial value of the timer that defines the period
+        		after which the Authenticator will reauthenticate the Supplicant.";
+    		}
+
+    		leaf reauth_period_from_server {
+      		   type boolean; 
+      		   description
+        		"Indicates getting re-authentication timeout value from the Radius server.";
+    		}
+
+    		leaf max_users_per_port {
+      		   type uint8 {
+			range 1..48 {
+                            error-message "max users per port value must be in range of 1-48.";
+			    error-app-tag max-users-per-port-invalid;
+			}
+      		   }
+      		   description
+        		"Maximum number of clients that can be authenticated
+        		on the port. This is applicable only for multi-auth host mode.";
+    		}
+
+    		leaf guest_vlan_id {
+      		   type uint32 {
+			range 0..4094 {
+                            error-message "guest vlan id value must be in range of 0-4094.";
+			    error-app-tag guest-vlan-id-invalid;
+			}
+      		   }
+                   sonic-ext:custom-validation ValidateGuestVlanConfig;
+      		   description
+                       "The Guest VLAN Id for the port. Configuration of vlan id as 0 denotes invalid vlan ID.";
+   		}		
+
+    		leaf auth_fail_vlan_id {
+      		   type uint32 {
+			range 0..4094 {
+                            error-message "auth fail vlan id value must be in range of 0-4094.";
+			    error-app-tag auth-fail-vlan-id-invalid;
+			}
+      		   }
+                   sonic-ext:custom-validation ValidateUnAuthVlanConfig;
+      		   description
+                       "The Authentication Fail VLAN Id for the port. Configuration of vlan id as 0 denotes invalid vlan ID.";
+    		}
+/*
+    		leaf dead_server_critical_vlan {
+        	   type uint32 {
+			range 0..4094 {
+                            error-message "dead server critical vlan id value must be in range of 0-4094.";
+			    error-app-tag dead-server-critical-vlan-id-invalid;
+			}
+        	   }
+      		   description
+                       "Dead server Critical VLAN. Configuration of vlan id as 0 denotes invalid vlan ID.";
+    		}
+*/
+    		leaf max_reauth_attempts {
+                   type uint8 {
+			range 1..5 {
+                            error-message "max reauth attemts value must be in range of 1-5.";
+			    error-app-tag max-reauth-attempts-invalid;
+			}
+      		   }
+      		   description
+        		"The maximum number of authentication retries in the
+        		event of authentication failure.";
+    		}
+/*
+    		leaf server_alive_action
+    		{
+      		   type enumeration {
+			enum reinitialize {
+			   description
+				"Allows config of authentication event server alive action as reinitialize.";
+			}
+			enum none {
+			   description
+				"Allows config of authentication event server alive action as none.";
+			}
+      		   }
+      		   description
+			"Enables configuration of authentication event server alive action.";
+    		}
+
+    		leaf dead_server_action_voice 
+    		{
+      		   type enumeration {
+			enum authorize {
+			   description
+				"Allows config of authentication event dead server action voice as authorize.";
+			}
+			enum none {
+			   description
+				"Allows config of authentication event dead server action voice as none.";
+			}
+      		   }
+      		   description
+        		"Enables configuration of authentication event dead server voice vlan.";
+    		}
+
+		leaf dead_server_action
+    		{
+		   type enumeration {
+			enum authorize {
+			   description
+				"Allows config of authentication event dead server action as authorize.";
+			}
+			enum reinitialize {
+			   description
+				"Allows config of authentication event dead server action as reinitialize.";
+			}
+			enum none {
+			   description
+				"Allows config of authentication event dead server action as none.";
+			}
+		    }
+		    description
+			 "Enables configuration of authentication event dead server action.";
+    		}
+*/
+		leaf-list method_list {
+		   type enumeration {
+			enum dot1x {
+			   description
+				"Configure authmgr authentication order as dot1x";
+			}
+			enum mab {
+                           description
+                                "Configure authmgr authentication order as mab";
+                        }
+		   }
+                   description 
+			"Enables configuration of authmgr authentication order.";
+		}
+
+		leaf-list priority_list {
+                   type enumeration {
+			enum dot1x {
+                           description
+                                "Configure authmgr authentication priority as dot1x";
+                        }
+			enum mab {
+                           description
+                                "Configure authmgr authentication priority as mab";
+                        }
+      		   }
+      		   description 
+			"Enables configuration of authmgr authentication priority.";
+    		}
+
+		leaf port_pae_role
+                {
+                   type enumeration {
+                        enum authenticator {
+                           description
+                                "Allows config of dot1x port's pae role as authenticator.";
+                        }
+                        enum none {
+                           description
+                                "Allows config of dot1x port's pae role as none.";
+                        }
+                   }
+                   description
+                        "Enables configuration of dot1x port's pae role.
+                        Note: Enabling PAC on the port will revert all switchport configurations on the port,
+                        if port control mode is auto/force-unauthorized and port pae role is authenticator.";
+                }
+	    }
+	}
+
+	container PAC_GLOBAL_CONFIG_TABLE {
+           description
+	      "Container for authentication manager global config table.";
+
+	   list PAC_GLOBAL_CONFIG_TABLE_LIST {
+                key "global";
+
+                leaf global {
+		   type enumeration {
+                        enum GLOBAL;
+                   }
+                   description
+                   	"Configure PAC global.";
+                }
+
+		leaf monitor_mode_enable {
+                   type boolean;
+                   description
+                   	"monitor mode.";
+                }
+/*
+    		leaf max_reauth {
+      		   type uint32 {
+			range 1..50 {
+                            error-message "max reauth value must be in range of 1-50.";
+			    error-app-tag max-reauth-invalid;
+			}
+      		   }
+      		   description
+        		"The maximum number of Reauths per second.";
+    		}
+
+		leaf dynamic_vlan_enable {
+                   type boolean;
+                   description
+                        "Enable/Disable authentication manager dynamic VLAN creation support on the switch.";
+                }
+
+		leaf vlan_assign_enable {
+                   type boolean;
+                   description
+                        "Enable/Disable RADIUS VLAN assignment support on the switch.";
+                }
+*/
+             }
+	}
+
+        container PAC_GLOBAL_OPER_TABLE {
+           description
+              "Container for authentication manager global operational state db table.";
+           sonic-ext:db-name "STATE_DB";
+           sonic-ext:key-delim "|";
+           config false;
+
+           list PAC_GLOBAL_OPER_TABLE_LIST {
+                key "global";
+
+                leaf global {
+                   type enumeration {
+                        enum GLOBAL;
+                   }
+                   description
+                        "Configure PAC global oper table key.";
+                }
+
+                leaf num_clients_authenticated {
+		   type uint8 {
+                        range 1..10 {
+                            error-message "max number of authenticated clients must be in range of 1-10.";
+                            error-app-tag num-clients-authenticated;
+                        }
+                   }
+                   description
+                        "Number of clients authenticated.";
+                }
+
+                leaf num_clients_authenticated_monitor {
+		   type uint8 {
+                        range 1..10 {
+                            error-message "max number of authenticated clients in Monitor mode must be in range of 1-10.";
+                            error-app-tag num-clients-authenticated-monitor;
+                        }
+                   }
+                   description
+                        "Number of clients authenticated in Monitor mode.";
+                }
+	   }
+        }
+
+        container PAC_AUTHENTICATED_CLIENT_OPER_TABLE {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:key-delim "|";
+        config false;
+				
+            list PAC_AUTHENTICATED_CLIENT_OPER_TABLE_LIST {
+                key "port macaddress";
+
+                leaf port {
+                   type leafref {
+                        path "/prt:sonic-port/prt:PORT/prt:PORT_LIST/prt:ifname";
+                   }
+                   description
+                        "Name of the interface on which PAC port config get applied.";
+                 }
+
+                leaf macaddress {
+                    type yang:mac-address;
+                    description
+                        "MAC address of authenticated client.";
+                }
+
+		leaf auth_status {
+		    type enumeration {
+                         enum authorized {
+                            description
+			        "Client Auth status - authorized.";
+			 }
+                         enum unauthorized {
+                            description
+                                "Client Auth status - unauthorized.";
+                       }
+               	    }
+                    description
+                        "Authentication status of the client.";
+		}
+	        
+		leaf authenticated_method {
+                    type enumeration {
+                         enum 802.1x {
+			    description
+				"Client authenticated method - 802.1x.";
+			 }
+                         enum mab {
+			    description
+				"Client authenticated method - mab.";
+			 }
+                         enum none {
+			    description
+				"Client authenticated method - none.";
+			 }
+                    }
+                    description
+                        "Client authenicated method - 802.1x or mab or none.";
+                }
+
+                leaf session_timeout_RADIUS {
+                    type uint32;
+                    description
+                        "Session timeout value received from RADIUS server.";
+                }
+
+                leaf session_timeout_oper {
+                    type uint32;
+                    description
+                        "Operational value of the Client session timeout.";
+                }
+
+		leaf user_name {
+                    type string {
+                        length "1..31" { 
+                           error-message "valid length for user name is 1-31.";
+                           error-app-tag user-name-invalid;
+                        }
+                    }
+		    description
+                        "Client user name.";
+                }
+
+                leaf termination_action {
+                    type uint8 {
+                        range 0..1 {
+                           error-message " termination action valid range are 0-1.";
+			   error-app-tag termination-action-invalid;
+                        }
+                    }
+                    description
+                         "Client action on session timeout.";
+                }
+
+		leaf vlan_id {
+      		    type uint32 {
+			range 1..4093 {
+                           error-message "vlan id value must be in range of 1-4093.";
+                           error-app-tag vlan-id-invalid;
+                        }
+      		    }
+      		    description
+       			 "VLAN associated with the authorized client.";
+    		}
+  
+                leaf vlan_type {
+                    type enumeration {
+                         enum RADIUS {
+                            description
+                                "Authenticated client vlan type - RADIUS.";
+                         }
+                         enum Default {
+                            description
+                                "Authenticated client vlan type - Default.";
+                         }
+			 enum Voice {
+                            description
+                                "Authenticated client vlan type - Voice.";
+                         }
+			 enum Critical {
+                            description
+                                "Authenticated client vlan type - Critical.";
+                         }
+			 enum Unauthenticated {
+                            description
+                                "Authenticated client vlan type - Unauthenticated.";
+                         }
+			 enum Guest {
+                            description
+                                "Authenticated client vlan type - Guest.";
+                         }
+			 enum Monitor {
+                            description
+                                "Authenticated client vlan type - Monitor.";
+                         }
+                    }
+                    description
+                        "Authorization status of the client.";
+                }
+		
+		leaf backend_auth_method {
+                    type enumeration {
+                         enum radius {
+                            description
+                                "Radius server backend authentication method used to authorize the client.";
+                         }
+                         enum undefined {
+                            description
+                                "No valid backend authentication method.";
+                         }
+                    }
+                    description
+                        "Backend authentication method used to authorize the client.";
+                }
+             
+	        leaf session_time {
+                    type uint32;
+                    description
+                         "Client session time.";
+                }
+
+                leaf termination_action_time_left {
+                    type int32;
+                    description
+                         "Time left for authenticated client termination action.";
+                }
+
+                leaf dacl_name {
+                    type string {
+                        length "0..512" {
+                           error-message "valid length for dacl name is 0-512.";
+                           error-app-tag dacl-name-invalid;
+                        }
+                    }
+                    description
+                        "Dynamic ACL name.";
+                }
+
+                leaf redirect_acl_name {
+                    type string {
+                        length "0..256" {
+                           error-message "valid length for redirect ACL name is 0-256.";
+                           error-app-tag redirect-acl-name-invalid;
+                        }
+                    }
+                    description
+                        "The Redirect ACL is a static ACL sent in the RADIUS attribute redirect-acl.
+                         It is used to redirect matching packets to the CPU for further action.";
+                }
+
+                leaf redirect_url {
+                    type string {
+                        length "0..256" {
+                           error-message "valid length for redirect URL is 0-256.";
+                           error-app-tag redirect-url-invalid;
+                        }
+                    }
+                    description
+                        "The Redirect URL is a URL sent in the RADIUS attribute redirect-url.
+                         It is used by the Redirect component logic to redirect matching packets the redirect URL by using HTTP 302 response code.";
+                }
+	    }
+	}
+
+	container PAC_CLIENT_HISTORY_TABLE {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:key-delim "|";
+        config false;
+
+            list PAC_CLIENT_HISTORY_TABLE_LIST {
+                key "port index";
+
+                leaf port {
+                   type leafref {
+                        path "/prt:sonic-port/prt:PORT/prt:PORT_LIST/prt:ifname";
+                   }
+                   description
+                        "Name of the interface on which PAC port config get applied.";
+                }
+
+                leaf index {
+                   type uint8 {
+                   range 1..20;
+                   }
+                   description
+                        "authentication clients history - index.";
+                }
+
+                leaf client_mac_addr {
+                    type yang:mac-address;
+                    description
+                        "MAC address of authenticated client.";
+                }
+
+		leaf timestamp {
+		    type string;
+                    description 
+                        "Displays the date/timestamp of authmgr client being authenticated.";
+                }
+
+                leaf authenticated_method {
+                    type enumeration {
+                         enum 802.1x {
+                            description
+                                "Client authenticated method - 802.1x.";
+                         }
+                         enum mab {
+                            description
+                                "Client authenticated method - mab.";
+                         }
+                         enum none {
+			    description
+				"Client authenticated method - none.";
+			 }
+                    }
+                    description
+                        "Client authenicated method - 802.1x or mab or none.";
+                }
+
+		leaf auth_status {
+                    type enumeration {
+                         enum authorized;
+                         enum unauthorized;
+                    }
+                    description
+                        "Authentication status of the client.";
+                }
+             }
+         }
+
+	container PAC_PORT_OPER_TABLE {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:key-delim "|";
+        config false;
+
+            list PAC_PORT_OPER_TABLE_LIST {
+                key "port";
+
+                leaf port {
+                   type leafref {
+                        path "/prt:sonic-port/prt:PORT/prt:PORT_LIST/prt:ifname";
+                   }
+                   description
+                        "Interface reference to PAC operation port.";
+                }
+
+		leaf-list enabled_method_list {
+                   type enumeration {
+                        enum dot1x {
+                           description
+                               "dot1x authentication type enabled for authmgr authentication.";
+                        }
+                        enum mab {
+                           description
+                               "mab authentication type enabled for authmgr authentication.";
+                        }
+                        enum undefined {
+                           description
+                               "authentication method not available.";
+                        }
+                   }
+                   description
+                        "Relative method order to be used for authmgr authentication.";
+                }
+
+                leaf-list enabled_priority_list {
+                   type enumeration {
+                        enum dot1x {
+                           description
+                               "dot1x authentication type enabled as priority for authmgr authentication.";
+                        }
+                        enum mab {
+                           description
+                               "mab authentication type enabled as priority for authmgr authentication.";
+                        }
+                        enum undefined {
+                           description
+                               "authentication method not available.";
+                        }
+                   }
+                   description
+                        "Relative priority of methods to be used for authmgr authentication.";
+                }
+	    }
+	}
+    }
+}

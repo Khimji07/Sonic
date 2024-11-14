@@ -1,0 +1,16 @@
+module openconfig-network-instance-rpc-annot {
+    yang-version "1"; 
+
+    namespace "http://openconfig.net/yang/openconfig-network-instance-rpc-annot";
+    prefix "oc-netinst-rpc-annot";
+
+    import openconfig-network-instance-rpc { prefix oc-netinst-rpc; }
+    import sonic-extensions { prefix sonic-ext; }
+
+    deviation /oc-netinst-rpc:clear-fdb {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_oc_clear_fdb";
+        }
+    }
+
+}

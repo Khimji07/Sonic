@@ -1,0 +1,46 @@
+module openconfig-tpcm-annot {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/tpcm-annot";
+    prefix "oc-tpcm-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+
+    import openconfig-tpcm {prefix oc-tpcm; }
+
+    deviation /oc-tpcm:tpcm-install{
+        deviate add {
+            sonic-ext:rpc-callback "rpc_tpcm_install_cb";
+        }
+    }
+
+    deviation /oc-tpcm:tpcm-uninstall{
+        deviate add {
+            sonic-ext:rpc-callback "rpc_tpcm_uninstall_cb";
+        }
+    }
+
+    deviation /oc-tpcm:tpcm-upgrade{
+        deviate add {
+            sonic-ext:rpc-callback "rpc_tpcm_upgrade_cb";
+        }
+    }
+    deviation /oc-tpcm:tpcm-update{
+        deviate add {
+            sonic-ext:rpc-callback "rpc_tpcm_update_cb";
+        }
+    }
+
+    deviation /oc-tpcm:tpcm-show{
+        deviate add {
+            sonic-ext:rpc-callback "rpc_tpcm_show_cb";
+        }
+    }
+
+    deviation /oc-tpcm:tpcm-list{
+        deviate add {
+            sonic-ext:rpc-callback "rpc_tpcm_list_cb";
+        }
+    }
+}

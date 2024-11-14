@@ -1,0 +1,277 @@
+module sonic-lldp {
+    namespace "http://github.com/Azure/sonic-lldp";
+    prefix slldp;
+    yang-version 1.1;
+
+    import sonic-port {
+        prefix prt;
+    }
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    import ietf-yang-types {
+        prefix ietf-yang;
+    }
+
+    import sonic-network-policy {
+        prefix sonic-nwp;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONiC LLDP yang model";
+
+    revision 2024-03-05 {
+      description
+        "1. Changed LLDP globals to singleton container";
+      reference "0.1.1";
+    }
+    revision 2020-04-16 {
+        description
+            "Initial revision.";
+    }
+
+    grouping lldp_mode_config {
+		leaf enabled {
+			type boolean;
+			description
+				"Enable/Disable LLDP";
+		}
+
+		leaf mode {
+			type enumeration {
+				enum RECEIVE;
+				enum TRANSMIT;
+			}
+			
+			description
+				"RX/TX mode for LLDP frames";
+		}
+    }
+
+    grouping lldp_global_config {
+        leaf hello_time {
+            type uint8 {
+                range "5..254" {
+                    error-message "Invalid hello timer value.";
+                }
+            }
+            units seconds;
+            description
+                "It is the time interval at which periodic hellos are
+                exchanged. Default is 30 seconds";
+        }
+
+        leaf multiplier {
+            type uint8 {
+                range "1..10" {
+                    error-message "Invalid LLDP multiplier value.";
+                }
+            }
+            description
+                "This multiplier value is used to determine the timeout
+                interval (i.e. hello-time x multiplier value) after
+                which LLDP neighbor entry is deleted.";
+        }
+
+        leaf system_name {
+            type string;
+            description
+                "System administratively assigned name";
+        }
+
+        leaf system_description {
+            type string;
+            description
+                "System description";
+        }
+
+        leaf supp_mgmt_address_tlv {
+            type boolean;
+            description
+                "Suppress sending of Management Address TLV in LLDP frames";
+        }
+
+        leaf supp_system_capabilities_tlv {
+            type boolean;
+            description
+                "Suppress sending of System Capabilities TLV in LLDP frames";
+        }
+
+        uses lldp_mode_config;
+    }
+    
+    container sonic-lldp {
+        container LLDP {
+            description "LLDP configuration parameters";
+            container GLOBAL {
+                description "Global LLDP parameters";
+                uses lldp_global_config;
+            }
+        }           
+
+        container LLDP_GLOBALS {
+            description "LLDP operational state parameters";
+            sonic-ext:db-name "APPL_DB";
+            sonic-ext:key-delim ":";
+            config false;
+            container GLOBAL {
+                description "Global LLDP parameters";
+                uses lldp_global_config;
+            }
+        }
+
+        container LLDP_PORT {
+            list LLDP_PORT_LIST {
+                key "ifname";
+
+                leaf ifname {
+                    type leafref {
+                        path "/prt:sonic-port/prt:PORT/prt:PORT_LIST/prt:ifname";
+                    }
+                    description
+                        "Reference of port on which LLDP to be configured.";
+                }
+		
+                leaf network_policy {
+                    type leafref {
+                        path "/sonic-nwp:sonic-network-policy/sonic-nwp:NETWORK_POLICY_PROFILE/sonic-nwp:NETWORK_POLICY_PROFILE_LIST/sonic-nwp:number";
+                    }
+                    description
+                        "Reference to network policy profile number";
+                }
+
+                leaf mgmt_ipv4 {
+                    type string;
+                    description
+                        "IPv4 address to be advertised as management IP";
+                }
+
+                leaf mgmt_ipv6 {
+                    type string;
+                    description
+                        "IPv6 address to be advertised as management IP";
+                }
+
+                leaf supp_med_network_policy_tlv {
+                    type boolean;
+                    description
+                        "Suppress sending of LLDP-MED network policy TLV in LLDP frames";
+                }
+
+                leaf supp_med_power_mgmt_tlv {
+                    type boolean;
+                    description
+                        "Suppress sending of LLDP-MED power management TLV in LLDP frames";
+                }
+
+                leaf supp_dot3_power_mgmt_tlv {
+                    type boolean;
+                    description
+                        "Suppress LLDP power negotiation TLV (802.3at/bt)";
+                }
+
+		leaf supp_port_vlan_id_tlv {
+			type boolean;
+			default false;
+			description
+				"Suppress sending of PORT-VLAN-ID TLV in LLDP frames";
+		}
+
+                leaf supp_vlan_name_tlv {
+                        type boolean;
+                        default false;
+                        description
+                                "Suppress sending of PORT-VLAN-NAME TLV in LLDP frames";
+                }
+
+                leaf-list allowed_port_vlan{
+                        type string;
+                        description
+                             "List of VLANs for vlan-name TLV transmission";
+		}
+
+		leaf supp_link_aggregation_tlv {
+			type boolean;
+			default false;
+			description
+				"Suppress sending of LINK-AGGREGATION TLV in LLDP frames";
+		}
+
+                leaf vlan_name_tlv_count {
+                        type uint16 {
+                                range "1..128" {
+                                        error-message "vlan_name_tlv_count out of range";
+                                }
+                        }
+                        default 10;
+                        description
+                                "Maximum number of vlan name TLVs that can be transmitted";
+                }
+
+		leaf supp_maximum_frame_size_tlv {
+			type boolean;
+			default false;
+			description
+				"Suppress sending of MAX-FRAME-SIZE TLV in LLDP frames";
+		}
+
+                uses lldp_mode_config;
+            }
+        }
+
+        container LLDP_PORT_TABLE {
+            config false;
+
+            list LLDP_PORT_TABLE_LIST {
+                sonic-ext:db-name "APPL_DB";
+                key "ifname";
+
+                leaf ifname {
+                    type leafref {
+                        path "/prt:sonic-port/prt:PORT/prt:PORT_LIST/prt:ifname";
+                    }
+                    description
+                        "Reference of port on which LLDP is configured.";
+                }
+
+                leaf rx {
+                    type ietf-yang:counter64;
+                    description
+                        "The number of lldp frames received";
+                }
+
+                leaf tx {
+                    type ietf-yang:counter64;
+                    description
+                        "The number of lldp frames transmitted out";
+                }
+
+                leaf rx_discarded_cnt {
+                    type ietf-yang:counter64;
+                    description
+                        "The number of lldp frames received and discarded";
+                }
+
+                leaf rx_unrecognized_cnt {
+                    type ietf-yang:counter64;
+                    description
+                        "The number of frames received with unknown TLV";
+                }
+
+                leaf ageout_cnt {
+                    type ietf-yang:counter64;
+                    description
+                        "Indicates number of times neighbor aged out";
+                }
+            }
+        }
+    }
+}

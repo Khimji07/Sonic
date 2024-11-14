@@ -1,0 +1,75 @@
+module openconfig-pki-rpc-annot {
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/pki-rpc-annot";
+    prefix "oc-pki-rpc-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import openconfig-pki-rpc { prefix oc-pki-rpc; }
+
+    // meta
+    organization
+        "OCP SONiC Subproject";
+
+    contact
+        "OCP SONiC Subproject Working Group
+        https://github.com/Azure/SONiC";
+
+    description
+        "SONIC pki";
+
+	revision "2023-01-23" {
+		description
+			"Initial revision";
+		reference "0.1.0";
+	}
+
+    deviation /oc-pki-rpc:crypto-ca-cert-install {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_crypto_ca_cert_install";
+            sonic-ext:user-role-priv "rpc:secadmin;";
+        }
+    }
+    deviation /oc-pki-rpc:crypto-ca-cert-delete {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_crypto_ca_cert_delete";
+            sonic-ext:user-role-priv "rpc:secadmin;";
+        }
+    }
+    deviation /oc-pki-rpc:crypto-host-cert-install {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_crypto_host_cert_install";
+            sonic-ext:user-role-priv "rpc:secadmin;";
+        }
+    }
+    deviation /oc-pki-rpc:crypto-host-cert-delete {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_crypto_host_cert_delete";
+            sonic-ext:user-role-priv "rpc:secadmin;";
+        }
+    }
+    deviation /oc-pki-rpc:crypto-ca-cert-display {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_crypto_ca_cert_display";
+            sonic-ext:user-role-priv "rpc:secadmin;";
+        }
+    }
+    deviation /oc-pki-rpc:crypto-host-cert-display {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_crypto_host_cert_display";
+            sonic-ext:user-role-priv "rpc:secadmin;";
+        }
+    }
+    deviation /oc-pki-rpc:crypto-cert-verify {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_crypto_cert_verify";
+            sonic-ext:user-role-priv "rpc:secadmin;";
+        }
+    }
+    deviation /oc-pki-rpc:crypto-host-generate-csr {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_crypto_generate_host_csr";
+        }
+    }
+
+}

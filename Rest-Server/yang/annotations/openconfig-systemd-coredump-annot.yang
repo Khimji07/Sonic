@@ -1,0 +1,16 @@
+module openconfig-systemd-coredump-annot {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/openconfig-systemd-coredump-annot";
+    prefix "oc-sysd-cd-annot";
+
+    import sonic-extensions {prefix sonic-ext; }
+    import openconfig-systemd-coredump { prefix oc-systemd-coredump; }
+
+    deviation "/oc-systemd-coredump:clear-coredump-records" {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_clear_coredump_records";
+        }
+    }
+}

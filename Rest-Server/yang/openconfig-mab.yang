@@ -1,0 +1,208 @@
+module openconfig-mab {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/mab/extension";
+
+  prefix "oc-mab";
+
+  import openconfig-extensions { prefix oc-ext; }
+  import openconfig-interfaces { prefix oc-if; }
+
+  // meta
+  organization "OpenConfig working group";
+
+  contact
+    "OpenConfig working group
+    www.openconfig.net";
+
+  description
+    "This module defines configuration and operational state data
+    for authentication manager.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2021-07-12" {
+    description
+      "Initial public revision";
+    reference "0.1.0";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:regexp-posix;
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  // identity statements
+
+
+  // grouping statements
+
+grouping mab-port-common-top {
+    description
+      "Top-level grouping for port specific mab feature config";
+
+    list interface { 
+      key "name";
+      description
+        "List of interfaces on which mab is enable";
+
+      leaf name {
+	type leafref {
+          path "../config/name";
+        }
+        description
+          "Reference to the mab Ethernet interface";
+      }
+     container config {
+	description
+          "Configuration data for PAC on interface";
+
+        uses mab-port-base-config;
+	}
+	
+     container state {
+          config false;
+	description
+          "State data for PAC on interface";
+
+        uses mab-port-base-config;
+     }
+  }
+}
+
+  grouping mab-port-base-config {
+    description
+      "Grouping for mab port parameters";
+
+     leaf name {
+      	type oc-if:base-interface-ref;
+      	description
+        "Reference to the MAB Ethernet interface";
+     }
+
+     leaf mab-enable {
+        type boolean;
+           description
+              "MAB status Enabled / Disabled.";
+     }
+
+     leaf mab-auth-type {
+	type enumeration {
+           enum PAP {
+              description
+                 "MAB authentication type pap.";
+           }
+           enum CHAP {
+              description
+                 "MAB authentication type chap.";
+           }
+           enum EAP_MD5 {
+              description
+                 "MAB authentication type eap-md5.";
+           }
+        }
+      	description
+       	   "MAB authentication type.";
+     }
+
+     leaf server-timeout {
+        type uint32 {
+            range 10..65535;
+        }
+        units "seconds";
+        description
+            "The timer starts when the access device sends a RADIUS Access-Request packet
+             to the Authentication server. The MAB authentication fails, if no response
+             is received during server timeout period.";
+     }
+  }
+
+ grouping mab-global-base-config {
+    description
+      "Global mab configuration";
+
+    leaf group-size {
+      type uint8 {
+	range "1|2|4|12";
+      }
+      description
+        "mab request format attribute group size.";
+    }
+
+    leaf separator {
+      type string {
+        pattern '[-]|[:]|[.]';
+        oc-ext:posix-pattern '^[-]|[:]|[.]$';
+      }
+      description
+        "mab request format attribute seperator";
+    }
+
+    leaf case {
+      type enumeration {
+         enum LOWERCASE {
+            description
+               "MAB request format attribute lowercase.";
+         }
+         enum UPPERCASE {
+            description
+               "MAB request format attribute uppercase.";
+         }
+      }
+      description
+         "MAB request format attribute case lower/upper";
+    }
+ }
+
+  grouping mab-global-config-top {
+    description
+      "Grouping for MAB global config";
+
+    container config {
+      description
+        "Global mab configuration";
+
+        uses mab-global-base-config;
+    }
+
+    container state {
+      config false;
+      description
+        "Global spanning tree state";
+
+        uses mab-global-base-config;
+    }
+  }
+
+  grouping mab-top {
+    description
+      "Top-level grouping for pac.";
+
+    container mab {
+      description
+        "Top-level container for MAB configuration and
+        state data";
+
+      container mab-global-config {
+        description 
+          "mab global configuration and operation data";
+
+          uses mab-global-config-top;
+      }
+
+      container mab-port-config {
+        description
+          "Enclosing container for the list of interface references";
+
+          uses mab-port-common-top;
+      }
+    }
+  }
+
+  // data definition statements
+
+  uses mab-top;
+
+}

@@ -1,0 +1,45 @@
+module openconfig-error-database-rpc {
+
+  yang-version "1.1";
+
+  //namespace
+  namespace "http://openconfig.net/yang/error-database-rpc/extension";
+  prefix "oc-error-database-rpc";
+
+  //meta
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module defines configuration and operational state data for Error Database";
+
+  revision "2022-11-18" {
+    description
+      "Initial draft.";
+    reference "0.1.0";
+  }
+
+  rpc clear-error-table {
+    description
+      "RPC for clearing error database tables";
+
+    input {
+      leaf table-name {
+        type string;
+        description
+          "Table name or ALL to clear all table";
+      }
+    }
+
+    output {
+      leaf status {
+        type string;
+        description
+          " success / failure of clearing error database table";
+      }
+    }
+  }
+}

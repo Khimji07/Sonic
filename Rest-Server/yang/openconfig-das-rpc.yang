@@ -1,0 +1,54 @@
+module openconfig-das-rpc {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/das-rpc/extension";
+
+  prefix "oc-das-rpc";
+
+  import ietf-yang-types {
+        prefix yang;
+  }
+
+  import openconfig-extensions { prefix oc-ext; }
+
+  // meta
+  organization "OpenConfig working group";
+
+  contact
+    "OpenConfig working group
+    www.openconfig.net";
+
+  description
+    "This module defines rpc configuration 
+    for Dynamic Authorization Server.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2022-07-08" {
+    description
+      "Initial public revision";
+    reference "0.1.0";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  rpc clear-radius-dynamic-author-statistics {
+    description "RPC for clearing radius dynamic authorization statistics. Input can be :
+        1. Global counters
+        2. All clients counters
+        3. Single client counters";
+
+    input {
+        leaf clearCounters {
+            type string;
+            description
+                "Counters type for which clear operation needs to be performed.";
+        }
+    }
+  }
+
+}

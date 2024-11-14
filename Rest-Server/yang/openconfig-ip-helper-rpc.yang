@@ -1,0 +1,49 @@
+module openconfig-ip-helper-rpc {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/ip-helper-rpc/extension";
+
+  prefix "oc-ip-helper-rpc";
+
+  // meta
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module defines rpc configuration 
+    for the IP helper.";
+
+
+  revision "2021-09-14" {
+    description
+      "Initial public revision";
+    reference "0.1.0";
+  }
+
+ rpc clear-ip-helper-statistics{
+    description
+      "Operation for clearing IP helper statistics on interface";
+
+    input {
+      leaf interface {
+        type string;
+        description
+          "Interface for which clear operation needs to be performed";
+      }
+    }
+
+    output {
+      leaf error {
+        type string;
+        description
+          "Result of RPC Operation";
+      }
+    }
+
+  }
+}

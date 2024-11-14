@@ -1,0 +1,118 @@
+module openconfig-error-database-annot {
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/annotation/openconfig-error-database-annot";
+    prefix "oc-error-database-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import openconfig-error-database { prefix oc-error-database; }
+
+    //meta
+    organization
+       "SONiC";
+
+    contact
+       "SONiC";
+
+    description
+       "SONIC dhcp-snooping";
+
+    revision 2021-07-27 {
+       description
+          "Initial revision";
+    }
+
+    deviation /oc-error-database:error-database {
+      deviate add {
+          sonic-ext:user-role-priv "write:secadmin";
+          sonic-ext:db-name "ERROR_DB";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-route-table{
+      deviate add {
+          sonic-ext:db-name "ERROR_DB";
+          sonic-ext:table-name "ERROR_ROUTE_TABLE";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-route-table/oc-error-database:error-route-table-entry{
+      deviate add {
+          sonic-ext:key-transformer "error_route_tbl_key_xfmr";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-route-table/oc-error-database:error-route-table-entry/oc-error-database:state/oc-error-database:vrf-name {
+      deviate add {
+          sonic-ext:field-transformer "error_route_tbl_vrfName_xfmr";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-route-table/oc-error-database:error-route-table-entry/oc-error-database:state/oc-error-database:ifname{
+      deviate add {
+          sonic-ext:field-transformer "error_route_tbl_ifname_xfmr";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-route-table/oc-error-database:error-route-table-entry/oc-error-database:state/oc-error-database:nexthop-group {
+      deviate add {
+          sonic-ext:field-name "nexthop_group";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-route-table/oc-error-database:error-route-table-entry/oc-error-database:state/oc-error-database:nexthop {
+      deviate add {
+          sonic-ext:field-transformer "error_route_tbl_nexthop_xfmr";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-neighbor-table/oc-error-database:error-neighbor-table-entry{
+      deviate add {
+          sonic-ext:table-name "ERROR_NEIGH_TABLE";
+          sonic-ext:key-transformer "error_neighbor_tbl_key_xfmr";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-neighbor-table/oc-error-database:error-neighbor-table-entry/oc-error-database:state/oc-error-database:ifname {
+      deviate add {
+          sonic-ext:field-transformer "error_neighbor_tbl_ifname_xfmr";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-ipmc-route-table/oc-error-database:error-ipmc-route-table-entry{
+      deviate add {
+          sonic-ext:table-name "ERROR_IPMC_ROUTE_TABLE";
+          sonic-ext:key-transformer "error_ipmc_route_tbl_key_xfmr";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-ipmc-route-table/oc-error-database:error-ipmc-route-table-entry/oc-error-database:state/oc-error-database:vrf-name {
+      deviate add {
+          sonic-ext:field-transformer "error_ipmc_route_tbl_vrfName_xfmr";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-ipmc-route-table/oc-error-database:error-ipmc-route-table-entry/oc-error-database:state/oc-error-database:source-ip {
+      deviate add {
+          sonic-ext:field-name "source_ip";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-ipmc-route-table/oc-error-database:error-ipmc-route-table-entry/oc-error-database:state/oc-error-database:group-ip {
+      deviate add {
+          sonic-ext:field-name "group_ip";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-ipmc-route-table/oc-error-database:error-ipmc-route-table-entry/oc-error-database:state/oc-error-database:in-interface {
+      deviate add {
+          sonic-ext:field-transformer "error_ipmc_route_tbl_in_ifname_xfmr";
+      }
+    }
+
+    deviation /oc-error-database:error-database/oc-error-database:error-ipmc-route-table/oc-error-database:error-ipmc-route-table-entry/oc-error-database:state/oc-error-database:out-interfaces {
+      deviate add {
+          sonic-ext:field-transformer "error_ipmc_route_tbl_out_ifname_xfmr";
+      }
+    }
+}

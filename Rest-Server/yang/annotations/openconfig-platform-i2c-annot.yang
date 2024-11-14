@@ -1,0 +1,22 @@
+module openconfig-platform-i2c-annot {
+
+    yang-version "1";
+    namespace "http://openconfig.net/yang/platform-i2c-annot";
+    prefix "oc-platform-i2c-annot";
+
+    import openconfig-platform-i2c { prefix oc-pf-i2c; }
+    import sonic-extensions { prefix sonic-ext; }
+
+    deviation /oc-pf-i2c:i2c-errors {
+      deviate add {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:table-name "I2CERROR_STATS";
+      }
+    }
+
+    deviation /oc-pf-i2c:i2c-error-clear {
+        deviate add {
+            sonic-ext:rpc-callback "rpc_i2c_error_clear_cb";
+        }
+    }
+}

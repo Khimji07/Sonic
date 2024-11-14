@@ -1,0 +1,22 @@
+module openconfig-pki-annot {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/annotation/oc-pki-annot";
+    prefix "oc-pki-annot";
+
+    import openconfig-pki { prefix oc-pki; }
+    import sonic-extensions {prefix sonic-ext; }
+ 
+    deviation /oc-pki:pki/oc-pki:trust-stores/oc-pki:trust-store {
+	    deviate add {
+            sonic-ext:table-name "TRUST_STORES";
+	    }
+    }
+    deviation /oc-pki:pki/oc-pki:security-profiles/oc-pki:security-profile {
+	    deviate add {
+            sonic-ext:table-name "SECURITY_PROFILES";
+	    }
+    }
+
+}

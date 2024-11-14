@@ -1,0 +1,350 @@
+submodule openconfig-fbs-replication-group-ext {
+  belongs-to openconfig-fbs-ext {
+    prefix oc-fbs-ext;
+  }
+
+  // import some basic types
+  import openconfig-extensions { prefix oc-ext; }
+  import openconfig-inet-types { prefix oc-inet; }
+  import openconfig-interfaces { prefix oc-if; }
+
+  include openconfig-fbs-types-ext;
+
+  // meta
+  organization "SONiC";
+
+  contact
+    "SONiC
+    https://github.com/Azure/SONiC";
+
+  description
+    "This model defines the configuration and operational data
+    for flow based services replication groups.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2021-08-19" {
+    description
+      "Initial revision";
+
+    reference "0.1.0";
+  }
+
+  // extension statements
+
+  // feature statements
+
+  // identity statements
+
+  // typedef statements
+
+  // grouping statements
+  grouping fbs-ext-replication-group-member-config {
+    description
+      "Grouping for replication related configuration";
+
+    leaf ip-address {
+      type oc-inet:ip-address;
+
+      description
+        "When an IP next-hop is specified in the next-hop field,
+        packets matching the match criteria for the forwarding rule
+        should be forwarded to the next-hop IP address, bypassing any
+        lookup on the local system.";
+    }
+
+    leaf network-instance {
+      type string;
+
+      description
+        "When this leaf is set, packets matching the match criteria
+        for the forwarding rule should be looked up in the
+        network-instance that is referenced rather than the
+        network-instance with which the interface is associated.
+        Such configuration allows policy-routing into multiple
+        sub-topologies from a single ingress access interface, or
+        different send and receive contexts for a particular
+        interface (sometimes referred to as half-duplex VRF).";
+    }
+
+    leaf entry-id {
+      type uint16;
+
+      description
+        "This leaf indicates the location of this next-hop in the
+        replication group.";
+    }
+
+    leaf next-hop-type {
+      type identityref {
+        base NEXT_HOP_TYPE;
+      }
+
+      description
+        "TODO";
+    }
+
+    leaf single-copy {
+      type boolean;
+      default false;
+
+      description
+        "Disables replication of the packet to every path and
+        selects single path to create a single copy";
+    }
+  }
+
+  grouping fbs-ext-replication-group-member-state {
+    description
+      "Grouping for replication group related operational state";
+
+    leaf active {
+      type boolean;
+
+      description
+        "Indicates if the next-hop is used for forwarding.";
+    }
+  }
+
+  grouping fbs-ext-replication-group-path-state {
+    description
+      "Grouping for replication group paths related operational state";
+
+    leaf ip-address {
+      type oc-inet:ip-address;
+
+      description
+        "IP address of the next-hop to which the replicated copy will be 
+        routed";
+    }
+
+    leaf l3-interface {
+      type string;
+
+      description
+        "L3 Interface name";
+    }
+
+    leaf l2-interface {
+      type string;
+
+      description
+        "L2 Interface name. Only applicable when the router interface 
+        is SVI";
+    }
+
+    leaf network-instance {
+      type string;
+
+      description
+        "VRF name if the replication path is an ECMP and single copy is enabled";
+    }
+  }
+
+  grouping fbs-ext-replication-group-members-top {
+    description
+      "Grouping for replication group members config and operational state";
+
+    container next-hops {
+      description
+        "Container for replication group members";
+
+      list next-hop {
+        key "entry-id";
+
+        description
+          "List of next-hops configured for forwarding";
+
+        leaf entry-id {
+          type leafref {
+            path "../config/entry-id";
+          }
+
+          description
+            "Reference to the entry id used as key";
+        }
+
+        container config {
+          description
+            "Classifier match acl related configuration";
+
+          uses fbs-ext-replication-group-member-config;
+        }
+
+        container state {
+          config false;
+
+          description
+            "Classifier match acl operational state";
+
+          uses fbs-ext-replication-group-member-config;
+        }
+      }
+    }
+  }
+
+  grouping fbs-ext-replication-group-interfaces-config {
+    description
+      "Configuration data for interface references";
+
+    leaf id {
+      type oc-if:interface-id;
+      description
+        "User-defined identifier for the interface -- a common
+        convention could be '<if name>.<subif index>'";
+    }
+  }
+
+  grouping fbs-ext-replication-group-interfaces-state {
+    description
+      "Operational state data for interface references";
+  }
+
+  grouping fbs-ext-replication-group-members-state {
+    description
+      "Operational state data for replication group members";
+
+    container next-hops {
+      config false;
+
+      description
+        "TODO";
+
+      list next-hop {
+        key "entry-id";
+
+        description
+          "List of next-hops configured for forwarding";
+
+        leaf entry-id {
+          type leafref {
+            path "../state/entry-id";
+          }
+
+          description
+            "Reference to the entry id used as key";
+        }
+
+        container state {
+          config false;
+
+          description
+            "TODO";
+
+          uses fbs-ext-replication-group-member-config;
+          uses fbs-ext-replication-group-member-state;
+        }
+      }
+    }
+
+    container paths {
+      oc-ext:telemetry-atomic;
+      config false;
+
+      description
+        "TODO";
+
+      list path {
+        description
+          "List of paths through which the replicated copies will be routed.";
+
+        container state {
+          config false;
+
+          description
+            "TODO";
+
+          uses fbs-ext-replication-group-path-state;
+        }
+      }
+    }
+  }
+
+  grouping fbs-ext-replication-group-config {
+    description
+      "Classifier config";
+
+    leaf name {
+      type string;
+
+      description
+        "Replication group name";
+    }
+
+    leaf group-type {
+      type identityref {
+        base REPLICATION_GROUP_TYPE;
+      }
+
+      description
+        "Replication group type";
+    }
+
+    leaf description {
+      type string;
+
+      description
+        "Replication group description";
+    }
+  }
+
+  grouping fbs-ext-replication-group-state {
+    description
+      "Replication group operational state";
+  }
+
+  grouping fbs-ext-replication-groups-top {
+    description
+      "Replication groups top container";
+
+    container replication-groups {
+      description
+        "Container enclosing all replication groups configuration";
+
+      list replication-group {
+        key "group-name";
+
+        description
+          "List of replication groups. Each group contains information
+          about the group type, member next-hops etc";
+
+        leaf group-name {
+          type leafref {
+            path ../config/name;
+          }
+
+          description
+            "Name of the replication group";
+        }
+
+        container config {
+          description
+            "Classifier config";
+
+          uses fbs-ext-replication-group-config;
+        }
+
+        container state {
+          config false;
+
+          description
+            "Classifier operational state";
+
+          uses fbs-ext-replication-group-config;
+          uses fbs-ext-replication-group-state;
+        }
+
+        uses fbs-ext-replication-group-members-top;
+      }
+    }
+  }
+
+  // data definition statements
+
+  // augment statements
+
+  // rpc statements
+
+  // notification statements
+
+}

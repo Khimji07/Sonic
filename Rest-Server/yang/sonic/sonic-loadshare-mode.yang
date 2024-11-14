@@ -1,0 +1,230 @@
+module sonic-loadshare-mode {
+    namespace "http://github.com/Azure/sonic-loadshare-mode";
+    prefix slbmode;
+    yang-version 1.1;
+
+    import sonic-extension {
+        prefix sonic-ext;
+    }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "SONIC Load Balance Mode";
+
+    revision 2021-01-08 {
+        description
+	        "Added symmetric hash support";
+    }
+
+    revision 2020-10-08 {
+        description
+	        "Initial revision.";
+    }
+
+    container sonic-loadshare-mode {
+        container ECMP_LOADSHARE_TABLE_SEED {
+            list ECMP_LOADSHARE_TABLE_SEED_LIST {
+                key "hash";
+
+                leaf hash {
+                    type string;
+                    description
+                        "switch_table db key.";
+                }
+
+                leaf ecmp_hash_seed {
+                    type uint32;
+                    description
+                        "ecmp hash seed value.";
+                }
+            }
+        }
+        container ECMP_LOADSHARE_TABLE_OFFSET {
+            list ECMP_LOADSHARE_TABLE_OFFSET_LIST {
+                key "hash";
+
+                leaf hash {
+                    type string;
+                    description
+                        "switch_table db key.";
+                }
+
+                leaf ecmp-hash-offset {
+                    type uint16;
+                    description
+                        "ecmp hash offset value.";
+                }
+
+                leaf ecmp-hash-flow-based {
+                    sonic-ext:custom-validation IsMacroFlowSupported;
+                    type boolean;
+                    description
+                        "ecmp hash auto offset enable flag.";
+                }
+            }
+        }
+        container ECMP_LOADSHARE_TABLE_INGRESS_PORT {
+            list ECMP_LOADSHARE_TABLE_INGRESS_PORT_LIST {
+                key "hash";
+
+                leaf hash {
+                    type string;
+                    description
+                        "switch_table db key.";
+                }
+
+                leaf ingress-port {
+                    type boolean;
+                    description
+                        "ecmp hash ingress-port enable flag.";
+                    must "current() = 'false' or (not(/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST[ipv4='ipv4']/ipv4_symmetric)) or
+                         (/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST[ipv4='ipv4']/ipv4_symmetric = 'false')" {
+                        error-message "Both ingress-port and ipv4 symmetric cannot be configured together.";
+                    }
+                    must "current() = 'false' or (not(/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST[ipv6='ipv6']/ipv6_symmetric)) or
+                         (/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST[ipv6='ipv6']/ipv6_symmetric = 'false')" {
+                        error-message "Both ingress-port and ipv6 symmetric cannot be configured together.";
+                    }
+                }
+            }
+        }
+        container ECMP_LOADSHARE_TABLE_ROCE {
+            list ECMP_LOADSHARE_TABLE_ROCE_LIST {
+                key "hash";
+
+                leaf hash {
+                    sonic-ext:custom-validation IsRoceHashSupported;
+                    type string;
+                    description
+                        "switch_table db key.";
+                    must "current() = 'false' or (not(/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST[ipv4='ipv4']/ipv4_symmetric)) or
+                         (/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST[ipv4='ipv4']/ipv4_symmetric = 'false')" {
+                        error-message "Both qpn and ipv4 symmetric cannot be configured together.";
+                    }
+                    must "current() = 'false' or (not(/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST[ipv6='ipv6']/ipv6_symmetric)) or
+                         (/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST[ipv6='ipv6']/ipv6_symmetric = 'false')" {
+                        error-message "Both qpn and ipv6 symmetric cannot be configured together.";
+                    }
+                }
+                
+                leaf qpn {
+                    type boolean;
+                    description "ecmp hash mode roce qpn enable flag.";
+                }
+            }
+        }
+        container ECMP_LOADSHARE_TABLE_IPV4 {
+            list ECMP_LOADSHARE_TABLE_IPV4_LIST {
+                key "ipv4";
+
+                leaf ipv4 {
+                    type string;
+                    description
+                        "switch_table ipv4 db key.";
+                }
+                leaf ipv4_l4_src_port {
+                    type boolean;
+                    default true;
+                    description
+                        "Flag to enable or disable ipv4_l4_src_port attribute";
+                }
+                leaf ipv4_l4_dst_port {
+                    type boolean;
+                    default true;
+                    description
+                        "Flag to enable or disable ipv4_l4_dst_port attribute";
+                }
+                leaf ipv4_src_ip {
+                    type boolean;
+                    default true;
+                    description
+                        "Flag to enable or disable ipv4_src_ip attribute";
+                }
+                leaf ipv4_dst_ip {
+                    type boolean;
+                    default true;
+                    description
+                        "Flag to enable or disable ipv4_dst_ip attribute";
+                }
+                leaf ipv4_protocol {
+                    type boolean;
+                    default true;
+                    description
+                        "Flag to enable or disable ipv4_protocol attribute";
+                }
+                leaf ipv4_symmetric {
+                    type boolean;
+                    default false;
+                    sonic-ext:custom-validation ValidateSymmHashCfg;
+                    description
+                        "Flag to enable or disable ipv4_symmetric attribute";
+                    must "current() = 'false' or (not(/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_ROCE/ECMP_LOADSHARE_TABLE_ROCE_LIST[hash='hash']))" {
+                        error-message "Both qpn and ipv4 symmetric cannot be configured together.";
+                    }
+                    must "current() = 'false' or (not(/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_INGRESS_PORT/ECMP_LOADSHARE_TABLE_INGRESS_PORT_LIST[hash='hash']))" {
+                        error-message "Both ingress-port and ipv4 symmetric cannot be configured together.";
+                    }
+                }
+            }
+        }
+        container ECMP_LOADSHARE_TABLE_IPV6 {
+            list ECMP_LOADSHARE_TABLE_IPV6_LIST {
+                key "ipv6";
+
+                leaf ipv6 {
+                    type string;
+                    description
+                        "switch_table ipv6 db key.";
+                }
+                leaf ipv6_l4_src_port {
+                    type boolean;
+                    default true;
+                    description
+                        "Flag to enable or disable ipv6_l4_src_port attribute";
+                }
+                leaf ipv6_l4_dst_port {
+                    type boolean;
+                    default true;
+                    description
+                        "Flag to enable or disable ipv6_l4_dst_port attribute";
+                }
+                leaf ipv6_src_ip {
+                    type boolean;
+                    default true;
+                    description
+                        "Flag to enable or disable ipv6_src_ip attribute";
+                }
+                leaf ipv6_dst_ip {
+                    type boolean;
+                    default true;
+                    description
+                        "Flag to enable or disable ipv6_dst_ip attribute";
+                }
+                leaf ipv6_next_hdr {
+                    type boolean;
+                    default true;
+                    description
+                        "Flag to enable or disable ipv6_next_hdr attribute";
+                }
+                leaf ipv6_symmetric {
+                    type boolean;
+                    default false;
+                    sonic-ext:custom-validation ValidateSymmHashCfg;
+                    description
+                        "Flag to enable or disable ipv6_symmetric attribute";
+                    must "current() = 'false' or (not(/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_ROCE/ECMP_LOADSHARE_TABLE_ROCE_LIST[hash='hash']))" {
+                        error-message "Both qpn and ipv6 symmetric cannot be configured together.";
+                    }
+                    must "current() = 'false' or (not(/sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_INGRESS_PORT/ECMP_LOADSHARE_TABLE_INGRESS_PORT_LIST[hash='hash']))" {
+                        error-message "Both ingress-port and ipv6 symmetric cannot be configured together.";
+                    }
+                }
+            }
+        }
+    }
+}
