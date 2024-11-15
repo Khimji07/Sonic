@@ -1,0 +1,1929 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright 2019 Dell, Inc.  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at  http://www.apache.org/licenses/LICENSE-2.0  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
+<!DOCTYPE CLISH_MODULE [
+<!ENTITY START_PORT_ID "1">
+<!ENTITY MAX_PORT_ID "32">
+<!ENTITY START_SUB_PORT_ID "1">
+<!ENTITY MAX_SUB_PORT_ID "4">
+<!ENTITY MAX_MTU "9216">
+]>
+<CLISH_MODULE xmlns="http://www.dellemc.com/sonic/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" xsi:schemaLocation="http://www.dellemc.com/sonic/XMLSchema http://www.dellemc.com/sonic/XMLSchema/clish.xsd">
+  <!--=======================================================-->
+  <!-- Config Interface PHY-MODE -->
+  <!--=======================================================-->
+  <VIEW name="configure-view">
+    <COMMAND name="ipv6 nht" access="netadmin" help="Configure IPv6 nexthop tracking parameters">
+      <PARAM name="resolve-via-default" help="Enables default route based nexthop resolution" ptype="SUBCOMMAND" mode="subcommand"> </PARAM>
+      <ACTION builtin="clish_pyobj"> sonic_cli_nht patch_openconfig_ip_nht_resolve_via_default default IPV6 ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+         Configures default route based IPv6 nexthop resolution within default VRF.
+       </DESCRIPTION>
+        <USAGE>
+         Use this command to enable default route based IPv6 nexthop resolution
+         within default VRF.
+       </USAGE>
+        <EXAMPLE summary="IPv6 nexthop tracking command examples">
+         sonic-cli(config)# ipv6 nht resolve-via-default
+       </EXAMPLE>
+        <FEATURE> Nexthop Tracking </FEATURE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 nht" access="netadmin" help="Unconfigure IPv6 nexthop tracking parameters">
+      <PARAM name="resolve-via-default" help="Disables default route based nexthop resolution" ptype="SUBCOMMAND" mode="subcommand"> </PARAM>
+      <ACTION builtin="clish_pyobj"> sonic_cli_nht delete_openconfig_ip_nht_resolve_via_default default IPV6 ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+         Unconfigures default route based IPv6 nexthop resolution in default VRF.
+       </DESCRIPTION>
+        <USAGE>
+         Use this command to disable default route based IPv6 nexthop resolution
+         within default VRF.
+       </USAGE>
+        <EXAMPLE summary="IPv6 nexthop tracking nht command examples">
+         sonic-cli(config)# no ipv6 nht resolve-via-default
+       </EXAMPLE>
+        <FEATURE> Nexthop Tracking </FEATURE>
+      </DOCGEN>
+    </COMMAND>
+  </VIEW>
+  <VIEW name="configure-if-view">
+    <COMMAND name="ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="no ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="ipv6 address" access="netadmin" help="IPv6 address" command_tables="sonic-interface:sonic-interface/INTERFACE/INTERFACE_IPADDR_LIST/portname={name},ip_prefix={prfx}" render_command_cb="ipv6_eth_ip_address">
+      <PARAM name="addr" help="IPv6 address with mask" ptype="IPV6_ADDR_MASK"/>
+      <PARAM name="eui-64" help="Set EUI-64" ptype="SUBCOMMAND" mode="subcommand" optional="true" dbpath="sonic-interface:sonic-interface/INTERFACE/INTERFACE_IPADDR_LIST/portname={name}/eui64=enable,ip_prefix={prfx}"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_addresses_address_config ${iface} ${addr} ${eui-64}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address" access="netadmin" help="Delete IPv6 address(es) on the interface">
+      <PARAM name="addr" help="IPv6 address" optional="true" ptype="IPV6_ADDR_MASK"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if delete_phy_if_ip ${iface} ${addr} False</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay" access="netadmin" help="Configure DHCP relay on an interface" command_tables="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/portname={name}" render_command_cb="ipv6_eth_dhcp_relay">
+      <PARAM help="IP address" name="ipaddr1" optional="false" ptype="IPV6_ADDR">
+        <PARAM help="Configure the VRF in which the server resides" name="vrf" optional="true" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM help="VRF name" name="vrfName" optional="false" ptype="STRING_32"/>
+        </PARAM>
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${vrfName} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure DHCPv6 relay on an interface.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure a DHCPv6 relay on an interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure IP DHCPv6 relay">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay 9000::1
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay source-interface" access="netadmin" help="Configures DHCPv6 relay source interface" command_tables="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/portname={name}">
+      <PARAM help="Interface subcommands" name="if-subcommands" mode="switch" ptype="SUBCOMMAND" optional="false">
+        <PARAM help="Physical Interface/Subinterface" name="intfName" ptype="PHY_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="PortChannel Interface/Subinterface" name="pchName" ptype="PO_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="VLAN Interface" name="vlanName" ptype="VLAN_INTERFACE" optional="false"/>
+        <PARAM help="Loopback Interface" name="loName" ptype="LOOPBACK_INTERFACE" optional="false"/>
+        <PARAM help="Management interface" name="Management" ptype="MGMT_INTERFACE" optional="false"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${intfName} ${pchName} ${vlanName} ${loName} ${Management} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay source-interface Ethernet36
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set max hop count for DHCPv6 Relay packets" command_tables="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/portname={name}">
+      <PARAM help="Number of max hops" name="hop-count" optional="false" ptype="RANGE_16"> </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${hop-count} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay max-hop-count 9
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay vrf-select" access="netadmin" help="Enable VRF selection suboption" command_tables="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/portname={name}">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay vrf selection">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay vrf-select 
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 enable" access="netadmin" help="Enable IPv6" command_tables="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/portname={name}" dbpath="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/ipv6_use_link_local_only=enable">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iface} patch_ipv6_enabled True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 enable" access="netadmin" help="Disable IPv6">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range delete_if_range iflist=${iface} delete_if_ip6_enabled</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay" access="netadmin" help="Unconfigure DHCPv6 relay on an interface">
+      <PARAM help="IP address" name="ipaddr1" optional="true" ptype="IPV6_ADDR">
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                     Unconfigure DHCPv6 relay on an interface.
+                 </DESCRIPTION>
+        <USAGE>
+                     Use this command to unconfigure a DHCPv6 relay on an interface.
+                 </USAGE>
+        <EXAMPLE summary="Unconfigure IP DHCPv6 relay">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay 9000::1
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay 
+                 </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay source-interface" access="netadmin" help="Unconfigure DHCPv6 relay source interface">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay source-interface
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set default max hop count for DHCPv6 Relay packets">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay max-hop-count
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay vrf-select" access="netadmin" help="Disable VRF selection suboption">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcp relay vrf selection">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay vrf-select
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 address autoconfig" access="netadmin" help="Enable IPv6 stateless address auto-configuration" command_tables="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/portname={name}" dbpath="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/ipv6_autoconfig=enable">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_autoconfig ${iface} True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address autoconfig" access="netadmin" help="Disable IPv6 stateless address auto-configuration">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_autoconfig ${iface} False</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 neighbor" access="netadmin" help="Configure static ND" command_tables="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/staticintf={name},staticip={addr}" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/family=IPv6">
+      <PARAM name="static-ip" help="IP Address" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/staticip" ptype="IPV6_ADDR"/>
+      <PARAM name="neigh" help="MAC Address" ptype="MAC_ADDR" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/neigh"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ipv6_interfaces_interface_subinterfaces_subinterface_static_nd_config ${iface} ${static-ip} ${neigh}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure static ND.
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure static ND.
+             </USAGE>
+        <EXAMPLE summary="Configure static ARP">
+                 sonic-cli(config)# interface Ethernet 0
+                 sonic-cli(conf-if-Ethernet0)# ip neighbor ip_addr mac
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 neighbor" access="netadmin" help="Unconfigure static ND">
+      <PARAM name="static-ip" help="IP Address" ptype="IPV6_ADDR"/>
+      <PARAM name="neigh" help="MAC Address" ptype="MAC_ADDR"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if delete_openconfig_if_ipv6_interfaces_interface_subinterfaces_subinterface_static_nd_config ${iface} ${static-ip} ${neigh}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Unconfigure static ND.
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to unconfigure static ND.
+             </USAGE>
+        <EXAMPLE summary="Unconfigure static ND">
+                 sonic-cli(config)# interface Ethernet 0
+                 sonic-cli(conf-if-Ethernet0)# no ipv6 neighbor ip_addr mac
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 nd dad" access="netadmin" help="Duplicated Address Detection" command_tables="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/portname={name}">
+      <PARAM name="dad_config" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/ipv6_dad=enable"> </PARAM>
+        <PARAM name="disable" help="Disable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/ipv6_dad=disable"> </PARAM>
+        <PARAM name="disable-ipv6-on-dad-failure" help="Enable DAD on the interface and disable ipv6 on DAD failure" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/ipv6_dad=disable-ipv6-on-dad-failure"> </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_dad ${iface} ${enable} ${disable} ${disable-ipv6-on-dad-failure}</ACTION>
+    </COMMAND>
+  </VIEW>
+  <VIEW name="configure-if-mgmt-view">
+    <COMMAND name="ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="no ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="ipv6 nd" access="netadmin" help="Interface IPv6 ND config commands"/>
+    <COMMAND name="no ipv6 nd" access="netadmin" help="Interface IPv6 ND config commands"/>
+    <COMMAND name="ipv6 address" access="netadmin" help="IPv6 address" command_tables="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_IPADDR_LIST/portname={name},ip_prefix={prfx}" render_command_cb="ipv6_mgmt_ip_address">
+      <PARAM name="addr" help="IPv6 address with mask" ptype="IPV6_ADDR_MASK"/>
+      <PARAM name="gwaddr" help="Default Gateway address" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+        <PARAM name="gw_addr" help="Gateway IP address" ptype="IPV6_ADDR"/>
+      </PARAM>
+      <PARAM name="eui-64" help="Set EUI-64" ptype="SUBCOMMAND" mode="subcommand" optional="true" dbpath="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_IPADDR_LIST/portname={name}/eui64=enable,ip_prefix={prfx}"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_addresses_address_config ${iface} ${addr} ${gw_addr} ${eui-64}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address" access="netadmin" help="Delete IPv6 address(es) on the interface">
+      <PARAM name="addr" help="IPv6 address" optional="true" ptype="IPV6_ADDR_MASK"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if delete_mgmt_if_ip ${iface} ${addr} False</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 enable" access="netadmin" help="Enable IPv6" command_tables="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_LIST/portname={name}" dbpath="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_LIST/ipv6_use_link_local_only=enable">
+      <ACTION builtin="clish_restcl">oper=PATCH url=/restconf/data/openconfig-interfaces:interfaces/interface=${iface}/subinterfaces/subinterface=0/openconfig-if-ip:ipv6/config/enabled body={"openconfig-if-ip:enabled": true}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 enable" access="netadmin" help="Disable IPv6" command_tables="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_LIST/portname={name}" dbpath="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_LIST/ipv6_use_link_local_only=disable">
+      <ACTION builtin="clish_restcl">oper=PATCH url=/restconf/data/openconfig-interfaces:interfaces/interface=${iface}/subinterfaces/subinterface=0/openconfig-if-ip:ipv6/config/enabled body={"openconfig-if-ip:enabled": false}</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 address autoconfig" access="netadmin" help="Enable IPv6 stateless address auto-configuration" command_tables="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_LIST/portname={name}" dbpath="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_LIST/ipv6_autoconfig=enable">
+      <ACTION builtin="clish_restcl">oper=PATCH url=/restconf/data/openconfig-interfaces:interfaces/interface=${iface}/subinterfaces/subinterface=0/openconfig-if-ip:ipv6/config/ipv6_autoconfig body={"openconfig-if-ip:ipv6_autoconfig": true}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address autoconfig" access="netadmin" help="Disable IPv6 stateless address auto-configuration">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_autoconfig ${iface} False</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 nd dad" access="netadmin" help="Duplicated Address Detection" command_tables="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_LIST/portname={name}">
+      <PARAM name="dad_config" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_LIST/ipv6_dad=enable"> </PARAM>
+        <PARAM name="disable" help="Disable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_LIST/ipv6_dad=disable"> </PARAM>
+        <PARAM name="disable-ipv6-on-dad-failure" help="Enable DAD on the interface and disable ipv6 on DAD failure" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-mgmt-interface:sonic-mgmt-interface/MGMT_INTERFACE/MGMT_INTERFACE_LIST/ipv6_dad=disable-ipv6-on-dad-failure"> </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_dad ${iface} ${enable} ${disable} ${disable-ipv6-on-dad-failure}</ACTION>
+    </COMMAND>
+  </VIEW>
+  <VIEW name="configure-lag-view">
+    <COMMAND name="ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="no ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="ipv6 address" access="netadmin" help="IPv6 address" command_tables="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_IPADDR_LIST/pch_name={name},ip_prefix={prfx}" render_command_cb="ipv6_lag_ip_address">
+      <PARAM name="addr" help="IPv6 address with mask" ptype="IPV6_ADDR_MASK"/>
+      <PARAM name="eui-64" help="Set EUI-64" ptype="SUBCOMMAND" mode="subcommand" optional="true" dbpath="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_IPADDR_LIST/pch_name={name}/eui64=enable,ip_prefix={prfx}"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_addresses_address_config ${po_name} ${addr} ${eui-64}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address" access="netadmin" help="Delete IPv6 address(es) on the interface">
+      <PARAM name="addr" help="IPv6 address" optional="true" ptype="IPV6_ADDR_MASK"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if delete_po_if_ip ${po_name} ${addr} False</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay" access="netadmin" help="Configure DHCP relay on an interface" command_tables="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/pch_name={name}" render_command_cb="ipv6_po_dhcp_relay">
+      <PARAM help="IP address" name="ipaddr1" optional="false" ptype="IPV6_ADDR">
+        <PARAM help="Configure the VRF in which the server resides" name="vrf" optional="true" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM help="VRF name" name="vrfName" optional="false" ptype="STRING_32"/>
+        </PARAM>
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${vrfName} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure DHCPv6 relay on an interface.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure a DHCPv6 relay on an interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure IP DHCPv6 relay">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay 9000::1
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay source-interface" access="netadmin" help="Configures DHCPv6 relay source interface" command_tables="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/pch_name={name}">
+      <PARAM help="Interface subcommands" name="if-subcommands" mode="switch" ptype="SUBCOMMAND" optional="false">
+        <PARAM help="Physical Interface/Subinterface" name="intfName" ptype="PHY_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="PortChannel Interface/Subinterface" name="pchName" ptype="PO_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="VLAN Interface" name="vlanName" ptype="VLAN_INTERFACE" optional="false"/>
+        <PARAM help="Loopback Interface" name="loName" ptype="LOOPBACK_INTERFACE" optional="false"/>
+        <PARAM help="Management interface" name="Management" ptype="MGMT_INTERFACE" optional="false"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${intfName} ${pchName} ${vlanName} ${loName} ${Management} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay source-interface Ethernet36
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set max hop count for DHCPv6 Relay packets" command_tables="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/pch_name={name}">
+      <PARAM help="Number of max hops" name="hop-count" optional="false" ptype="RANGE_16"> </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${hop-count} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay max-hop-count 9
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay vrf-select" access="netadmin" help="Enable VRF selection suboption" command_tables="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/pch_name={name}">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay vrf selection">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay vrf-select 
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 enable" access="netadmin" help="Enable IPv6" command_tables="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/pch_name={name}" dbpath="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/ipv6_use_link_local_only=enable">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${po_name} patch_ipv6_enabled True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 enable" access="netadmin" help="Disable IPv6">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range delete_if_range iflist=${po_name} delete_if_ip6_enabled</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay" access="netadmin" help="Unconfigure DHCPv6 relay on an interface">
+      <PARAM help="IP address" name="ipaddr1" optional="true" ptype="IPV6_ADDR">
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                     Unconfigure DHCPv6 relay on an interface.
+                 </DESCRIPTION>
+        <USAGE>
+                     Use this command to unconfigure a DHCPv6 relay on an interface.
+                 </USAGE>
+        <EXAMPLE summary="Unconfigure IP DHCPv6 relay">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay 9000::1
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay 
+                 </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay source-interface" access="netadmin" help="Unconfigure DHCPv6 relay source interface">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay source-interface
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set default max hop count for DHCPv6 Relay packets">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay max-hop-count
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay vrf-select" access="netadmin" help="Disable VRF selection suboption">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcp relay vrf selection">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay vrf-select
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 address autoconfig" access="netadmin" help="Enable IPv6 stateless address auto-configuration" command_tables="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/pch_name={name}" dbpath="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/ipv6_autoconfig=enable">
+      <ACTION builtin="clish_restcl">oper=PATCH url=/restconf/data/openconfig-interfaces:interfaces/interface=${po_name}/subinterfaces/subinterface=0/openconfig-if-ip:ipv6/config/ipv6_autoconfig body={"openconfig-if-ip:ipv6_autoconfig": true}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address autoconfig" access="netadmin" help="Disable IPv6 stateless address auto-configuration">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_autoconfig ${po_name} False</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 neighbor" access="netadmin" help="Configure static ND" command_tables="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/staticintf={name},staticip={addr}" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/family=IPv6">
+      <PARAM name="static-ip" help="IP Address" ptype="IPV6_ADDR" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/staticip"/>
+      <PARAM name="neigh" help="MAC Address" ptype="MAC_ADDR" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/neigh"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ipv6_interfaces_interface_subinterfaces_subinterface_static_nd_config ${po_name} ${static-ip} ${neigh}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure static ND.
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure static ND.
+             </USAGE>
+        <EXAMPLE summary="Configure static ARP">
+                 sonic-cli(config)# interface Ethernet 0
+                 sonic-cli(conf-if-Ethernet0)# ip neighbor ip_addr mac
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 neighbor" access="netadmin" help="Unconfigure static ND">
+      <PARAM name="static-ip" help="IP Address" ptype="IPV6_ADDR"/>
+      <PARAM name="neigh" help="MAC Address" ptype="MAC_ADDR"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if delete_openconfig_if_ipv6_interfaces_interface_subinterfaces_subinterface_static_nd_config ${po_name} ${static-ip} ${neigh}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Unconfigure static ND.
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to unconfigure static ND.
+             </USAGE>
+        <EXAMPLE summary="Unconfigure static ND">
+                 sonic-cli(config)# interface Ethernet 0
+                 sonic-cli(conf-if-Ethernet0)# no ipv6 neighbor ip_addr mac
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 nd dad" access="netadmin" help="Duplicated Address Detection" command_tables="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/pch_name={name}">
+      <PARAM name="dad_config" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/ipv6_dad=enable"> </PARAM>
+        <PARAM name="disable" help="Disable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/ipv6_dad=disable"> </PARAM>
+        <PARAM name="disable-ipv6-on-dad-failure" help="Enable DAD on the interface and disable ipv6 on DAD failure" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/ipv6_dad=disable-ipv6-on-dad-failure"> </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_dad ${po_name} ${enable} ${disable} ${disable-ipv6-on-dad-failure}</ACTION>
+    </COMMAND>
+  </VIEW>
+  <!-- VLAN VIEW -->
+  <VIEW name="configure-vlan-view">
+    <COMMAND name="ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="no ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"> </COMMAND>
+    <COMMAND name="ipv6 address" access="netadmin" help="IPv6 address" command_tables="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_IPADDR_LIST/vlanName={name},ip_prefix={prfx}" render_command_cb="ipv6_vlan_ip_address">
+      <PARAM name="addr" help="IPv6 address with mask" ptype="IPV6_ADDR_MASK"/>
+      <PARAM name="eui-64" help="Set EUI-64" ptype="SUBCOMMAND" mode="subcommand" optional="true" dbpath="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_IPADDR_LIST/vlanName={name}/eui64=enable,ip_prefix={prfx}"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_routed_vlan_ipv6_addresses_address_config ${vlan_name} ${addr} ${eui-64}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address" access="netadmin" help="Delete IPv6 address(es) on the interface">
+      <PARAM name="addr" help="IPv6 address" optional="true" ptype="IPV6_ADDR_MASK"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if delete_vlan_if_ip ${vlan_name} ${addr} False</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay" access="netadmin" help="Configure DHCP relay on an interface" command_tables="sonic-vlan:sonic-vlan/VLAN/VLAN_LIST/name={name}" render_command_cb="ipv6_vlan_dhcp_relay">
+      <PARAM help="IP address" name="ipaddr1" optional="false" ptype="IPV6_ADDR">
+        <PARAM help="Configure the VRF in which the server resides" name="vrf" optional="true" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM help="VRF name" name="vrfName" optional="false" ptype="STRING_32"/>
+        </PARAM>
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${vrfName} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure DHCPv6 relay on an interface.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure a DHCPv6 relay on an interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure IP DHCPv6 relay">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay 9000::1
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay source-interface" access="netadmin" help="Configures DHCPv6 relay source interface" command_tables="sonic-vlan:sonic-vlan/VLAN/VLAN_LIST/name={name}">
+      <PARAM help="Interface subcommands" name="if-subcommands" mode="switch" ptype="SUBCOMMAND" optional="false">
+        <PARAM help="Physical Interface/Subinterface" name="intfName" ptype="PHY_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="PortChannel Interface/Subinterface" name="pchName" ptype="PO_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="VLAN Interface" name="vlanName" ptype="VLAN_INTERFACE" optional="false"/>
+        <PARAM help="Loopback Interface" name="loName" ptype="LOOPBACK_INTERFACE" optional="false"/>
+        <PARAM help="Management interface" name="Management" ptype="MGMT_INTERFACE" optional="false"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${intfName} ${pchName} ${vlanName} ${loName} ${Management} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay source-interface Ethernet36
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set max hop count for DHCPv6 Relay packets" command_tables="sonic-vlan:sonic-vlan/VLAN/VLAN_LIST/name={name}">
+      <PARAM help="Number of max hops" name="hop-count" optional="false" ptype="RANGE_16"> </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${hop-count} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay max-hop-count 9
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay vrf-select" access="netadmin" help="Enable VRF selection suboption" command_tables="sonic-vlan:sonic-vlan/VLAN/VLAN_LIST/name={name}">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay vrf selection">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay vrf-select 
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 enable" access="netadmin" help="Enable IPv6" command_tables="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/vlanName={name}" dbpath="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/ipv6_use_link_local_only=enable">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${vlan_name} patch_ipv6_enabled True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 enable" access="netadmin" help="Disable IPv6">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range delete_if_range iflist=${vlan_name} delete_if_ip6_enabled</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay" access="netadmin" help="Unconfigure DHCPv6 relay on an interface">
+      <PARAM help="IP address" name="ipaddr1" optional="true" ptype="IPV6_ADDR">
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                     Unconfigure DHCPv6 relay on an interface.
+                 </DESCRIPTION>
+        <USAGE>
+                     Use this command to unconfigure a DHCPv6 relay on an interface.
+                 </USAGE>
+        <EXAMPLE summary="Unconfigure IP DHCPv6 relay">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay 9000::1
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay 
+                 </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay source-interface" access="netadmin" help="Unconfigure DHCPv6 relay source interface">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay source-interface
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set default max hop count for DHCPv6 Relay packets">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay max-hop-count
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay vrf-select" access="netadmin" help="Disable VRF selection suboption">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcp relay vrf selection">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay vrf-select
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 address autoconfig" access="netadmin" help="Enable IPv6 stateless address auto-configuration" command_tables="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/vlanName={name}" dbpath="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/ipv6_autoconfig=enable">
+      <ACTION builtin="clish_restcl">oper=PATCH url=/restconf/data/openconfig-interfaces:interfaces/interface=${vlan_name}/openconfig-vlan:routed-vlan/openconfig-if-ip:ipv6/config/ipv6_autoconfig body={"openconfig-if-ip:ipv6_autoconfig": true}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address autoconfig" access="netadmin" help="Disable IPv6 stateless address auto-configuration">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_routed_vlan_ipv6_config_ipv6_autoconfig ${vlan_name} False</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 neighbor" access="netadmin" help="Configure static ND" command_tables="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/staticintf={name},staticip={addr}" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/family=IPv6">
+      <PARAM name="static-ip" help="IP Address" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/staticip" ptype="IPV6_ADDR"/>
+      <PARAM name="neigh" help="MAC Address" ptype="MAC_ADDR" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/neigh"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_static_nd_config ${vlan_name} ${static-ip} ${neigh}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure static ND.
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure static ND.
+             </USAGE>
+        <EXAMPLE summary="Configure static ARP">
+                 sonic-cli(config)# interface Ethernet 0
+                 sonic-cli(conf-if-Ethernet0)# ip neighbor ip_addr mac
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 neighbor" access="netadmin" help="Unconfigure static ND">
+      <PARAM name="static-ip" help="IP Address" ptype="IPV6_ADDR"/>
+      <PARAM name="neigh" help="MAC Address" ptype="MAC_ADDR"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if delete_static_nd_config ${vlan_name} ${static-ip} ${neigh}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Unconfigure static ND.
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to unconfigure static ND.
+             </USAGE>
+        <EXAMPLE summary="Unconfigure static ND">
+                 sonic-cli(config)# interface Ethernet 0
+                 sonic-cli(conf-if-Ethernet0)# no ipv6 neighbor ip_addr mac
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 nd dad" access="netadmin" help="Duplicated Address Detection" command_tables="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/vlanName={name}">
+      <PARAM name="dad_config" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/ipv6_dad=enable"> </PARAM>
+        <PARAM name="disable" help="Disable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/ipv6_dad=disable"> </PARAM>
+        <PARAM name="disable-ipv6-on-dad-failure" help="Enable DAD on the interface and disable ipv6 on DAD failure" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/ipv6_dad=disable-ipv6-on-dad-failure"> </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_routed_vlan_ipv6_config_ipv6_dad ${vlan_name} ${enable} ${disable} ${disable-ipv6-on-dad-failure}</ACTION>
+    </COMMAND>
+  </VIEW>
+  <VIEW name="configure-lo-view">
+    <COMMAND name="ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="no ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"> </COMMAND>
+    <COMMAND name="ipv6 address" access="netadmin" help="IPv6 address" command_tables="sonic-loopback-interface:sonic-loopback-interface/LOOPBACK_INTERFACE/LOOPBACK_INTERFACE_IPADDR_LIST/loIfName={name},ip_prefix={prfx}" render_command_cb="ipv6_lo_ip_address">
+      <PARAM name="addr" help="IPv6 address with mask (/128 is supported)" ptype="IPV6_ADDR_MASK"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_addresses_address_config ${lo_name} ${addr}</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 enable" access="netadmin" help="Enable IPv6" command_tables="sonic-loopback-interface:sonic-loopback-interface/LOOPBACK_INTERFACE/LOOPBACK_INTERFACE_LIST/loIfName={name}" dbpath="sonic-loopback-interface:sonic-loopback-interface/LOOPBACK_INTERFACE/LOOPBACK_INTERFACE_LIST/ipv6_use_link_local_only=enable">
+      <ACTION builtin="clish_restcl">oper=PATCH url=/restconf/data/openconfig-interfaces:interfaces/interface=${lo_name}/subinterfaces/subinterface=0/openconfig-if-ip:ipv6/config/enabled body={"openconfig-if-ip:enabled": true}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address" access="netadmin" help="Delete IPv6 address(es) on the interface">
+      <PARAM name="addr" help="IPv6 address" optional="true" ptype="IPV6_ADDR_MASK"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if delete_lo_if_ip ${lo_name} ${addr} False</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 enable" access="netadmin" help="Disable IPv6">
+      <ACTION builtin="clish_restcl">oper=DELETE url=/restconf/data/openconfig-interfaces:interfaces/interface=${lo_name}/subinterfaces/subinterface=0/openconfig-if-ip:ipv6/config/enabled </ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 address autoconfig" access="netadmin" help="Enable IPv6 stateless address auto-configuration" command_tables="sonic-loopback-interface:sonic-loopback-interface/LOOPBACK_INTERFACE/LOOPBACK_INTERFACE_LIST/loIfName={name}" dbpath="sonic-loopback-interface:sonic-loopback-interface/LOOPBACK_INTERFACE/LOOPBACK_INTERFACE_LIST/ipv6_autoconfig=enable">
+      <ACTION builtin="clish_restcl">oper=PATCH url=/restconf/data/openconfig-interfaces:interfaces/interface=${lo_name}/subinterfaces/subinterface=0/openconfig-if-ip:ipv6/config/ipv6_autoconfig body={"openconfig-if-ip:ipv6_autoconfig": true}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address autoconfig" access="netadmin" help="Disable IPv6 stateless address auto-configuration" command_tables="sonic-loopback-interface:sonic-loopback-interface/LOOPBACK_INTERFACE/LOOPBACK_INTERFACE_LIST/loIfName={name}" dbpath="sonic-loopback-interface:sonic-loopback-interface/LOOPBACK_INTERFACE/LOOPBACK_INTERFACE_LIST/ipv6_autoconfig=disable">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_autoconfig ${lo_name} False</ACTION>
+    </COMMAND>
+  </VIEW>
+  <VIEW name="enable-view">
+    <COMMAND help="Display IP commands" name="show ipv6"> </COMMAND>
+    <!-- show ipv6 interfaces -->
+    <COMMAND name="show ipv6 interfaces" help="IPv6 info of interfaces">
+      <ACTION> python3 $SONIC_CLI_ROOT/sonic_cli_if.py ip6_interfaces_get show_ip_interfaces_sonic.j2 ${__full_line} </ACTION>
+      <xi:include href="include/pipe.xml"/>
+    </COMMAND>
+    <!-- show ip route -->
+    <COMMAND help="IP route information" name="show ipv6 route">
+      <PARAM name="vrf" help="IP route information per VRF" optional="true" order="true" mode="subcommand" ptype="SUBCOMMAND">
+        <PARAM name="vrforall" help="" ptype="SUBCOMMAND" mode="switch">
+          <PARAM name="all" help="All VRFs" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="summary" help="Summary of all routes" mode="subcommand" ptype="SUBCOMMAND"> </PARAM>
+          </PARAM>
+          <PARAM help="Name of VRF" name="vrfname" ptype="ALL_VRF"> </PARAM>
+        </PARAM>
+      </PARAM>
+      <PARAM name="route-cmd" test="&quot;${vrforall}&quot; != &quot;all&quot;" help="" mode="switch" ptype="SUBCOMMAND" optional="true" order="true">
+        <PARAM name="address" help="Match this IPv6 address" ptype="IPV6_ADDR"> </PARAM>
+        <PARAM name="prefix" help="Match this IPv6 prefix" ptype="IPV6_ADDR_MASK"> </PARAM>
+        <PARAM name="summary" help="Summary of all routes" mode="subcommand" ptype="SUBCOMMAND"> </PARAM>
+        <PARAM name="not-installed" help="routes not-installed in hardware" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM name="summary" value="summary" help="Summary of all routes" mode="subcommand" optional="true" ptype="SUBCOMMAND"> </PARAM>
+        </PARAM>
+        <PARAM name="bgp" help="Border Gateway Protocol (BGP)" mode="subcommand" ptype="SUBCOMMAND"> </PARAM>
+        <PARAM name="connected" help="Connected routes (directly attached subnet or host)" mode="subcommand" ptype="SUBCOMMAND"> </PARAM>
+        <PARAM name="static" help="Statically configured routes" mode="subcommand" ptype="SUBCOMMAND"> </PARAM>
+        <PARAM name="nexthop-group" help="nexthop-group info" mode="subcommand" ptype="SUBCOMMAND"> </PARAM>
+      </PARAM>
+      <ACTION> if test -n "${prefix}"; then
+ python3 $SONIC_CLI_ROOT/sonic-cli-ip-route-rpc.py show_ip_route show_ip_route_rpc.j2 prefix ${prefix} ${__full_line}
+ elif test -n "${address}"; then
+ python3 $SONIC_CLI_ROOT/sonic-cli-ip-route-rpc.py show_ip_route show_ip_route_rpc.j2 address ${address} ${__full_line}
+ elif test -n "${nexthop-group}"; then
+ python3 $SONIC_CLI_ROOT/sonic-cli-ip-route-rpc.py show_ip_route show_ip_route_rpc.j2 nexthop-group ${__full_line}
+ elif test -n "${summary}" &amp;&amp; test -n "${not-installed}"; then
+ python3 $SONIC_CLI_ROOT/sonic-cli-ip-route-rpc.py show_ip_route_summary show_ip_route_not_installed_summary_rpc.j2 ${__line}
+ elif test -n "${summary}"; then
+ python3 $SONIC_CLI_ROOT/sonic-cli-ip-route-rpc.py show_ip_route_summary show_ip_route_summary_rpc.j2 ${__line}
+ else
+ python3 $SONIC_CLI_ROOT/sonic-cli-ip-route-rpc.py show_ip_route show_ip_route_rpc.j2 ${__full_line}
+ fi
+ </ACTION>
+      <xi:include href="include/pipe.xml"/>
+    </COMMAND>
+    <!-- show ipv6 dhcp-relay -->
+    <COMMAND help="Display IPv6 DHCP relay information" name="show ipv6 dhcp-relay">
+      <PARAM help="Display IP DHCP relay information" name="relay-cmd" mode="switch" ptype="SUBCOMMAND" optional="false">
+        <PARAM help="Display IP DHCP relay information in brief" name="brief" optional="true" mode="subcommand" ptype="SUBCOMMAND"/>
+        <PARAM help="Display IP DHCP relay information in detail" name="detailed" optional="true" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM help="Interface subcommands" name="if-subcommands" mode="switch" ptype="SUBCOMMAND" optional="false">
+            <PARAM help="Physical Interface/Subinterface" name="intfName1" ptype="PHY_INTERFACE_SUBIF" optional="false"/>
+            <PARAM help="PortChannel Interface/Subinterface" name="pchName1" ptype="PO_INTERFACE_SUBIF" optional="false"/>
+            <PARAM help="VLAN Interface" name="vlanName1" ptype="VLAN_INTERFACE" optional="false"/>
+          </PARAM>
+        </PARAM>
+        <PARAM help="Display IP DHCP relay statistics" name="statistics" optional="true" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM help="Interface subcommands" name="if-subcommands" mode="switch" ptype="SUBCOMMAND" optional="false">
+            <PARAM help="Physical Interface/Subinterface" name="intfName" ptype="PHY_INTERFACE_SUBIF" optional="false"/>
+            <PARAM help="PortChannel Interface/Subinterface" name="pchName" ptype="PO_INTERFACE_SUBIF" optional="false"/>
+            <PARAM help="VLAN Interface" name="vlanName" ptype="VLAN_INTERFACE" optional="false"/>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION> if test -n "${intfName}"; then
+ python3 $SONIC_CLI_ROOT/sonic_cli_if.py get_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_state show_ipv6_dhcp_relay_statistics.j2 ${intfName}
+ elif test -n "${vlanName}"; then
+ python3 $SONIC_CLI_ROOT/sonic_cli_if.py get_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_state show_ipv6_dhcp_relay_statistics.j2 ${vlanName}
+ elif test -n "${pchName}"; then
+ python3 $SONIC_CLI_ROOT/sonic_cli_if.py get_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_state show_ipv6_dhcp_relay_statistics.j2 ${pchName}
+ elif test -n "${brief}"; then
+ python3 $SONIC_CLI_ROOT/sonic_cli_if.py get_openconfig_relay_agent_relay_agent_dhcpv6 show_ipv6_dhcp_relay_brief.j2
+ elif test -n "${intfName1}"; then
+ python3 $SONIC_CLI_ROOT/sonic_cli_if.py get_openconfig_relay_agent_relay_agent_detail_dhcpv6 show_ipv6_dhcp_relay_detailed.j2 ${intfName1}
+ elif test -n "${vlanName1}"; then
+ python3 $SONIC_CLI_ROOT/sonic_cli_if.py get_openconfig_relay_agent_relay_agent_detail_dhcpv6 show_ipv6_dhcp_relay_detailed.j2 ${vlanName1}
+ elif test -n "${pchName1}"; then
+ python3 $SONIC_CLI_ROOT/sonic_cli_if.py get_openconfig_relay_agent_relay_agent_detail_dhcpv6 show_ipv6_dhcp_relay_detailed.j2 ${pchName1}
+ elif test -n "${detailed}"; then
+ python3 $SONIC_CLI_ROOT/sonic_cli_if.py get_openconfig_relay_agent_relay_agent_detail_dhcpv6 show_ipv6_dhcp_relay_detailed.j2
+ fi
+ </ACTION>
+      <xi:include href="include/pipe.xml"/>
+    </COMMAND>
+    <!--====================clear <ipv6> dhcp-relay statistics======================-->
+    <COMMAND name="clear ipv6 dhcp-relay" access="netadmin" help="Clear IPv6 DHCP relay statistics">
+      <PARAM name="clear-subcommands" help="Clear subcommands" mode="switch" ptype="SUBCOMMAND">
+        <PARAM help="Clear IPv6 DHCP relay statistics" name="statistics" optional="false" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM help="Interface name" name="ifName" optional="false" ptype="PHY_PO_VL_SUBINTERFACE"/>
+        </PARAM>
+      </PARAM>
+      <ACTION> python3 $SONIC_CLI_ROOT/sonic_cli_if.py rpc_relay_clear ${ifName} ${__full_line} </ACTION>
+    </COMMAND>
+  </VIEW>
+  <!--=======================================================-->
+  <!-- Config Interface RANGE-MODE -->
+  <!--=======================================================-->
+  <VIEW name="configure-if-range-view">
+    <COMMAND name="ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="no ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="ipv6 enable" access="netadmin" help="Enable IPv6" command_tables="arg2" dbpath="arg3">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_enabled True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 enable" access="netadmin" help="Disable IPv6">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range delete_if_range iflist=${iflist} delete_if_ip6_enabled</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay" access="netadmin" help="Configure DHCP relay on a range of interfaces">
+      <PARAM help="IP address" name="ipaddr1" optional="false" ptype="IPV6_ADDR">
+        <PARAM help="Configure the VRF in which the server resides" name="vrf" optional="true" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM help="VRF name" name="vrfName" optional="false" ptype="STRING_32"/>
+        </PARAM>
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${vrfName} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure DHCPv6 relay on a range of interfaces.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure a DHCPv6 relay on a range of interfaces.
+                     </USAGE>
+        <EXAMPLE summary="Configure IP DHCPv6 relay">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay 9000::1
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay source-interface" access="netadmin" help="Configures DHCPv6 relay source interface">
+      <PARAM help="Interface subcommands" name="if-subcommands" mode="switch" ptype="SUBCOMMAND" optional="false">
+        <PARAM help="Physical Interface/Subinterface" name="intfName" ptype="PHY_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="PortChannel Interface/Subinterface" name="pchName" ptype="PO_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="VLAN Interface" name="vlanName" ptype="VLAN_INTERFACE" optional="false"/>
+        <PARAM help="Loopback Interface" name="loName" ptype="LOOPBACK_INTERFACE" optional="false"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${intfName} ${pchName} ${vlanName} ${loName} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay source interface">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay source-interface Ethernet36
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set max hop count for DHCPv6 Relay packets">
+      <PARAM help="Number of max hops" name="hop-count" optional="false" ptype="RANGE_16"> </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${hop-count} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay max-hop-count 9
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay vrf-select" access="netadmin" help="Enable VRF selection suboption">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay vrf selection">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay vrf-select
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay" access="netadmin" help="Unconfigure DHCPv6 relay on an interface">
+      <PARAM help="IP address" name="ipaddr1" optional="true" ptype="IPV6_ADDR">
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                     Unconfigure DHCPv6 relay on a range of interfaces.
+                 </DESCRIPTION>
+        <USAGE>
+                     Use this command to unconfigure a DHCPv6 relay on a range of interfaces.
+                 </USAGE>
+        <EXAMPLE summary="Unconfigure IP DHCPv6 relay">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay 9000::1
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay
+                 </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay source-interface" access="netadmin" help="Unconfigure DHCPv6 relay source interface">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${iface} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay source-interface
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set default max hop count for DHCPv6 Relay packets">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay max-hop-count
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay vrf-select" access="netadmin" help="Disable VRF selection suboption">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcp relay vrf selection">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay vrf-select
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 nd dad" access="netadmin" help="Duplicated Address Detection" command_tables="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/portname={name}">
+      <PARAM name="dad_config" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/ipv6_dad=enable"> </PARAM>
+        <PARAM name="disable" help="Disable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/ipv6_dad=disable"> </PARAM>
+        <PARAM name="disable-ipv6-on-dad-failure" help="Enable DAD on the interface and disable ipv6 on DAD failure" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/ipv6_dad=disable-ipv6-on-dad-failure"> </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_dad_enabled ${enable} ${disable} ${disable-ipv6-on-dad-failure}</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 address" access="netadmin" help="Interface Internet Protocol v6 address config commands"/>
+    <COMMAND name="ipv6 address autoconfig" access="netadmin" help="Enable IPv6 stateless address auto-configuration" command_tables="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/portname={name}" dbpath="sonic-interface:sonic-interface/INTERFACE/INTERFACE_LIST/ipv6_autoconfig=enable">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_autoconfig True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address autoconfig" access="netadmin" help="Disable IPv6 stateless address auto-configuration">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_autoconfig False</ACTION>
+    </COMMAND>
+  </VIEW>
+  <VIEW name="configure-vlan-range-view">
+    <COMMAND name="ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="no ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="ipv6 enable" access="netadmin" help="Enable IPv6" command_tables="arg2" dbpath="arg3">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_enabled True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 enable" access="netadmin" help="Disable IPv6">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range delete_if_range iflist=${iflist} delete_if_ip6_enabled</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay" access="netadmin" help="Configure DHCP relay on a range of interfaces">
+      <PARAM help="IP address" name="ipaddr1" optional="false" ptype="IPV6_ADDR">
+        <PARAM help="Configure the VRF in which the server resides" name="vrf" optional="true" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM help="VRF name" name="vrfName" optional="false" ptype="STRING_32"/>
+        </PARAM>
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${vrfName} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure DHCPv6 relay on a range of interfaces.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure a DHCPv6 relay on a range of interfaces.
+                     </USAGE>
+        <EXAMPLE summary="Configure IP DHCPv6 relay">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay 9000::1
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay source-interface" access="netadmin" help="Configures DHCPv6 relay source interface">
+      <PARAM help="Interface subcommands" name="if-subcommands" mode="switch" ptype="SUBCOMMAND" optional="false">
+        <PARAM help="Physical Interface/Subinterface" name="intfName" ptype="PHY_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="PortChannel Interface/Subinterface" name="pchName" ptype="PO_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="VLAN Interface" name="vlanName" ptype="VLAN_INTERFACE" optional="false"/>
+        <PARAM help="Loopback Interface" name="loName" ptype="LOOPBACK_INTERFACE" optional="false"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${intfName} ${pchName} ${vlanName} ${loName} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay source interface">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay source-interface Ethernet36
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set max hop count for DHCPv6 Relay packets">
+      <PARAM help="Number of max hops" name="hop-count" optional="false" ptype="RANGE_16"> </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${hop-count} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay max-hop-count 9
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay vrf-select" access="netadmin" help="Enable VRF selection suboption">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay vrf selection">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay vrf-select
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay" access="netadmin" help="Unconfigure DHCPv6 relay on an interface">
+      <PARAM help="IP address" name="ipaddr1" optional="true" ptype="IPV6_ADDR">
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                     Unconfigure DHCPv6 relay on a range of interfaces.
+                 </DESCRIPTION>
+        <USAGE>
+                     Use this command to unconfigure a DHCPv6 relay on a range of interfaces.
+                 </USAGE>
+        <EXAMPLE summary="Unconfigure IP DHCPv6 relay">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay 9000::1
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay
+                 </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay source-interface" access="netadmin" help="Unconfigure DHCPv6 relay source interface">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${iface} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay source-interface
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set default max hop count for DHCPv6 Relay packets">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay max-hop-count
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay vrf-select" access="netadmin" help="Disable VRF selection suboption">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcp relay vrf selection">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay vrf-select
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 nd dad" access="netadmin" help="Duplicated Address Detection" command_tables="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/vlanName={name}">
+      <PARAM name="dad_config" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/ipv6_dad=enable"> </PARAM>
+        <PARAM name="disable" help="Disable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/ipv6_dad=disable"> </PARAM>
+        <PARAM name="disable-ipv6-on-dad-failure" help="Enable DAD on the interface and disable ipv6 on DAD failure" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/ipv6_dad=disable-ipv6-on-dad-failure"> </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_dad_enabled ${enable} ${disable} ${disable-ipv6-on-dad-failure}</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 address" access="netadmin" help="Configure IPV6 address"/>
+    <COMMAND name="ipv6 address autoconfig" access="netadmin" help="Enable IPv6 stateless address auto-configuration" command_tables="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/vlanName={name}" dbpath="sonic-vlan-interface:sonic-vlan-interface/VLAN_INTERFACE/VLAN_INTERFACE_LIST/ipv6_autoconfig=enable">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_autoconfig True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address autoconfig" access="netadmin" help="Disable IPv6 stateless address auto-configuration">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_autoconfig False</ACTION>
+    </COMMAND>
+  </VIEW>
+  <VIEW name="configure-po-range-view">
+    <COMMAND name="ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="no ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="ipv6 address" access="netadmin" help="Configure IPV6 address"/>
+    <COMMAND name="ipv6 enable" access="netadmin" help="Enable IPv6" command_tables="arg2" dbpath="arg3">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_enabled True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 enable" access="netadmin" help="Disable IPv6">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range delete_if_range iflist=${iflist} delete_if_ip6_enabled</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay" access="netadmin" help="Configure DHCP relay on a range of interfaces">
+      <PARAM help="IP address" name="ipaddr1" optional="false" ptype="IPV6_ADDR">
+        <PARAM help="Configure the VRF in which the server resides" name="vrf" optional="true" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM help="VRF name" name="vrfName" optional="false" ptype="STRING_32"/>
+        </PARAM>
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${vrfName} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure DHCPv6 relay on a range of interfaces.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure a DHCPv6 relay on a range of interfaces.
+                     </USAGE>
+        <EXAMPLE summary="Configure IP DHCPv6 relay">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay 9000::1
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay source-interface" access="netadmin" help="Configures DHCPv6 relay source interface">
+      <PARAM help="Interface subcommands" name="if-subcommands" mode="switch" ptype="SUBCOMMAND" optional="false">
+        <PARAM help="Physical Interface/Subinterface" name="intfName" ptype="PHY_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="PortChannel Interface/Subinterface" name="pchName" ptype="PO_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="VLAN Interface" name="vlanName" ptype="VLAN_INTERFACE" optional="false"/>
+        <PARAM help="Loopback Interface" name="loName" ptype="LOOPBACK_INTERFACE" optional="false"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${intfName} ${pchName} ${vlanName} ${loName} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay source interface">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay source-interface Ethernet36
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set max hop count for DHCPv6 Relay packets">
+      <PARAM help="Number of max hops" name="hop-count" optional="false" ptype="RANGE_16"> </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${hop-count} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay max-hop-count 9
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay vrf-select" access="netadmin" help="Enable VRF selection suboption">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay vrf selection">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# ipv6 dhcp-relay vrf-select
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay" access="netadmin" help="Unconfigure DHCPv6 relay on an interface">
+      <PARAM help="IP address" name="ipaddr1" optional="true" ptype="IPV6_ADDR">
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                     Unconfigure DHCPv6 relay on a range of interfaces.
+                 </DESCRIPTION>
+        <USAGE>
+                     Use this command to unconfigure a DHCPv6 relay on a range of interfaces.
+                 </USAGE>
+        <EXAMPLE summary="Unconfigure IP DHCPv6 relay">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay 9000::1
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay
+                 </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay source-interface" access="netadmin" help="Unconfigure DHCPv6 relay source interface">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${iface} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay source-interface
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set default max hop count for DHCPv6 Relay packets">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay max-hop-count
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay vrf-select" access="netadmin" help="Disable VRF selection suboption">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_relay_agent_config iflist=${iflist} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcp relay vrf selection">
+                         sonic-cli(config)# interface range Ethernet 48-51
+                         %Info: Configuring only existing interfaces in range
+                         sonic-cli(conf-if-range-eth**)# no ipv6 dhcp-relay vrf-select
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 nd dad" access="netadmin" help="Duplicated Address Detection" command_tables="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/pch_name={name}">
+      <PARAM name="dad_config" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/ipv6_dad=enable"> </PARAM>
+        <PARAM name="disable" help="Disable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/ipv6_dad=disable"> </PARAM>
+        <PARAM name="disable-ipv6-on-dad-failure" help="Enable DAD on the interface and disable ipv6 on DAD failure" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/ipv6_dad=disable-ipv6-on-dad-failure"> </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_dad_enabled ${enable} ${disable} ${disable-ipv6-on-dad-failure}</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 address autoconfig" access="netadmin" help="Enable IPv6 stateless address auto-configuration" command_tables="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/pch_name={name}" dbpath="sonic-portchannel-interface:sonic-portchannel-interface/PORTCHANNEL_INTERFACE/PORTCHANNEL_INTERFACE_LIST/ipv6_autoconfig=enable">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_autoconfig True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address autoconfig" access="netadmin" help="Disable IPv6 stateless address auto-configuration">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iflist} patch_ipv6_autoconfig False</ACTION>
+    </COMMAND>
+  </VIEW>
+  <VIEW name="configure-subif-view">
+    <COMMAND name="ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="no ipv6" access="netadmin" help="Interface Internet Protocol v6 config commands"/>
+    <COMMAND name="ipv6 address" access="netadmin" help="IPv6 address" command_tables="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_IPADDR_LIST/id={name},ipPrefix={prfx}" render_command_cb="ipv6_subif_ip_address">
+      <PARAM name="addr" help="IPv6 address with mask" ptype="IPV6_ADDR_MASK"/>
+      <PARAM name="eui-64" help="Set EUI-64" ptype="SUBCOMMAND" mode="subcommand" optional="true" dbpath="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_IPADDR_LIST/id={name}/eui64=enable,ip_prefix={prfx}"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_addresses_address_config ${iface} ${addr} ${eui-64}</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address" access="netadmin" help="Delete IPv6 address(es) on the interface">
+      <PARAM name="addr" help="IPv6 address" optional="true" ptype="IPV6_ADDR_MASK"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if delete_phy_if_ip ${iface} ${addr} False</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 address autoconfig" access="netadmin" help="Enable IPv6 stateless address auto-configuration" command_tables="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/id={name}" dbpath="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/ipv6_autoconfig=enable">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_autoconfig ${iface} True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 address autoconfig" access="netadmin" help="Disable IPv6 stateless address auto-configuration">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_autoconfig ${iface} False</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 nd dad" access="netadmin" help="Duplicated Address Detection" command_tables="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/id={name}">
+      <PARAM name="dad_config" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/ipv6_dad=enable"> </PARAM>
+        <PARAM name="disable" help="Disable Duplicate Address Detection on the interface" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/ipv6_dad=disable"> </PARAM>
+        <PARAM name="disable-ipv6-on-dad-failure" help="Enable DAD on the interface and disable ipv6 on DAD failure" ptype="SUBCOMMAND" mode="subcommand" dbpath="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/ipv6_dad=disable-ipv6-on-dad-failure"> </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ip_interfaces_interface_subinterfaces_subinterface_ipv6_config_ipv6_dad ${iface} ${enable} ${disable} ${disable-ipv6-on-dad-failure}</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay" access="netadmin" help="Configure DHCP relay on an interface" command_tables="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/id={name}" render_command_cb="ipv6_subintf_dhcp_relay">
+      <PARAM help="IP address" name="ipaddr1" optional="false" ptype="IPV6_ADDR">
+        <PARAM help="Configure the VRF in which the server resides" name="vrf" optional="true" mode="subcommand" ptype="SUBCOMMAND">
+          <PARAM help="VRF name" name="vrfName" optional="false" ptype="STRING_32"/>
+        </PARAM>
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${vrfName} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure DHCPv6 relay on an interface.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure a DHCPv6 relay on an interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure IP DHCPv6 relay">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay 9000::1
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay source-interface" access="netadmin" help="Configures DHCPv6 relay source interface" command_tables="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/id={name}">
+      <PARAM help="Interface subcommands" name="if-subcommands" mode="switch" ptype="SUBCOMMAND" optional="false">
+        <PARAM help="Physical Interface/Subinterface" name="intfName" ptype="PHY_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="PortChannel Interface/Subinterface" name="pchName" ptype="PO_INTERFACE_SUBIF" optional="false"/>
+        <PARAM help="VLAN Interface" name="vlanName" ptype="VLAN_INTERFACE" optional="false"/>
+        <PARAM help="Loopback Interface" name="loName" ptype="LOOPBACK_INTERFACE" optional="false"/>
+        <PARAM help="Management interface" name="Management" ptype="MGMT_INTERFACE" optional="false"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${intfName} ${pchName} ${vlanName} ${loName} ${Management} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay source-interface Ethernet36
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set max hop count for DHCPv6 Relay packets" command_tables="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/id={name}">
+      <PARAM help="Number of max hops" name="hop-count" optional="false" ptype="RANGE_16"> </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${hop-count} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay max-hop-count 9
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 dhcp-relay vrf-select" access="netadmin" help="Enable VRF selection suboption" command_tables="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/id={name}">
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Configure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to configure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcp relay vrf selection">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# ipv6 dhcp-relay vrf-select 
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay" access="netadmin" help="Unconfigure DHCPv6 relay on an interface">
+      <PARAM help="IP address" name="ipaddr1" optional="true" ptype="IPV6_ADDR">
+        <PARAM help="IP address" name="ipaddr2" optional="true" ptype="IPV6_ADDR">
+          <PARAM help="IP address" name="ipaddr3" optional="true" ptype="IPV6_ADDR">
+            <PARAM help="IP address" name="ipaddr4" optional="true" ptype="IPV6_ADDR">
+              <PARAM help="IP address" name="ipaddr5" optional="true" ptype="IPV6_ADDR">
+                <PARAM help="IP address" name="ipaddr6" optional="true" ptype="IPV6_ADDR">
+                  <PARAM help="IP address" name="ipaddr7" optional="true" ptype="IPV6_ADDR">
+                    <PARAM help="IP address" name="ipaddr8" optional="true" ptype="IPV6_ADDR">
+                      <PARAM help="IP address" name="ipaddr9" optional="true" ptype="IPV6_ADDR">
+                        <PARAM help="IP address" name="ipaddr10" optional="true" ptype="IPV6_ADDR">
+                          <PARAM help="IP address" name="ipaddr11" optional="true" ptype="IPV6_ADDR">
+                            <PARAM help="IP address" name="ipaddr12" optional="true" ptype="IPV6_ADDR">
+                              <PARAM help="IP address" name="ipaddr13" optional="true" ptype="IPV6_ADDR">
+                                <PARAM help="IP address" name="ipaddr14" optional="true" ptype="IPV6_ADDR">
+                                  <PARAM help="IP address" name="ipaddr15" optional="true" ptype="IPV6_ADDR">
+                                    <PARAM help="IP address" name="ipaddr16" optional="true" ptype="IPV6_ADDR"/>
+                                  </PARAM>
+                                </PARAM>
+                              </PARAM>
+                            </PARAM>
+                          </PARAM>
+                        </PARAM>
+                      </PARAM>
+                    </PARAM>
+                  </PARAM>
+                </PARAM>
+              </PARAM>
+            </PARAM>
+          </PARAM>
+        </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                     Unconfigure DHCPv6 relay on an interface.
+                 </DESCRIPTION>
+        <USAGE>
+                     Use this command to unconfigure a DHCPv6 relay on an interface.
+                 </USAGE>
+        <EXAMPLE summary="Unconfigure IP DHCPv6 relay">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay 9000::1
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay 
+                 </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay source-interface" access="netadmin" help="Unconfigure DHCPv6 relay source interface">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the source IPv6 address to be used for relaying the DHCPv6 packets.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the source-interface.
+                     </USAGE>
+        <EXAMPLE summary="Configure dhcpv6 relay source interface">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay source-interface
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay max-hop-count" access="netadmin" help="Set default max hop count for DHCPv6 Relay packets">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the maximum hop count for the DHCPv6 packet.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcpv6 relay max hop count">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay max-hop-count
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 dhcp-relay vrf-select" access="netadmin" help="Disable VRF selection suboption">
+      <ACTION builtin="clish_pyobj">sonic_cli_if del_llist_openconfig_relay_agent_relay_agent_dhcpv6_interfaces_interface_relay_agent_config ${iface} ${vlan_name} ${po_name} ${__full_line}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                         Unconfigure the VRF selection option.
+                     </DESCRIPTION>
+        <USAGE>
+                         Use this command to Unconfigure the VRF selection option.
+                     </USAGE>
+        <EXAMPLE summary="Unconfigure dhcp relay vrf selection">
+                         sonic-cli(config)# interface Ethernet 12
+                         sonic-cli(conf-if-Ethernet0)# no ipv6 dhcp-relay vrf-select
+                     </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ipv6 enable" access="netadmin" help="Enable IPv6" command_tables="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/id={name}" dbpath="sonic-interface:sonic-interface/VLAN_SUB_INTERFACE/VLAN_SUB_INTERFACE_LIST/ipv6_use_link_local_only=enable">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range config_if_range iflist=${iface} patch_ipv6_enabled True</ACTION>
+    </COMMAND>
+    <COMMAND name="no ipv6 enable" access="netadmin" help="Disable IPv6">
+      <ACTION builtin="clish_pyobj">sonic_cli_if_range delete_if_range iflist=${iface} delete_if_ip6_enabled</ACTION>
+    </COMMAND>
+    <COMMAND name="ipv6 neighbor" access="netadmin" help="Configure static ND" command_tables="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/staticintf={name},staticip={addr}" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/family=IPv6">
+      <PARAM name="static-ip" help="IP Address" ptype="IPV6_ADDR" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/staticip"/>
+      <PARAM name="neigh" help="MAC Address" ptype="MAC_ADDR" dbpath="sonic-ip-neighbor:sonic-ip-neighbor/NEIGH/NEIGH_LIST/neigh"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if patch_openconfig_if_ipv6_interfaces_interface_subinterfaces_subinterface_static_nd_config ${iface} ${static-ip} ${neigh}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure static ND.
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure static ND.
+             </USAGE>
+        <EXAMPLE summary="Configure static ND">
+                 sonic-cli(config)# interface Ethernet 0
+                 sonic-cli(conf-if-Ethernet0)# ipv6 neighbor ip_addr mac
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ipv6 neighbor" access="netadmin" help="Unconfigure static ND">
+      <PARAM name="static-ip" help="IP Address" ptype="IPV6_ADDR"/>
+      <PARAM name="neigh" help="MAC Address" ptype="MAC_ADDR"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_if delete_openconfig_if_ipv6_interfaces_interface_subinterfaces_subinterface_static_nd_config ${iface} ${static-ip} ${neigh}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Unconfigure static ND.
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to unconfigure static ND.
+             </USAGE>
+        <EXAMPLE summary="Unconfigure static ND">
+                 sonic-cli(config)# interface Ethernet 0
+                 sonic-cli(conf-if-Ethernet0)# no ipv6 neighbor ip_addr mac
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+  </VIEW>
+</CLISH_MODULE>
