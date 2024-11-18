@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE CLISH_MODULE [
+<!ENTITY START_PORT_ID "1">
+<!ENTITY MAX_PORT_ID "32">
+<!ENTITY START_SUB_PORT_ID "1">
+<!ENTITY MAX_SUB_PORT_ID "4">
+<!ENTITY MAX_MTU "9216">
+]>
+<CLISH_MODULE xmlns="http://www.dellemc.com/sonic/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" xsi:schemaLocation="http://www.dellemc.com/sonic/XMLSchema http://www.dellemc.com/sonic/XMLSchema/clish.xsd">
+  <VAR name="is_versatile_hash_supported" dynamic="true">
+    <!-- Checks if versatile hash is configurable on current platform -->
+    <ACTION builtin="clish_pyobj">sonic_cli_switch_resource is_versatile_hash_configurable</ACTION>
+  </VAR>
+  <VIEW name="configure-view">
+    <COMMAND name="ip load-share" access="netadmin" help="Configure ECMP Load-share parameters"> </COMMAND>
+    <COMMAND name="ip load-share hash" access="netadmin" help="Hash Parameter Configuration"> </COMMAND>
+    <COMMAND name="ip load-share hash offset" access="netadmin" help="Hash Offset Configuration" ptype="SUBCOMMAND" command_tables="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_OFFSET/ECMP_LOADSHARE_TABLE_OFFSET_LIST/hash=hash" render_command_cb="ip_loadshare_config" mode="subcommand">
+      <PARAM name="offsetcmdtype" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="offset-val" help="IP ECMP hash offset value" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_OFFSET/ECMP_LOADSHARE_TABLE_OFFSET_LIST/ecmp-hash-offset" ptype="RANGE_0_15"/>
+        <PARAM name="flow-based" help="Enable flow-based based hashing" ptype="SUBCOMMAND" mode="subcommand"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare patch_loadshare_offset_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure IP ECMP hash offset
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash offset
+             </USAGE>
+        <EXAMPLE summary="Configure ip ecmp load share hash offset">
+                 sonic-cli(config)# ip load-share hash offset 4
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ip load-share hash seed" access="netadmin" help="Hash Parameter Configuration" ptype="SUBCOMMAND" command_tables="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_SEED/ECMP_LOADSHARE_TABLE_SEED_LIST/hash=hash" render_command_cb="ip_loadshare_config" mode="subcommand">
+      <PARAM name="seed-val" help="IP ECMP hash seed value" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_SEED/ECMP_LOADSHARE_TABLE_SEED_LIST/ecmp_hash_seed" ptype="LOADSHARE_SEED_VAL"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare patch_loadshare_seed_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure IP ECMP hash seed
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash seed
+             </USAGE>
+        <EXAMPLE summary="Configure ip ecmp load share hash seed">
+                 sonic-cli(config)# ip load-share hash seed 200
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ip load-share hash roce" access="netadmin" help="Hash Roce Configuration" ptype="SUBCOMMAND" command_tables="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_ROCE/ECMP_LOADSHARE_TABLE_ROCE_LIST/hash=hash" render_command_cb="ip_loadshare_config" mode="subcommand">
+      <PARAM name="qpn" help="IP ECMP hash algorithm" ptype="SUBCOMMAND" mode="subcommand"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare patch_loadshare_roce_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure IP ECMP hash qpn
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash qpn
+             </USAGE>
+        <EXAMPLE summary="Configure ip ecmp load share hash qpn">
+                 sonic-cli(config)# ip load-share hash qpn
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ip load-share hash ipv4" access="netadmin" help="Hash Parameter Configuration" ptype="SUBCOMMAND" command_tables="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST/ipv4=ipv4" render_command_cb="ip_loadshare_config" mode="subcommand">
+      <PARAM name="IPv4 hash config options" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="ipv4-src-ip" help="Source IP Address" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST/ipv4_src_ip=true" mode="subcommand"/>
+        <PARAM name="ipv4-dst-ip" help="Destination IP Address" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST/ipv4_dst_ip=true" mode="subcommand"/>
+        <PARAM name="ipv4-ip-proto" help="IPv4 Protocol" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST/ipv4_protocol=true" mode="subcommand"/>
+        <PARAM name="ipv4-l4-src-port" help="IPv4 L4 Source Port" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST/ipv4_l4_src_port=true" mode="subcommand"/>
+        <PARAM name="ipv4-l4-dst-port" help="IPv4 L4 Destination Port" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST/ipv4_l4_dst_port=true" mode="subcommand"/>
+        <PARAM name="symmetric" help="IPv4 Symmetric Hash mode" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV4/ECMP_LOADSHARE_TABLE_IPV4_LIST/ipv4_symmetric=true" mode="subcommand"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare patch_loadshare_ipv4_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure IP ECMP hash
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash
+             </USAGE>
+        <EXAMPLE summary="Configure ip ecmp load share hash">
+                 sonic-cli(config)# ip load-share hash ipv4 ipv4-src-ip
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ip load-share hash ipv6" access="netadmin" help="Hash Parameter Configuration" ptype="SUBCOMMAND" command_tables="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST/ipv6=ipv6" render_command_cb="ip_loadshare_config" mode="subcommand">
+      <PARAM name="IPv6 hash config options" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="ipv6-src-ip" help="Source IP Address" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST/ipv6_src_ip=true" mode="subcommand"/>
+        <PARAM name="ipv6-dst-ip" help="Destination IP Address" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST/ipv6_dst_ip=true" mode="subcommand"/>
+        <PARAM name="ipv6-next-hdr" help="IPv6 Protocol" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST/ipv6_next_hdr=true" mode="subcommand"/>
+        <PARAM name="ipv6-l4-src-port" help="IPv6 L4 Source Port" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST/ipv6_l4_src_port=true" mode="subcommand"/>
+        <PARAM name="ipv6-l4-dst-port" help="IPv6 L4 Destination Port" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST/ipv6_l4_dst_port=true" mode="subcommand"/>
+        <PARAM name="symmetric" help="IPv6 Symmetric Hash mode" ptype="SUBCOMMAND" dbpath="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_IPV6/ECMP_LOADSHARE_TABLE_IPV6_LIST/ipv6_symmetric=true" mode="subcommand"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare patch_loadshare_ipv6_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure IP ECMP hash
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash
+             </USAGE>
+        <EXAMPLE summary="Configure ip ecmp load share hash">
+                 sonic-cli(config)# ip load-share hash ipv6 ipv6-src-ip
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ip load-share hash algorithm" access="netadmin" help="Hash Algorithm Configuration" ptype="SUBCOMMAND" command_keys="name=switch" command_tables="sonic-switch:sonic-switch/SWITCH/SWITCH_LIST/switch={name}" render_command_cb="ip_loadshare_config" mode="subcommand">
+      <PARAM name="hash_algo" help="IP ECMP hash algorithm" dbpath="sonic-switch:sonic-switch/SWITCH/SWITCH_LIST/ecmp_hash_algorithm" ptype="HASH_ALGORITHM_VAL"/>
+      <ACTION builtin="clish_pyobj">sonic-cli-sys config_hash_algo ${hash_algo}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure IP ECMP hash algorithm
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash algorithm
+             </USAGE>
+        <EXAMPLE summary="Configure ip ecmp load share hash algorithm">
+                 sonic-cli(config)# ip load-share hash algorithm JENKINS_HASH_HI
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="ip load-share hash ingress-port" access="netadmin" help="Hash Ingress Port Configuration" ptype="SUBCOMMAND" command_tables="sonic-loadshare-mode:sonic-loadshare-mode/ECMP_LOADSHARE_TABLE_INGRESS_PORT/ECMP_LOADSHARE_TABLE_INGRESS_PORT_LIST/hash=hash" render_command_cb="ip_loadshare_config" mode="subcommand">
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare patch_loadshare_ingress_port_config</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Configure IP ECMP hash ingress-port
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash ingress-port
+             </USAGE>
+        <EXAMPLE summary="Configure ip ecmp load share hash ingress-port">
+                 sonic-cli(config)# ip load-share hash ingress-port
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ip load-share" access="netadmin" help="Configure ECMP Load-share parameters"> </COMMAND>
+    <COMMAND name="no ip load-share hash" access="netadmin" help="Hash Parameter Configuration"> </COMMAND>
+    <COMMAND name="no ip load-share hash seed" access="netadmin" help="Hash Parameter Unconfiguration" ptype="SUBCOMMAND" mode="subcommand">
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare delete_loadshare_seed_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Unconfigure IP ECMP hash seed
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash seed
+             </USAGE>
+        <EXAMPLE summary="Unconfigure ip ecmp load share hash seed">
+                 sonic-cli(config)# no ip load-share hash seed
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ip load-share hash offset" access="netadmin" help="Hash Offset Unconfiguration" ptype="SUBCOMMAND" mode="subcommand">
+      <PARAM name="flow-based" help="Disable flow-based based hashing" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare delete_loadshare_offset_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Unconfigure IP ECMP hash offset
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash offset
+             </USAGE>
+        <EXAMPLE summary="Unconfigure ip ecmp load share hash offset">
+                 sonic-cli(config)# no ip load-share hash offset
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ip load-share hash roce" access="netadmin" help="Hash Roce Unconfiguration" ptype="SUBCOMMAND" mode="subcommand">
+      <PARAM name="qpn" help="IP ECMP hash roce" ptype="SUBCOMMAND" mode="subcommand"/>
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare delete_loadshare_roce_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Unconfigure IP ECMP hash qpn
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash qpn
+             </USAGE>
+        <EXAMPLE summary="Unconfigure ip ecmp load share hash qpn">
+                 sonic-cli(config)# no ip load-share hash qpn
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ip load-share hash ipv4" access="netadmin" help="Hash Parameter Configuration" ptype="SUBCOMMAND" mode="subcommand">
+      <PARAM name="IPv4 hash config options" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="ipv4-src-ip" help="Source IP Address" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="ipv4-dst-ip" help="Destination IP Address" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="ipv4-ip-proto" help="IPv4 Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="ipv4-l4-src-port" help="IPv4 L4 Source Port" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="ipv4-l4-dst-port" help="IPv4 L4 Destination Port" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="symmetric" help="IPv4 Symmetric Hash mode" ptype="SUBCOMMAND" mode="subcommand"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare delete_loadshare_ipv4_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Delete IP ECMP hash
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash
+             </USAGE>
+        <EXAMPLE summary="Delete ip ecmp load share hash">
+                 sonic-cli(config)# no ip load-share hash ipv4 ipv4-src-ip
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ip load-share hash ipv6" access="netadmin" help="Hash Parameter Unconfiguration" ptype="SUBCOMMAND" mode="subcommand">
+      <PARAM name="IPv6 hash config options" help="" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="ipv6-src-ip" help="Source IP Address" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="ipv6-dst-ip" help="Destination IP Address" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="ipv6-next-hdr" help="IPv6 Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="ipv6-l4-src-port" help="IPv6 L4 Source Port" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="ipv6-l4-dst-port" help="IPv6 L4 Destination Port" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="symmetric" help="IPv6 Symmetric Hash mode" ptype="SUBCOMMAND" mode="subcommand"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare delete_loadshare_ipv6_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Unconfigure IP ECMP hash
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash
+             </USAGE>
+        <EXAMPLE summary="Unconfigure ip ecmp load share hash">
+                 sonic-cli(config)# no ip load-share hash ipv6 ipv6-src-ip
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ip load-share hash algorithm" access="netadmin" help="Hash Algorithm Unconfiguration" ptype="SUBCOMMAND" mode="subcommand">
+      <ACTION builtin="clish_pyobj">sonic-cli-sys del_hash_algo_config ${__params}</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Unconfigure IP ECMP hash algorithm
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP load share hash to default
+             </USAGE>
+        <EXAMPLE summary="Unconfigure ip ecmp load share hash algorithm">
+                 sonic-cli(config)# no ip load-share hash algorithm
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+    <COMMAND name="no ip load-share hash ingress-port" access="netadmin" help="Hash ingress-port Unconfiguration" ptype="SUBCOMMAND" mode="subcommand">
+      <ACTION builtin="clish_pyobj">sonic_cli_ip_loadshare delete_loadshare_ingress_port_config</ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+                 Unconfigure IP ECMP hash ingress-port
+             </DESCRIPTION>
+        <USAGE>
+                 Use this command to configure IP ECMP hash ingress-port hash to default (false)
+             </USAGE>
+        <EXAMPLE summary="Unconfigure ip ecmp load share hash ingress-port">
+                 sonic-cli(config)# no ip load-share hash ingress-port
+             </EXAMPLE>
+      </DOCGEN>
+    </COMMAND>
+  </VIEW>
+  <VIEW name="enable-view">
+    <!--show ip load-share -->
+    <COMMAND name="show ip load-share" help="Display ECMP load-share information">
+      <ACTION builtin="clish_pyobj"> sonic_cli_ip_loadshare get_load_share </ACTION>
+      <DOCGEN>
+        <DESCRIPTION>
+             Displays load share information
+           </DESCRIPTION>
+        <USAGE>
+             Use this command to display load share information of ECMP paths on a system
+           </USAGE>
+        <EXAMPLE summary="Display hash param for load balancing">
+             sonic-cli# show ip load-share
+ 
+           </EXAMPLE>
+        <FEATURE> HASH </FEATURE>
+      </DOCGEN>
+      <xi:include href="include/pipe.xml"/>
+    </COMMAND>
+  </VIEW>
+</CLISH_MODULE>

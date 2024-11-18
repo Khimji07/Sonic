@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE CLISH_MODULE [
+<!ENTITY START_PORT_ID "1">
+<!ENTITY MAX_PORT_ID "32">
+<!ENTITY START_SUB_PORT_ID "1">
+<!ENTITY MAX_SUB_PORT_ID "4">
+<!ENTITY MAX_MTU "9216">
+]>
+<!-- Copyright 2023 Dell, Inc.  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at  http://www.apache.org/licenses/LICENSE-2.0  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
+<CLISH_MODULE xmlns="http://www.dellemc.com/sonic/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" xsi:schemaLocation="http://www.dellemc.com/sonic/XMLSchema http://www.dellemc.com/sonic/XMLSchema/clish.xsd">
+  <VIEW name="configure-view">
+    <COMMAND name="interface laser-tuning" access="netadmin" help="Tune transceiver laser" ptype="SUBCOMMAND" mode="subcommand" command_tables="sonic-transceiver:sonic-transceiver/TRANSCEIVER_CONFIG/TRANSCEIVER_CONFIG_LIST/ifname={ifname}" render_command_cb="xcvr_config">
+      <PARAM name="port" help="port where laser has to be tuned" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="slotport" help="Front-panel port" ptype="FRONT_PANEL_PORT"/>
+      </PARAM>
+      <PARAM name="grid-space" help="Laser grid" ptype="SUBCOMMAND" mode="subcommand" optional="false">
+        <PARAM name="grid-id" help="grid id" ptype="FREQUENCY_GRID"> </PARAM>
+      </PARAM>
+      <PARAM name="laser-channel" help="Laser channel" ptype="SUBCOMMAND" mode="subcommand" optional="false">
+        <PARAM name="channel-id" help="Channel number" ptype="INT16"> </PARAM>
+      </PARAM>
+      <ACTION builtin="clish_pyobj"> sonic_cli_xcvr interface_laser_tuning_port ${slotport} ${grid-id} ${channel-id}</ACTION>
+    </COMMAND>
+    <COMMAND name="no interface laser-tuning" access="netadmin" help="Transceiver configuration" ptype="SUBCOMMAND" mode="subcommand">
+      <PARAM name="port" help="port where laser is tuned" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="slotport" help="Front-panel port" ptype="FRONT_PANEL_PORT"/>
+      </PARAM>
+      <ACTION builtin="clish_pyobj"> sonic_cli_xcvr no_interface_laser_tuning_port ${slotport} </ACTION>
+    </COMMAND>
+  </VIEW>
+  <VIEW name="enable-view">
+    <COMMAND name="show interface laser-tuning" help="Display laser tuning information">
+      <PARAM name="lt-subcommands" help="laser-tuning subcommands" mode="switch" ptype="SUBCOMMAND" optional="true">
+        <PARAM name="port" help="Front panel port" ptype="SUBCOMMAND" mode="subcommand">
+          <PARAM name="slotport" help="Front-panel port" ptype="FRONT_PANEL_PORT"/>
+        </PARAM>
+      </PARAM>
+      <ACTION> if test "${port}" = ""; then
+ python3 $SONIC_CLI_ROOT/sonic_cli_xcvr.py show_interface_laser_tuning Ethernet_ALL
+ else
+ python3 $SONIC_CLI_ROOT/sonic_cli_xcvr.py show_interface_laser_tuning ${slotport}
+ fi
+ </ACTION>
+      <xi:include href="include/pipe.xml"/>
+    </COMMAND>
+  </VIEW>
+</CLISH_MODULE>

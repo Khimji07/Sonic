@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright 2019 Dell, Inc.  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at  http://www.apache.org/licenses/LICENSE-2.0  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
+<!DOCTYPE CLISH_MODULE [
+<!ENTITY START_PORT_ID "1">
+<!ENTITY MAX_PORT_ID "32">
+<!ENTITY START_SUB_PORT_ID "1">
+<!ENTITY MAX_SUB_PORT_ID "4">
+<!ENTITY MAX_MTU "9216">
+]>
+<CLISH_MODULE xmlns="http://www.dellemc.com/sonic/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" xsi:schemaLocation="http://www.dellemc.com/sonic/XMLSchema http://www.dellemc.com/sonic/XMLSchema/clish.xsd">
+  <!--=======================================================-->
+  <PTYPE name="AUDIT_SHOW_TYPE" method="select" pattern="all(all)" help=""/>
+  <!--=======================================================-->
+  <VIEW name="enable-view">
+    <!-- show audit-log -->
+    <COMMAND name="show audit-log" help="Display audit log" mode="subcommand" ptype="SUBCOMMAND">
+      <PARAM name="stype" help="Display all of audit log" ptype="AUDIT_SHOW_TYPE" optional="true"> </PARAM>
+      <ACTION builtin="clish_pyobj"> sonic_cli_audit_log_rpc rpc_sonic_auditlog_get_auditlog ${stype} </ACTION>
+      <xi:include href="include/pipe.xml"/>
+    </COMMAND>
+    <!-- clear audit-log -->
+    <COMMAND name="clear audit-log" access="secadmin" help="Clear audit log">
+      <ACTION builtin="clish_pyobj"> sonic_cli_audit_log_rpc rpc_sonic_auditlog_clear_auditlog </ACTION>
+    </COMMAND>
+  </VIEW>
+</CLISH_MODULE>
